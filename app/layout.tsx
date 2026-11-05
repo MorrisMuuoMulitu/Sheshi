@@ -18,7 +18,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={andika.className}>
-      <body>{children}</body>
+      {/* Browser extensions (e.g. Grammarly) inject data-* attributes into
+          <body> before hydration — suppress only this element's attribute
+          check; children are still validated. */}
+      <body suppressHydrationWarning>{children}</body>
     </html>
   );
 }
