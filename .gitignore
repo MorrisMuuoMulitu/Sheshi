@@ -54,3 +54,7 @@ next-env.d.ts
 
 # graphify knowledge graph (derived, regenerate with `graphify update .`)
 /graphify-out/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

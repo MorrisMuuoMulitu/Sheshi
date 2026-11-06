@@ -13,7 +13,8 @@
     "seed": "tsx scripts/seed.ts",
     "schema:extract": "sanity schema extract",
     "typegen": "sanity typegen generate",
-    "verify": "tsx scripts/verify.ts"
+    "verify": "tsx scripts/verify.ts",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@sanity/client": "^8.14.1",
@@ -26,6 +27,7 @@
     "styled-components": "^6.6.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
