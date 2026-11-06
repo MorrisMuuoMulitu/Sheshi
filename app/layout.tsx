@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   openGraph: { siteName: "Enviro-Hension", type: "website" },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={andika.className}>
       {/* Browser extensions (e.g. Grammarly) inject data-* attributes into
