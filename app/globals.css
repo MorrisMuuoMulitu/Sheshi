@@ -482,6 +482,13 @@ nav{
 .ldot.sw{background:var(--sage-dk);color:var(--black);}
 .dl-btn{background:var(--sage);color:var(--black);border:none;padding:8px 14px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Andika';transition:all .2s;display:flex;align-items:center;gap:5px;}
 .dl-btn:hover{background:var(--sage-dk);}
+/* Phase 5: anchors styled as buttons + visibly disabled states */
+a.dl-btn,a.cc-btn{text-decoration:none;}
+.dl-btn:disabled,.cc-btn:disabled{opacity:.45;cursor:not-allowed;}
+.dl-btn:disabled:hover{background:var(--sage);}
+.cc-btn:disabled:hover{background:var(--black);}
+.pod-play.off{opacity:.4;cursor:not-allowed;}
+.pod-play.off:hover{background:var(--black);}
 
 /* ═══════════════════════════════════════════
    ACT

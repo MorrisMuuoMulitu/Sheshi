@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { T, type Locale } from "@/lib/i18n";
 import { openUploadModal } from "@/lib/ui";
-import type { LibraryResource } from "@/lib/views";
+import { downloadHref, type LibraryResource } from "@/lib/views";
 
 const filters = [
   { cat: "all", id: "fb-all", label: "All" },
@@ -81,7 +81,20 @@ export default function BuildView({
                     </span>
                   ))}
                 </div>
-                <button className="dl-btn">⬇ Download</button>
+                {r.fileUrl ? (
+                  <a
+                    className="dl-btn"
+                    href={downloadHref(r.fileUrl, r.title)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    ⬇ Download
+                  </a>
+                ) : (
+                  <button className="dl-btn" disabled title="File coming soon">
+                    ⬇ Download
+                  </button>
+                )}
               </div>
             </div>
           ))}

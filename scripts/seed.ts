@@ -116,6 +116,10 @@ function buildDocs(): Doc[] {
       })),
       resourceTitle: bi(topic.res, ""),
       resourceDescription: bi(topic.resD, ""),
+      // Phase 5.1: the topic's Download Kit downloads this resource's file.
+      ...(card.key === "river"
+        ? { relatedResource: { _type: "reference", _ref: "resource-r2" } }
+        : {}),
       order: i,
     });
   }
@@ -135,6 +139,13 @@ function buildDocs(): Doc[] {
   });
 
   // ── Campaigns (4) ─────────────────────────────────────────────────────────
+  // Phase 5.1: “Get the Guide” opens the related Learn topic; ca4 has no
+  // matching topic, so it links to a library resource (and gets a guide file).
+  const campaignTopic: Record<string, string> = {
+    ca1: "topic-river",
+    ca2: "topic-trees",
+    ca3: "topic-waste",
+  };
   for (const c of campaigns) {
     docs.push({
       _id: `campaign-ca${c.i}`,
@@ -145,6 +156,12 @@ function buildDocs(): Doc[] {
       description: bi(tx("en", `ca${c.i}d`, c.desc), tx("sw", `ca${c.i}d`, "")),
       buttonLabel: bi(tx("en", `ca${c.i}b`, "📥 Get the Guide"), tx("sw", `ca${c.i}b`, "")),
       tags: c.tags,
+      ...(campaignTopic[`ca${c.i}`]
+        ? { relatedTopic: { _type: "reference", _ref: campaignTopic[`ca${c.i}`] } }
+        : {}),
+      ...(c.i === 4
+        ? { relatedResource: { _type: "reference", _ref: "resource-r5" } }
+        : {}),
       order: c.i,
     });
   }
@@ -186,7 +203,7 @@ function buildDocs(): Doc[] {
     siteName: "Enviro-Hension",
     tagline: "Discover, Engage, Empower. Building environmental capacity across Kenya — in English and Kiswahili.",
     contactEmail: "info@envirohension.org",
-    phone: "+254 700 000 000",
+    phone: "", // Phase 5.2: legacy placeholder phone removed until a real number exists
     city: "Nairobi, Kenya",
     socials: [
       { _key: "x", platform: "X", icon: "𝕏", url: "" },
@@ -197,11 +214,69 @@ function buildDocs(): Doc[] {
     ],
     copyright: "© 2025 Enviro-Hension. All rights reserved.",
     footerNote: "Built for Kenya's environmental leaders",
-    heroVideoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    // Phase 5.3: stock Google sample removed — player hidden until real media.
+    heroVideoUrl: "",
     subscribeBlurb: bi("Monthly digest of tools, events, and stories. No spam.", ""),
   });
 
   return docs;
+}
+
+/**
+ * Minimal valid single-page PDF (Helvetica text) used as the placeholder
+ * download for seeded resources/guides. Editors replace these files in
+ * Studio — the point is that every Download button has a real file behind it.
+ */
+function placeholderPdf(title: string): Buffer {
+  const clean = title.replace(/[^\x20-\x7E]/g, "?");
+  const esc = (s: string) => s.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+  const stream = [
+    "BT /F1 20 Tf 60 730 Td (Enviro-Hension) Tj ET",
+    `BT /F1 14 Tf 60 700 Td (${esc(clean)}) Tj ET`,
+    "BT /F1 10 Tf 60 668 Td (Placeholder document.) Tj ET",
+    "BT /F1 10 Tf 60 652 Td (Replace this file in Sanity Studio: Content > Resources / Campaigns.) Tj ET",
+  ].join("\n");
+
+  const objects = [
+    "<< /Type /Catalog /Pages 2 0 R >>",
+    "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>",
+    `<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`,
+    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+  ];
+
+  let pdf = "%PDF-1.4\n";
+  const offsets: number[] = [];
+  objects.forEach((body, i) => {
+    offsets.push(pdf.length);
+    pdf += `${i + 1} 0 obj\n${body}\nendobj\n`;
+  });
+  const xref = pdf.length;
+  pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+  for (const off of offsets) pdf += `${String(off).padStart(10, "0")} 00000 n \n`;
+  pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
+  return Buffer.from(pdf, "latin1");
+}
+
+/** Upload a placeholder PDF and attach it to a document — unless it already has a file. */
+async function ensureFile(
+  client: SanityClient,
+  id: string,
+  field: string,
+  filename: string,
+  title: string,
+): Promise<"attached" | "kept"> {
+  const existing = await client.fetch<boolean>(`defined(*[_id == $id][0].${field}.asset)`, { id });
+  if (existing) return "kept";
+  const asset = await client.assets.upload("file", placeholderPdf(title), {
+    filename,
+    contentType: "application/pdf",
+  });
+  await client
+    .patch(id)
+    .set({ [field]: { _type: "file", asset: { _type: "reference", _ref: asset._id } } })
+    .commit();
+  return "attached";
 }
 
 async function main() {
@@ -240,6 +315,19 @@ async function main() {
   }
 
   console.log(`\nDone: ${created} created, ${updated} updated.`);
+
+  // ── Phase 5.1: real files behind every Download button ────────────────────
+  console.log("\nAttaching placeholder PDFs (skipped when a file already exists) …");
+  let attached = 0;
+  for (const r of resources) {
+    const res = await ensureFile(client, `resource-${r.id}`, "file", `${r.id}.pdf`, r.title);
+    if (res === "attached") attached++;
+  }
+  // ca4 has no matching topic — its “Get the Guide” downloads a real file.
+  if ((await ensureFile(client, "campaign-ca4", "guide", "ca4-guide.pdf", "Start a Local Chapter Guide")) === "attached") {
+    attached++;
+  }
+  console.log(`Files: ${attached} attached, ${resources.length + 1 - attached} already present.`);
 }
 
 main().catch((err) => {

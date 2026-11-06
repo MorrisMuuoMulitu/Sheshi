@@ -57,6 +57,13 @@ export const topic = defineType({
       description: "Legacy topic.resD.",
     }),
     defineField({
+      name: "relatedResource",
+      title: "Related resource",
+      type: "reference",
+      to: [{ type: "resource" }],
+      description: "The topic's Download Kit button downloads this resource's file (falls back to the library).",
+    }),
+    defineField({
       name: "order",
       title: "Order",
       type: "number",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { T, type Locale } from "@/lib/i18n";
 import { openUploadModal } from "@/lib/ui";
 import type { StoryCard, WorkCard, WorkEpisode } from "@/lib/views";
@@ -27,6 +27,35 @@ export default function WorkView({
   const t = T[locale];
   const tx = (k: string, fb: string) => t[k] ?? fb;
   const [cat, setCat] = useState("all");
+
+  // Podcast playback (Phase 5.1): ▶ plays the episode's mediaUrl when set.
+  const audioRefs = useRef<Record<number, HTMLAudioElement | null>>({});
+  const [playing, setPlaying] = useState<number | null>(null);
+
+  useEffect(() => {
+    const refs = audioRefs.current;
+    return () => {
+      Object.values(refs).forEach((a) => a?.pause());
+    };
+  }, []);
+
+  const togglePlay = (ep: WorkEpisode) => {
+    const audio = audioRefs.current[ep.n];
+    if (!ep.mediaUrl || !audio) return;
+    if (playing === ep.n) {
+      audio.pause();
+      setPlaying(null);
+      return;
+    }
+    // Only one episode plays at a time.
+    Object.values(audioRefs.current).forEach((a) => {
+      if (a && a !== audio) a.pause();
+    });
+    audio
+      .play()
+      .then(() => setPlaying(ep.n))
+      .catch(() => setPlaying(null));
+  };
 
   const showPods = cat === "all" || cat === "pod";
   const showGrid = cat !== "pod";
@@ -75,7 +104,41 @@ export default function WorkView({
                     </div>
                     <div className="pod-dur">{e.dur}</div>
                   </div>
-                  <div className="pod-play">▶</div>
+                  {e.mediaUrl ? (
+                    <>
+                      <audio
+                        ref={(el) => {
+                          audioRefs.current[e.n] = el;
+                        }}
+                        src={e.mediaUrl}
+                        preload="none"
+                      />
+                      <div
+                        className="pod-play"
+                        role="button"
+                        tabIndex={0}
+                        title={playing === e.n ? "Pause episode" : "Play episode"}
+                        aria-label={playing === e.n ? "Pause episode" : "Play episode"}
+                        onClick={() => togglePlay(e)}
+                        onKeyDown={(ev) => {
+                          if (ev.key === "Enter" || ev.key === " ") {
+                            ev.preventDefault();
+                            togglePlay(e);
+                          }
+                        }}
+                      >
+                        {playing === e.n ? "⏸" : "▶"}
+                      </div>
+                    </>
+                  ) : (
+                    <div
+                      className="pod-play off"
+                      title="Audio coming soon"
+                      aria-disabled="true"
+                    >
+                      ▶
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

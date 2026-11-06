@@ -1,12 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import { T, type Locale } from "@/lib/i18n";
-import type { LearnTopic } from "@/lib/views";
+import { downloadHref, type LearnTopic } from "@/lib/views";
 
 /**
  * Learn page — topic grid + step-by-step detail (client interactivity).
  * Data arrives localized from the server (lib/cms.ts).
+ * Supports `?topic=<key>` deep links (used by the Act page's
+ * “Get the Guide” → related topic, Phase 5.1).
  */
 export default function LearnView({
   locale,
@@ -20,6 +23,18 @@ export default function LearnView({
 
   const [active, setActive] = useState<string | null>(null);
   const [introHidden, setIntroHidden] = useState(false);
+
+  // Deep link: /learn?topic=river opens that topic on mount.
+  // (One-shot post-hydration navigation; `window` doesn't exist during prerender,
+  // so this cannot move into useState's initializer without a hydration mismatch.)
+  useEffect(() => {
+    const key = new URLSearchParams(window.location.search).get("topic");
+    if (key && topics.some((tc) => tc.key === key)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-shot deep link
+      setActive(key);
+      window.scrollTo(0, 0);
+    }
+  }, [topics]);
 
   const openTopic = (key: string) => {
     setActive(key);
@@ -60,9 +75,25 @@ export default function LearnView({
                 <div className="rh-ey">Resources for this topic</div>
                 <h4 id="td-res-t">{topic.res}</h4>
                 <p id="td-res-d">{topic.resD}</p>
-                <button className="dl-btn" style={{ background: "var(--black)", color: "var(--sage)" }}>
-                  ⬇ Download Kit
-                </button>
+                {topic.kitFileUrl ? (
+                  <a
+                    className="dl-btn"
+                    style={{ background: "var(--black)", color: "var(--sage)" }}
+                    href={downloadHref(topic.kitFileUrl, topic.res)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    ⬇ Download Kit
+                  </a>
+                ) : (
+                  <Link
+                    className="dl-btn"
+                    style={{ background: "var(--black)", color: "var(--sage)" }}
+                    href={`/${locale}/build`}
+                  >
+                    ⬇ Download Kit
+                  </Link>
+                )}
               </div>
             </div>
             <div>

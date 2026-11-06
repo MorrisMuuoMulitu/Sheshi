@@ -38,6 +38,13 @@ export const campaign = defineType({
       description: "The downloadable guide behind the button (wired in Phase 5).",
     }),
     defineField({
+      name: "relatedTopic",
+      title: "Related topic",
+      type: "reference",
+      to: [{ type: "topic" }],
+      description: "“Get the Guide” opens this Learn topic when no guide file is attached.",
+    }),
+    defineField({
       name: "relatedResource",
       title: "Related resource",
       type: "reference",

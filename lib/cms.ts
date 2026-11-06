@@ -13,6 +13,7 @@ import { sanityClient } from "./sanity";
 import {
   campaignsQuery,
   resourcesQuery,
+  settingsQuery,
   storiesQuery,
   topicsQuery,
   workItemsQuery,
@@ -25,6 +26,7 @@ import {
   type ActCampaign,
   type LearnTopic,
   type LibraryResource,
+  type SiteSettings,
   type StoryCard,
   type WorkCard,
   type WorkEpisode,
@@ -41,7 +43,7 @@ const STORY_ICON: Record<string, string> = {
 };
 
 /** CMS bilingual field value: [{_key, language, value}, …]. */
-type BiItem = { language?: string; value?: string };
+type BiItem = { language?: string | null; value?: string | null };
 
 /** Pick a language from a bilingual field with fallbacks (locale → en → first). */
 function pickBi(items: BiItem[] | undefined | null, locale: Locale): string {
@@ -86,6 +88,8 @@ export async function getLearnTopics(locale: Locale): Promise<LearnTopic[]> {
         })),
         res: pickBi(d.resourceTitle, locale),
         resD: pickBi(d.resourceDescription, locale),
+        kitFileUrl: d.relatedResource?.file?.asset?.url ?? undefined,
+        kitResKey: d.relatedResource?.key ?? undefined,
       };
     });
   } catch (err) {
@@ -134,6 +138,7 @@ export async function getResources(locale: Locale): Promise<LibraryResource[]> {
         title: pickBi(d.title, locale),
         desc: pickBi(d.description, locale),
         langs: d.languages ?? [],
+        fileUrl: d.file?.asset?.url ?? undefined,
       };
     });
   } catch (err) {
@@ -167,6 +172,9 @@ export async function getCampaigns(locale: Locale): Promise<ActCampaign[]> {
       desc: pickBi(d.description, locale),
       tags: d.tags ?? [],
       btn: pickBi(d.buttonLabel, locale) || "📥 Get the Guide",
+      guideUrl: d.guide?.asset?.url ?? undefined,
+      topicKey: d.relatedTopic?.key ?? undefined,
+      resourceKey: d.relatedResource?.key ?? undefined,
     }));
   } catch (err) {
     console.warn("[cms] campaigns: Sanity unreachable — using static fallback:", err);
@@ -206,6 +214,7 @@ export async function getWorkContent(locale: Locale): Promise<WorkContent> {
           i: d.order ?? 0,
           title: pickBi(d.title, locale),
           dur: d.meta ?? "",
+          mediaUrl: d.mediaUrl ?? undefined,
         });
       } else if (d.kind === "doc" || d.kind === "blg") {
         cardItems.push({
@@ -269,5 +278,52 @@ export async function getPublishedStories(locale: Locale): Promise<StoryCard[]> 
   } catch (err) {
     console.warn("[cms] stories: Sanity unreachable — using empty list:", err);
     return [];
+  }
+}
+
+// ── Site settings singleton (footer / contact / hero video) ────────────────
+
+/** Legacy footer values — used only when Sanity is unreachable. */
+const STATIC_SETTINGS: SiteSettings = {
+  siteName: "Enviro-Hension",
+  tagline:
+    "Discover, Engage, Empower. Building environmental capacity across Kenya — in English and Kiswahili.",
+  contactEmail: "info@envirohension.org",
+  phone: "",
+  city: "Nairobi, Kenya",
+  socials: [],
+  copyright: "© 2025 Enviro-Hension. All rights reserved.",
+  footerNote: "Built for Kenya's environmental leaders",
+  heroVideoUrl: "",
+  subscribeBlurb: "Monthly digest of tools, events, and stories. No spam.",
+};
+
+export async function getSettings(locale: Locale): Promise<SiteSettings> {
+  "use cache";
+  cacheTag("cms");
+  cacheLife("minutes");
+  try {
+    const doc = await sanityClient.fetch(settingsQuery);
+    if (!doc) throw new Error("settings document missing");
+    console.log(`[cms] settings: from Sanity (${locale})`);
+    return {
+      siteName: doc.siteName ?? STATIC_SETTINGS.siteName,
+      tagline: doc.tagline ?? STATIC_SETTINGS.tagline,
+      contactEmail: doc.contactEmail ?? STATIC_SETTINGS.contactEmail,
+      phone: doc.phone ?? "",
+      city: doc.city ?? STATIC_SETTINGS.city,
+      socials: (doc.socials ?? []).map((s) => ({
+        platform: s.platform ?? "",
+        icon: s.icon ?? "",
+        url: s.url ?? "",
+      })),
+      copyright: doc.copyright ?? STATIC_SETTINGS.copyright,
+      footerNote: doc.footerNote ?? STATIC_SETTINGS.footerNote,
+      heroVideoUrl: doc.heroVideoUrl ?? "",
+      subscribeBlurb: pickBi(doc.subscribeBlurb, locale) || STATIC_SETTINGS.subscribeBlurb,
+    };
+  } catch (err) {
+    console.warn("[cms] settings: Sanity unreachable — using static fallback:", err);
+    return { ...STATIC_SETTINGS, subscribeBlurb: STATIC_SETTINGS.subscribeBlurb };
   }
 }

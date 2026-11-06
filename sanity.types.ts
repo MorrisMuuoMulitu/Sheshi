@@ -162,6 +162,13 @@ export type InternationalizedArrayString = Array<
   } & InternationalizedArrayStringValue
 >;
 
+export type TopicReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "topic";
+};
+
 export type ResourceReference = {
   _ref: string;
   _type: "reference";
@@ -186,26 +193,8 @@ export type Campaign = {
     media?: unknown;
     _type: "file";
   };
+  relatedTopic?: TopicReference;
   relatedResource?: ResourceReference;
-  order?: number;
-};
-
-export type Resource = {
-  _id: string;
-  _type: "resource";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  key?: string;
-  title?: InternationalizedArrayString;
-  description?: InternationalizedArrayText;
-  category?: "tp" | "kt" | "zn";
-  languages?: Array<"en" | "sw">;
-  file?: {
-    asset?: SanityFileAssetReference;
-    media?: unknown;
-    _type: "file";
-  };
   order?: number;
 };
 
@@ -230,6 +219,26 @@ export type Topic = {
   }>;
   resourceTitle?: InternationalizedArrayString;
   resourceDescription?: InternationalizedArrayText;
+  relatedResource?: ResourceReference;
+  order?: number;
+};
+
+export type Resource = {
+  _id: string;
+  _type: "resource";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  key?: string;
+  title?: InternationalizedArrayString;
+  description?: InternationalizedArrayText;
+  category?: "tp" | "kt" | "zn";
+  languages?: Array<"en" | "sw">;
+  file?: {
+    asset?: SanityFileAssetReference;
+    media?: unknown;
+    _type: "file";
+  };
   order?: number;
 };
 
@@ -360,10 +369,11 @@ export type AllSanitySchemaTypes =
   | Event
   | WorkItem
   | InternationalizedArrayString
+  | TopicReference
   | ResourceReference
   | Campaign
-  | Resource
   | Topic
+  | Resource
   | InternationalizedArrayTextValue
   | InternationalizedArrayStringValue
   | SanityImagePaletteSwatch
@@ -378,7 +388,7 @@ export type AllSanitySchemaTypes =
 
 // Source: lib/queries.ts
 // Variable: topicsQuery
-// Query: *[_type == "topic"] | order(order asc){    key, title, intro, cardDescription, stepPill, level, icon, thumbClass,    steps[]{ heading, body },    resourceTitle, resourceDescription, order  }
+// Query: *[_type == "topic"] | order(order asc){    key, title, intro, cardDescription, stepPill, level, icon, thumbClass,    steps[]{ heading, body },    resourceTitle, resourceDescription, order,    relatedResource->{ key, file{ asset->{ url } } }  }
 export type TopicsQueryResult = Array<{
   key: string | null;
   title: InternationalizedArrayString | null;
@@ -395,11 +405,19 @@ export type TopicsQueryResult = Array<{
   resourceTitle: InternationalizedArrayString | null;
   resourceDescription: InternationalizedArrayText | null;
   order: number | null;
+  relatedResource: {
+    key: string | null;
+    file: {
+      asset: {
+        url: string | null;
+      } | null;
+    } | null;
+  } | null;
 }>;
 
 // Source: lib/queries.ts
 // Variable: resourcesQuery
-// Query: *[_type == "resource"] | order(order asc){    key, title, description, category, languages, order  }
+// Query: *[_type == "resource"] | order(order asc){    key, title, description, category, languages, order,    file{ asset->{ url } }  }
 export type ResourcesQueryResult = Array<{
   key: string | null;
   title: InternationalizedArrayString | null;
@@ -407,11 +425,16 @@ export type ResourcesQueryResult = Array<{
   category: "kt" | "tp" | "zn" | null;
   languages: Array<"en" | "sw"> | null;
   order: number | null;
+  file: {
+    asset: {
+      url: string | null;
+    } | null;
+  } | null;
 }>;
 
 // Source: lib/queries.ts
 // Variable: campaignsQuery
-// Query: *[_type == "campaign"] | order(order asc){    key, icon, title, description, buttonLabel, tags, order  }
+// Query: *[_type == "campaign"] | order(order asc){    key, icon, title, description, buttonLabel, tags, order,    guide{ asset->{ url } },    relatedTopic->{ key },    relatedResource->{ key }  }
 export type CampaignsQueryResult = Array<{
   key: string | null;
   icon: string | null;
@@ -420,11 +443,22 @@ export type CampaignsQueryResult = Array<{
   buttonLabel: InternationalizedArrayString | null;
   tags: Array<string> | null;
   order: number | null;
+  guide: {
+    asset: {
+      url: string | null;
+    } | null;
+  } | null;
+  relatedTopic: {
+    key: string | null;
+  } | null;
+  relatedResource: {
+    key: string | null;
+  } | null;
 }>;
 
 // Source: lib/queries.ts
 // Variable: workItemsQuery
-// Query: *[_type == "workItem"] | order(order asc){    key, kind, title, badge, episodeNumber, meta, date, language, icon, order  }
+// Query: *[_type == "workItem"] | order(order asc){    key, kind, title, badge, episodeNumber, meta, date, language, icon, order,    mediaUrl  }
 export type WorkItemsQueryResult = Array<{
   key: string | null;
   kind: "blg" | "doc" | "pod" | null;
@@ -436,6 +470,7 @@ export type WorkItemsQueryResult = Array<{
   language: "EN" | "EN/SW" | "SW" | null;
   icon: string | null;
   order: number | null;
+  mediaUrl: string | null;
 }>;
 
 // Source: lib/queries.ts
@@ -452,14 +487,38 @@ export type StoriesQueryResult = Array<{
   submittedAt: string | null;
 }>;
 
+// Source: lib/queries.ts
+// Variable: settingsQuery
+// Query: *[_type == "settings"][0]{    siteName, tagline, contactEmail, phone, city,    socials[]{ platform, icon, url },    copyright, footerNote, heroVideoUrl,    subscribeBlurb[]{ language, value }  }
+export type SettingsQueryResult = {
+  siteName: string | null;
+  tagline: string | null;
+  contactEmail: string | null;
+  phone: string | null;
+  city: string | null;
+  socials: Array<{
+    platform: "Facebook" | "Instagram" | "LinkedIn" | "X" | "YouTube" | null;
+    icon: string | null;
+    url: string | null;
+  }> | null;
+  copyright: string | null;
+  footerNote: string | null;
+  heroVideoUrl: string | null;
+  subscribeBlurb: Array<{
+    language: string | null;
+    value: string | null;
+  }> | null;
+} | null;
+
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    '*[_type == "topic"] | order(order asc){\n    key, title, intro, cardDescription, stepPill, level, icon, thumbClass,\n    steps[]{ heading, body },\n    resourceTitle, resourceDescription, order\n  }': TopicsQueryResult;
-    '*[_type == "resource"] | order(order asc){\n    key, title, description, category, languages, order\n  }': ResourcesQueryResult;
-    '*[_type == "campaign"] | order(order asc){\n    key, icon, title, description, buttonLabel, tags, order\n  }': CampaignsQueryResult;
-    '*[_type == "workItem"] | order(order asc){\n    key, kind, title, badge, episodeNumber, meta, date, language, icon, order\n  }': WorkItemsQueryResult;
+    '*[_type == "topic"] | order(order asc){\n    key, title, intro, cardDescription, stepPill, level, icon, thumbClass,\n    steps[]{ heading, body },\n    resourceTitle, resourceDescription, order,\n    relatedResource->{ key, file{ asset->{ url } } }\n  }': TopicsQueryResult;
+    '*[_type == "resource"] | order(order asc){\n    key, title, description, category, languages, order,\n    file{ asset->{ url } }\n  }': ResourcesQueryResult;
+    '*[_type == "campaign"] | order(order asc){\n    key, icon, title, description, buttonLabel, tags, order,\n    guide{ asset->{ url } },\n    relatedTopic->{ key },\n    relatedResource->{ key }\n  }': CampaignsQueryResult;
+    '*[_type == "workItem"] | order(order asc){\n    key, kind, title, badge, episodeNumber, meta, date, language, icon, order,\n    mediaUrl\n  }': WorkItemsQueryResult;
     '*[_type == "story" && status == "published"] | order(submittedAt desc){\n    kind, title, titleSw, description, authorName, sourceUrl, submittedAt\n  }': StoriesQueryResult;
+    '*[_type == "settings"][0]{\n    siteName, tagline, contactEmail, phone, city,\n    socials[]{ platform, icon, url },\n    copyright, footerNote, heroVideoUrl,\n    subscribeBlurb[]{ language, value }\n  }': SettingsQueryResult;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { T, type Locale } from "@/lib/i18n";
-import type { ActCampaign } from "@/lib/views";
+import { downloadHref, type ActCampaign } from "@/lib/views";
 
 type Status = "idle" | "sending" | "ok" | "error";
 
@@ -84,9 +85,30 @@ export default function ActView({
                   </span>
                 ))}
               </div>
-              <button className="cc-btn" id={`ca${c.i}b`}>
-                {c.btn}
-              </button>
+              {/* Get the Guide: file → download; topic → Learn; resource → library */}
+              {c.guideUrl ? (
+                <a
+                  className="cc-btn"
+                  id={`ca${c.i}b`}
+                  href={downloadHref(c.guideUrl, c.title)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {c.btn}
+                </a>
+              ) : c.topicKey ? (
+                <Link className="cc-btn" id={`ca${c.i}b`} href={`/${locale}/learn?topic=${c.topicKey}`}>
+                  {c.btn}
+                </Link>
+              ) : c.resourceKey ? (
+                <Link className="cc-btn" id={`ca${c.i}b`} href={`/${locale}/build`}>
+                  {c.btn}
+                </Link>
+              ) : (
+                <button className="cc-btn" id={`ca${c.i}b`} disabled title="Guide coming soon">
+                  {c.btn}
+                </button>
+              )}
             </div>
           ))}
         </div>

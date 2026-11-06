@@ -3,6 +3,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import Modals from "@/components/Modals";
 import { isLocale, type Locale } from "@/lib/i18n";
+import { getSettings } from "@/lib/cms";
 
 export function generateStaticParams() {
   return [{ locale: "en" }, { locale: "sw" }];
@@ -27,11 +28,14 @@ export default async function LocaleLayout({
   if (!isLocale(locale)) notFound();
   const l = locale as Locale;
 
+  // Settings singleton drives the footer (Phase 5.2).
+  const settings = await getSettings(l);
+
   return (
     <>
       <Nav locale={l} />
       {children}
-      <Footer locale={l} />
+      <Footer locale={l} settings={settings} />
       <Modals locale={l} />
     </>
   );
