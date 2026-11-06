@@ -1,18 +1,46 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { T, type Locale } from "@/lib/i18n";
 import { closeModal } from "@/lib/ui";
 
+type Status = "idle" | "sending" | "ok" | "error";
+
+/** Share-type buttons (st1…st6) → story.kind values accepted by /api/story. */
+const SHARE_KINDS = ["photos", "template", "blueprint", "story", "podcast", "video"] as const;
+
 /**
- * The two legacy modals (Share Story + Upload/CMS), ported verbatim.
- * Their submit handlers still show the legacy alerts — replaced by real
- * API-route submissions in Phase 4 of PLAN.md.
+ * The two legacy modals (Share Story + Upload/CMS), ported with their
+ * original markup — submit handlers now POST to the Phase 4 API routes
+ * (`/api/story`, `/api/upload`) with inline success/error states.
  */
 export default function Modals({ locale }: { locale: Locale }) {
   const t = T[locale];
   const [shareOpen, setShareOpen] = useState(false);
   const [uploadOpen, setUploadOpen] = useState(false);
+
+  // Share modal state
+  const [shareKind, setShareKind] = useState<(typeof SHARE_KINDS)[number]>("photos");
+  const [shName, setShName] = useState("");
+  const [shEmail, setShEmail] = useState("");
+  const [shTitle, setShTitle] = useState("");
+  const [shDesc, setShDesc] = useState("");
+  const [shStatus, setShStatus] = useState<Status>("idle");
+  const [shError, setShError] = useState("");
+  const shareFilesRef = useRef<HTMLInputElement>(null);
+  const [shareFiles, setShareFiles] = useState<File[]>([]);
+
+  // Upload modal state
+  const [upType, setUpType] = useState("template");
+  const [upTitle, setUpTitle] = useState("");
+  const [upTitleSw, setUpTitleSw] = useState("");
+  const [upDesc, setUpDesc] = useState("");
+  const [upEmail, setUpEmail] = useState("");
+  const [upUrl, setUpUrl] = useState("");
+  const [upStatus, setUpStatus] = useState<Status>("idle");
+  const [upError, setUpError] = useState("");
+  const upFilesRef = useRef<HTMLInputElement>(null);
+  const [upFile, setUpFile] = useState<File | null>(null);
 
   useEffect(() => {
     const onShare = () => setShareOpen(true);
@@ -20,6 +48,7 @@ export default function Modals({ locale }: { locale: Locale }) {
       const ctx = (e as CustomEvent<"resource" | "work">).detail;
       const sel = document.getElementById("modal-type") as HTMLSelectElement | null;
       if (sel) sel.value = ctx === "work" ? "podcast" : "template";
+      setUpType(ctx === "work" ? "podcast" : "template");
       const title = document.getElementById("modal-title");
       if (title) title.textContent = ctx === "work" ? "Upload New Content" : "Add New Resource";
       setUploadOpen(true);
@@ -43,13 +72,72 @@ export default function Modals({ locale }: { locale: Locale }) {
     if (e.target === e.currentTarget) close();
   };
 
-  const saveShare = () => {
-    alert("✅ Story submitted! Our team will review and publish it on the site.");
-    setShareOpen(false);
+  const saveShare = async () => {
+    if (shStatus === "sending") return;
+    setShStatus("sending");
+    setShError("");
+    try {
+      const fd = new FormData();
+      fd.append("kind", shareKind);
+      fd.append("title", shTitle);
+      fd.append("description", shDesc);
+      fd.append("name", shName);
+      fd.append("email", shEmail);
+      fd.append("website", ""); // honeypot
+      for (const f of shareFiles) fd.append("files", f);
+      const res = await fetch("/api/story", { method: "POST", body: fd });
+      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+      if (!res.ok || !data.ok) throw new Error(data.error || "Submission failed");
+      setShStatus("ok");
+      setTimeout(() => {
+        setShareOpen(false);
+        setShStatus("idle");
+        setShName("");
+        setShEmail("");
+        setShTitle("");
+        setShDesc("");
+        setShareFiles([]);
+        if (shareFilesRef.current) shareFilesRef.current.value = "";
+      }, 1600);
+    } catch (err) {
+      setShStatus("error");
+      setShError(err instanceof Error ? err.message : "Submission failed");
+    }
   };
-  const saveCMS = () => {
-    alert("✅ Content saved! In production this pushes to Sanity CMS and goes live immediately.");
-    setUploadOpen(false);
+
+  const saveCMS = async () => {
+    if (upStatus === "sending") return;
+    setUpStatus("sending");
+    setUpError("");
+    try {
+      const fd = new FormData();
+      fd.append("type", upType);
+      fd.append("title", upTitle);
+      fd.append("titleSw", upTitleSw);
+      fd.append("description", upDesc);
+      fd.append("email", upEmail);
+      fd.append("url", upUrl);
+      fd.append("website", ""); // honeypot
+      if (upFile) fd.append("files", upFile);
+      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+      if (!res.ok || !data.ok) throw new Error(data.error || "Submission failed");
+      setUpStatus("ok");
+      setTimeout(() => {
+        setUploadOpen(false);
+        setUpStatus("idle");
+        setUpTitle("");
+        setUpTitleSw("");
+        setUpDesc("");
+        setUpEmail("");
+        setUpUrl("");
+        setUpFile(null);
+        if (upFilesRef.current) upFilesRef.current.value = "";
+      }, 1600);
+    } catch (err) {
+      setUpStatus("error");
+      setUpError(err instanceof Error ? err.message : "Submission failed");
+    }
   };
 
   return (
@@ -78,13 +166,8 @@ export default function Modals({ locale }: { locale: Locale }) {
             ] as const).map(([icon, key], i) => (
               <div
                 key={key}
-                className={`stype-btn${i === 0 ? " active" : ""}`}
-                onClick={(e) => {
-                  e.currentTarget.parentElement
-                    ?.querySelectorAll(".stype-btn")
-                    .forEach((b) => b.classList.remove("active"));
-                  e.currentTarget.classList.add("active");
-                }}
+                className={`stype-btn${shareKind === SHARE_KINDS[i] ? " active" : ""}`}
+                onClick={() => setShareKind(SHARE_KINDS[i])}
               >
                 <span className="sticon">{icon}</span>
                 <span id={key}>{t[key] ?? key}</span>
@@ -92,30 +175,75 @@ export default function Modals({ locale }: { locale: Locale }) {
             ))}
           </div>
           <label className="m-lbl" id="sm-nl">{t["sm-nl"] ?? "Your Name"}</label>
-          <input className="m-in" type="text" placeholder="Full name" />
+          <input
+            className="m-in"
+            type="text"
+            placeholder="Full name"
+            value={shName}
+            onChange={(e) => setShName(e.target.value)}
+          />
           <label className="m-lbl" id="sm-el">{t["sm-el"] ?? "Email"}</label>
-          <input className="m-in" type="email" placeholder="your@email.com" />
+          <input
+            className="m-in"
+            type="email"
+            placeholder="your@email.com"
+            value={shEmail}
+            onChange={(e) => setShEmail(e.target.value)}
+          />
           <label className="m-lbl" id="sm-tl">{t["sm-tl"] ?? "Title / Caption"}</label>
-          <input className="m-in" type="text" placeholder="e.g. Our river cleanup in Machakos" />
+          <input
+            className="m-in"
+            type="text"
+            placeholder="e.g. Our river cleanup in Machakos"
+            value={shTitle}
+            onChange={(e) => setShTitle(e.target.value)}
+          />
           <label className="m-lbl" id="sm-dl">{t["sm-dl"] ?? "Description"}</label>
-          <textarea className="m-ta" placeholder="Tell your story..." />
+          <textarea
+            className="m-ta"
+            placeholder="Tell your story..."
+            value={shDesc}
+            onChange={(e) => setShDesc(e.target.value)}
+          />
           <div
             className="m-upload-area"
-            onClick={() => document.getElementById("share-file-inp")?.click()}
+            onClick={() => shareFilesRef.current?.click()}
           >
             <p>
               📎 <strong>Click to attach files</strong> (photos, PDF, video, audio)
             </p>
-            <p style={{ marginTop: 4, fontSize: 12 }}>Max 50MB per file</p>
+            <p style={{ marginTop: 4, fontSize: 12 }}>
+              {shareFiles.length > 0
+                ? `${shareFiles.length} file(s) selected`
+                : "Max 50MB per file"}
+            </p>
           </div>
           <input
             type="file"
             id="share-file-inp"
+            ref={shareFilesRef}
             style={{ display: "none" }}
             multiple
             accept="image/*,.pdf,.mp4,.mp3,.docx,.zip"
+            onChange={(e) => setShareFiles(Array.from(e.target.files ?? []))}
           />
-          <button className="m-save" onClick={saveShare}>Submit Story →</button>
+          {shStatus === "error" && (
+            <p role="alert" style={{ color: "#b3261e", fontSize: 13, marginTop: 10 }}>
+              {shError}
+            </p>
+          )}
+          {shStatus === "ok" && (
+            <p role="status" style={{ fontSize: 13, marginTop: 10 }}>
+              ✅ Story submitted! Our team will review and publish it on the site.
+            </p>
+          )}
+          <button className="m-save" onClick={saveShare} disabled={shStatus === "sending"}>
+            {shStatus === "sending"
+              ? "…"
+              : shStatus === "ok"
+                ? "Submitted ✓"
+                : "Submit Story →"}
+          </button>
         </div>
       </div>
 
@@ -130,7 +258,12 @@ export default function Modals({ locale }: { locale: Locale }) {
           <button className="modal-close" onClick={() => closeModal("upload-modal")}>✕</button>
           <h3 id="modal-title">Upload Content</h3>
           <label className="m-lbl" id="ml-type">{t["ml-type"] ?? "Content Type"}</label>
-          <select className="m-sel" id="modal-type" defaultValue="template">
+          <select
+            className="m-sel"
+            id="modal-type"
+            value={upType}
+            onChange={(e) => setUpType(e.target.value)}
+          >
             <option value="template">Template / Blueprint</option>
             <option value="toolkit">Toolkit</option>
             <option value="zine">Zine</option>
@@ -139,27 +272,81 @@ export default function Modals({ locale }: { locale: Locale }) {
             <option value="blog">Blog Post</option>
           </select>
           <label className="m-lbl" id="ml-title">{t["ml-title"] ?? "Title (English)"}</label>
-          <input className="m-in" type="text" placeholder="e.g. River Cleanup Blueprint v2" />
+          <input
+            className="m-in"
+            type="text"
+            placeholder="e.g. River Cleanup Blueprint v2"
+            value={upTitle}
+            onChange={(e) => setUpTitle(e.target.value)}
+          />
           <label className="m-lbl" id="ml-title-sw">{t["ml-title-sw"] ?? "Title (Kiswahili)"}</label>
-          <input className="m-in" type="text" placeholder="e.g. Ramani ya Kusafisha Mto v2" />
+          <input
+            className="m-in"
+            type="text"
+            placeholder="e.g. Ramani ya Kusafisha Mto v2"
+            value={upTitleSw}
+            onChange={(e) => setUpTitleSw(e.target.value)}
+          />
           <label className="m-lbl" id="ml-desc">{t["ml-desc"] ?? "Short Description"}</label>
-          <textarea className="m-ta" placeholder="Describe this resource in 1–2 sentences..." />
+          <textarea
+            className="m-ta"
+            placeholder="Describe this resource in 1–2 sentences..."
+            value={upDesc}
+            onChange={(e) => setUpDesc(e.target.value)}
+          />
+          <label className="m-lbl" id="ml-email">
+            {t["ml-email"] ?? "Your Email (for follow-up)"}
+          </label>
+          <input
+            className="m-in"
+            type="email"
+            placeholder="your@email.com"
+            value={upEmail}
+            onChange={(e) => setUpEmail(e.target.value)}
+          />
           <div
             className="m-upload-area"
-            onClick={() => document.getElementById("file-inp")?.click()}
+            onClick={() => upFilesRef.current?.click()}
           >
             <p>
               📎 <strong>Click to choose file</strong> (PDF, MP3, MP4, DOCX…)
             </p>
+            {upFile && (
+              <p style={{ marginTop: 4, fontSize: 12 }}>Selected: {upFile.name}</p>
+            )}
           </div>
           <input
             type="file"
             id="file-inp"
+            ref={upFilesRef}
             style={{ display: "none" }}
             accept=".pdf,.mp3,.mp4,.docx,.zip"
+            onChange={(e) => setUpFile(e.target.files?.[0] ?? null)}
           />
-          <input className="m-in" type="url" placeholder="https://... (paste URL instead of upload)" />
-          <button className="m-save" onClick={saveCMS}>Save &amp; Publish →</button>
+          <input
+            className="m-in"
+            type="url"
+            placeholder="https://... (paste URL instead of upload)"
+            value={upUrl}
+            onChange={(e) => setUpUrl(e.target.value)}
+          />
+          {upStatus === "error" && (
+            <p role="alert" style={{ color: "#b3261e", fontSize: 13, marginTop: 10 }}>
+              {upError}
+            </p>
+          )}
+          {upStatus === "ok" && (
+            <p role="status" style={{ fontSize: 13, marginTop: 10 }}>
+              ✅ Submitted! An editor will review and publish it.
+            </p>
+          )}
+          <button className="m-save" onClick={saveCMS} disabled={upStatus === "sending"}>
+            {upStatus === "sending"
+              ? "…"
+              : upStatus === "ok"
+                ? "Submitted ✓"
+                : "Submit for Review →"}
+          </button>
         </div>
       </div>
     </>

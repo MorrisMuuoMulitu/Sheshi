@@ -53,6 +53,17 @@ export type WorkCard = {
   lang: string;
 };
 
+/** A published community story (Work page section). */
+export type StoryCard = {
+  kind: string;
+  icon: string;
+  title: string;
+  desc: string;
+  author: string;
+  date: string;
+  href?: string;
+};
+
 /** Badge label per resource category (legacy `rt` values). */
 export const RESOURCE_BADGE: Record<Resource["cat"], string> = {
   tp: "📄 Template",

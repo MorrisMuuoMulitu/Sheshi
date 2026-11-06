@@ -30,3 +30,10 @@ export const workItemsQuery = defineQuery(
     key, kind, title, badge, episodeNumber, meta, date, language, icon, order
   }`,
 );
+
+/** Published community stories — shown on the Work page (Phase 4 gate). */
+export const storiesQuery = defineQuery(
+  `*[_type == "story" && status == "published"] | order(submittedAt desc){
+    kind, title, titleSw, description, authorName, sourceUrl, submittedAt
+  }`,
+);

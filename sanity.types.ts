@@ -66,6 +66,13 @@ export type SanityImageAssetReference = {
   [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
 };
 
+export type SanityFileAssetReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
+};
+
 export type Story = {
   _id: string;
   _type: "story";
@@ -74,17 +81,27 @@ export type Story = {
   _rev: string;
   kind?: "photos" | "template" | "blueprint" | "story" | "podcast" | "video";
   title?: string;
+  titleSw?: string;
   description?: string;
   authorName?: string;
   email?: string;
-  attachments?: Array<{
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-    _key: string;
-  }>;
+  sourceUrl?: string;
+  attachments?: Array<
+    | {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+      }
+    | {
+        asset?: SanityFileAssetReference;
+        media?: unknown;
+        _type: "file";
+        _key: string;
+      }
+  >;
   status?: "new" | "approved" | "published" | "rejected";
   submittedAt?: string;
 };
@@ -144,13 +161,6 @@ export type InternationalizedArrayString = Array<
     _key: string;
   } & InternationalizedArrayStringValue
 >;
-
-export type SanityFileAssetReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
-};
 
 export type ResourceReference = {
   _ref: string;
@@ -343,13 +353,13 @@ export type AllSanitySchemaTypes =
   | InternationalizedArrayText
   | Message
   | SanityImageAssetReference
+  | SanityFileAssetReference
   | Story
   | SanityImageCrop
   | SanityImageHotspot
   | Event
   | WorkItem
   | InternationalizedArrayString
-  | SanityFileAssetReference
   | ResourceReference
   | Campaign
   | Resource
@@ -428,6 +438,20 @@ export type WorkItemsQueryResult = Array<{
   order: number | null;
 }>;
 
+// Source: lib/queries.ts
+// Variable: storiesQuery
+// Query: *[_type == "story" && status == "published"] | order(submittedAt desc){    kind, title, titleSw, description, authorName, sourceUrl, submittedAt  }
+export type StoriesQueryResult = Array<{
+  kind:
+    "blueprint" | "photos" | "podcast" | "story" | "template" | "video" | null;
+  title: string | null;
+  titleSw: string | null;
+  description: string | null;
+  authorName: string | null;
+  sourceUrl: string | null;
+  submittedAt: string | null;
+}>;
+
 // Query TypeMap
 declare global {
   interface SanityQueries {
@@ -435,6 +459,7 @@ declare global {
     '*[_type == "resource"] | order(order asc){\n    key, title, description, category, languages, order\n  }': ResourcesQueryResult;
     '*[_type == "campaign"] | order(order asc){\n    key, icon, title, description, buttonLabel, tags, order\n  }': CampaignsQueryResult;
     '*[_type == "workItem"] | order(order asc){\n    key, kind, title, badge, episodeNumber, meta, date, language, icon, order\n  }': WorkItemsQueryResult;
+    '*[_type == "story" && status == "published"] | order(submittedAt desc){\n    kind, title, titleSw, description, authorName, sourceUrl, submittedAt\n  }': StoriesQueryResult;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

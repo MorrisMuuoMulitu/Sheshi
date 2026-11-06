@@ -13,6 +13,7 @@ import { sanityClient } from "./sanity";
 import {
   campaignsQuery,
   resourcesQuery,
+  storiesQuery,
   topicsQuery,
   workItemsQuery,
 } from "./queries";
@@ -24,9 +25,20 @@ import {
   type ActCampaign,
   type LearnTopic,
   type LibraryResource,
+  type StoryCard,
   type WorkCard,
   type WorkEpisode,
 } from "./views";
+
+/** story.kind → card icon (same set the share modal uses). */
+const STORY_ICON: Record<string, string> = {
+  photos: "📸",
+  template: "📄",
+  blueprint: "📐",
+  story: "✍️",
+  podcast: "🎙️",
+  video: "🎬",
+};
 
 /** CMS bilingual field value: [{_key, language, value}, …]. */
 type BiItem = { language?: string; value?: string };
@@ -232,4 +244,30 @@ function staticWork(locale: Locale): WorkContent {
       lang: w.lang,
     })),
   };
+}
+
+// ── Community stories (published submissions, Work page) ────────────────────
+
+export async function getPublishedStories(locale: Locale): Promise<StoryCard[]> {
+  "use cache";
+  cacheTag("cms");
+  cacheLife("minutes");
+  try {
+    const docs = await sanityClient.fetch(storiesQuery);
+    if (!docs) throw new Error("stories query failed");
+    // Zero stories is a normal state (nothing submitted/approved yet).
+    console.log(`[cms] stories: ${docs.length} published docs (${locale})`);
+    return docs.map((d): StoryCard => ({
+      kind: d.kind ?? "story",
+      icon: STORY_ICON[d.kind ?? "story"] ?? "✍️",
+      title: locale === "sw" && d.titleSw ? d.titleSw : (d.title ?? ""),
+      desc: d.description ?? "",
+      author: d.authorName ?? "",
+      date: d.submittedAt ? new Date(d.submittedAt).toLocaleDateString("en-GB") : "",
+      href: d.sourceUrl ?? undefined,
+    }));
+  } catch (err) {
+    console.warn("[cms] stories: Sanity unreachable — using empty list:", err);
+    return [];
+  }
 }

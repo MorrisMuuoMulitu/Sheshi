@@ -1,7 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { T, type Locale } from "@/lib/i18n";
 import type { ActCampaign } from "@/lib/views";
+
+type Status = "idle" | "sending" | "ok" | "error";
 
 /** Act (Community Action) page — campaign cards + event submission box. */
 export default function ActView({
@@ -13,6 +16,44 @@ export default function ActView({
 }) {
   const t = T[locale];
   const tx = (k: string, fb: string) => t[k] ?? fb;
+
+  // Event submission form → POST /api/event
+  const [evName, setEvName] = useState("");
+  const [evLoc, setEvLoc] = useState("");
+  const [evDate, setEvDate] = useState("");
+  const [evOrg, setEvOrg] = useState("");
+  const [evStatus, setEvStatus] = useState<Status>("idle");
+  const [evError, setEvError] = useState("");
+
+  const submitEvent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (evStatus === "sending") return;
+    setEvStatus("sending");
+    setEvError("");
+    try {
+      const res = await fetch("/api/event", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          name: evName,
+          location: evLoc,
+          date: evDate,
+          organizer: evOrg,
+          website: "", // honeypot
+        }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+      if (!res.ok || !data.ok) throw new Error(data.error || "Submission failed");
+      setEvStatus("ok");
+      setEvName("");
+      setEvLoc("");
+      setEvDate("");
+      setEvOrg("");
+    } catch (err) {
+      setEvStatus("error");
+      setEvError(err instanceof Error ? err.message : "Submission failed");
+    }
+  };
 
   return (
     <div className="page active" id="page-act">
@@ -49,7 +90,7 @@ export default function ActView({
             </div>
           ))}
         </div>
-        <div className="event-box">
+        <form className="event-box" onSubmit={submitEvent}>
           <div className="eb-l">
             <h3 id="t-evh">{tx("t-evh", "Submit Your Event")}</h3>
             <p id="t-evp">
@@ -58,18 +99,72 @@ export default function ActView({
           </div>
           <div>
             <div className="fi-row">
-              <input className="fi" type="text" id="ev-nm" placeholder="Event name" />
-              <input className="fi" type="text" id="ev-loc" placeholder="Location / County" />
+              <input
+                className="fi"
+                type="text"
+                id="ev-nm"
+                placeholder="Event name"
+                value={evName}
+                onChange={(e) => setEvName(e.target.value)}
+                required
+              />
+              <input
+                className="fi"
+                type="text"
+                id="ev-loc"
+                placeholder="Location / County"
+                value={evLoc}
+                onChange={(e) => setEvLoc(e.target.value)}
+                required
+              />
             </div>
             <div className="fi-row">
-              <input className="fi" type="date" id="ev-dt" />
-              <input className="fi" type="text" id="ev-org" placeholder="Your name / org" />
+              <input
+                className="fi"
+                type="date"
+                id="ev-dt"
+                value={evDate}
+                onChange={(e) => setEvDate(e.target.value)}
+                required
+              />
+              <input
+                className="fi"
+                type="text"
+                id="ev-org"
+                placeholder="Your name / org"
+                value={evOrg}
+                onChange={(e) => setEvOrg(e.target.value)}
+                required
+              />
             </div>
-            <button className="fi-sub" id="t-evsub">
-              {tx("t-evsub", "Submit Event →")}
+            {/* honeypot */}
+            <input
+              type="text"
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              style={{ position: "absolute", left: -9999, opacity: 0, height: 0, width: 0 }}
+            />
+            <button className="fi-sub" id="t-evsub" type="submit" disabled={evStatus === "sending"}>
+              {evStatus === "sending"
+                ? "…"
+                : evStatus === "ok"
+                  ? "✅ " + tx("t-evsub-ok", "Event Submitted")
+                  : tx("t-evsub", "Submit Event →")}
             </button>
+            {evStatus === "error" && (
+              <p role="alert" style={{ color: "#b3261e", fontSize: 13, marginTop: 10 }}>
+                {evError}
+              </p>
+            )}
+            {evStatus === "ok" && (
+              <p role="status" style={{ fontSize: 13, marginTop: 10 }}>
+                {tx("t-evsub-done", "Thanks! An editor will review and list your event.")}
+              </p>
+            )}
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );
