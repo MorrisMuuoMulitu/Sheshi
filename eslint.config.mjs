@@ -12,6 +12,13 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Sanity Studio build/runtime output:
+    "dist/**",
+    ".sanity/**",
+    "sanity.types.ts",
+    "sanity.schema.json",
+    // Derived knowledge graph:
+    "graphify-out/**",
   ]),
 ]);
 

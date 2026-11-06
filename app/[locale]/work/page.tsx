@@ -3,25 +3,13 @@
 import { use, useState } from "react";
 import { T, type Locale } from "@/lib/i18n";
 import { openUploadModal } from "@/lib/ui";
+import { episodes, works } from "@/lib/content";
 
 const tabs = [
   { cat: "all", id: "wt-all", label: "All" },
   { cat: "pod", id: "wt-pod", label: "Podcasts" },
   { cat: "doc", id: "wt-doc", label: "Documentaries" },
   { cat: "blg", id: "wt-blg", label: "Blog" },
-];
-
-const episodes = [
-  { n: 14, i: 1, title: "Mazungumzo: Mto Nairobi Leo", dur: "38 min · Kiswahili" },
-  { n: 13, i: 2, title: "Forests, Floods & Community Power", dur: "44 min · English" },
-  { n: 12, i: 3, title: "Youth Voices: The Next Green Generation", dur: "31 min · EN/SW" },
-];
-
-const works = [
-  { wc: "doc", i: 1, icon: "🎬", badge: "Documentary · 22min", title: "The Kerio Valley Restoration Project", date: "Feb 2025", lang: "EN/SW" },
-  { wc: "doc", i: 2, icon: "🎬", badge: "Documentary · 35min", title: "Salt of the Earth: Coastal Women Leaders", date: "Nov 2024", lang: "EN/SW" },
-  { wc: "blg", i: 3, icon: "✍️", badge: "Blog Post", title: "Why Youth Leadership Is the Climate Solution Kenya Needs", date: "Jan 2025", lang: "EN" },
-  { wc: "blg", i: 4, icon: "✍️", badge: "Blog Post", title: "Hali ya Hewa Nairobi: Ripoti ya Jamii", date: "Dec 2024", lang: "SW" },
 ];
 
 export default function WorkPage({ params }: { params: Promise<{ locale: string }> }) {

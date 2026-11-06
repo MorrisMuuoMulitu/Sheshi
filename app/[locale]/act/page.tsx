@@ -2,13 +2,7 @@
 
 import { use } from "react";
 import { T, type Locale } from "@/lib/i18n";
-
-const campaigns = [
-  { icon: "🏞️", i: 1, title: "River Cleanup Campaign", desc: "Full mobilization guide: pre-event, event day, and follow-up. Proven for 200+ volunteers.", tags: ["Planning", "Volunteers", "Logistics"] },
-  { icon: "🌳", i: 2, title: "Tree Planting Drive", desc: "Coordinate large-scale planting with schools, county governments, and businesses.", tags: ["Partnerships", "Schools", "Govt"] },
-  { icon: "♻️", i: 3, title: "Zero Waste Community", desc: "Waste audit templates, segregation campaigns, and how to engage local authorities.", tags: ["Waste Audit", "Education"] },
-  { icon: "🤝", i: 4, title: "Start a Local Chapter", desc: "How to register and run an environmental community group in your constituency.", tags: ["Registration", "Governance"] },
-];
+import { campaigns } from "@/lib/content";
 
 export default function ActPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = use(params) as { locale: Locale };

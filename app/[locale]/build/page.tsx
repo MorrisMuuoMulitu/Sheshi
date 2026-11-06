@@ -3,15 +3,7 @@
 import { use, useState } from "react";
 import { T, type Locale } from "@/lib/i18n";
 import { openUploadModal } from "@/lib/ui";
-
-const resources = [
-  { cat: "tp", rt: "📄 Template", id: "r1", title: "Event Planning Checklist", desc: "Step-by-step organizer with roles, timelines, and logistics for community events.", langs: ["en", "sw"] },
-  { cat: "kt", rt: "🧰 Toolkit", id: "r2", title: "River Cleanup Field Kit", desc: "Complete blueprint: equipment lists, safety protocol, volunteer briefings.", langs: ["en", "sw"] },
-  { cat: "zn", rt: "📰 Zine", id: "r3", title: "Maji ni Uhai", desc: "Print-ready A5 community zine on water conservation — in Kiswahili.", langs: ["sw"] },
-  { cat: "kt", rt: "🧰 Toolkit", id: "r4", title: "Advocacy & Media Guide", desc: "How to engage local media, write press releases, and run effective social campaigns.", langs: ["en", "sw"] },
-  { cat: "tp", rt: "📄 Template", id: "r5", title: "Community Action Plan", desc: "6-month environmental action plan with goals, milestones, and KPI tracking.", langs: ["en", "sw"] },
-  { cat: "zn", rt: "📰 Zine", id: "r6", title: "Youth Climate Voices", desc: "Stories from young Kenyan environmental leaders. Bilingual A5 print-ready zine.", langs: ["en", "sw"] },
-];
+import { resources } from "@/lib/content";
 
 const filters = [
   { cat: "all", id: "fb-all", label: "All" },
