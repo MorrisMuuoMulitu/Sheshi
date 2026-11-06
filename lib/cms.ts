@@ -88,6 +88,7 @@ export async function getLearnTopics(locale: Locale): Promise<LearnTopic[]> {
         })),
         res: pickBi(d.resourceTitle, locale),
         resD: pickBi(d.resourceDescription, locale),
+        videoUrl: d.videoFile?.asset?.url ?? d.videoUrl ?? undefined,
         kitFileUrl: d.relatedResource?.file?.asset?.url ?? undefined,
         kitResKey: d.relatedResource?.key ?? undefined,
       };
@@ -295,6 +296,7 @@ const STATIC_SETTINGS: SiteSettings = {
   copyright: "© 2025 Enviro-Hension. All rights reserved.",
   footerNote: "Built for Kenya's environmental leaders",
   heroVideoUrl: "",
+  learnIntroVideoUrl: "",
   subscribeBlurb: "Monthly digest of tools, events, and stories. No spam.",
 };
 
@@ -320,6 +322,7 @@ export async function getSettings(locale: Locale): Promise<SiteSettings> {
       copyright: doc.copyright ?? STATIC_SETTINGS.copyright,
       footerNote: doc.footerNote ?? STATIC_SETTINGS.footerNote,
       heroVideoUrl: doc.heroVideoUrl ?? "",
+      learnIntroVideoUrl: doc.learnIntroVideoUrl ?? "",
       subscribeBlurb: pickBi(doc.subscribeBlurb, locale) || STATIC_SETTINGS.subscribeBlurb,
     };
   } catch (err) {

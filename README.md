@@ -81,13 +81,13 @@ your local `npx sanity login` session — production never does.
 
 | Document | Surface |
 |---|---|
-| `topic` | Learn modules (grid + step-by-step detail, kit download) |
+| `topic` | Learn modules (grid + step-by-step detail, topic video, kit download) |
 | `resource` | Build library (filters, download button) |
 | `campaign` | Act page (guide download / related topic) |
 | `workItem` | Our Work (podcast episodes, documentaries, blog cards) |
 | `story` | Community submissions → published stories on Our Work |
 | `event`, `message` | Submissions inbox (Act page + contact/newsletter forms) |
-| `settings` | Footer contact/socials, tagline, hero video, newsletter blurb |
+| `settings` | Footer contact/socials, tagline, hero video, Learn intro video, newsletter blurb |
 
 Bilingual fields use the `internationalized-array` plugin: English is always
 present; Kiswahili is optional and readers fall back to English.

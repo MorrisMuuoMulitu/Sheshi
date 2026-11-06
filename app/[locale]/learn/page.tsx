@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { type Locale } from "@/lib/i18n";
 import { pageMeta } from "@/lib/seo";
-import { getLearnTopics } from "@/lib/cms";
+import { getLearnTopics, getSettings } from "@/lib/cms";
 import LearnView from "@/components/pages/LearnView";
 
 /** Topic content is CMS-driven; cached per 'cms' tag + 1-minute cacheLife. */
@@ -25,6 +25,7 @@ export default async function LearnPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const topics = await getLearnTopics(locale as Locale);
-  return <LearnView locale={locale as Locale} topics={topics} />;
+  const l = locale as Locale;
+  const [topics, settings] = await Promise.all([getLearnTopics(l), getSettings(l)]);
+  return <LearnView locale={l} topics={topics} introVideoUrl={settings.learnIntroVideoUrl} />;
 }

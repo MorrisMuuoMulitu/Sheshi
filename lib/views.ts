@@ -28,6 +28,8 @@ export type LearnTopic = {
   steps: LearnStep[];
   res: string;
   resD: string;
+  /** Topic video URL (uploaded file or external link) — null when not set. */
+  videoUrl?: string;
   /** Direct download URL of the related resource's file, when set. */
   kitFileUrl?: string;
   /** Related resource key — used for the fallback link to the library. */
@@ -106,6 +108,8 @@ export type SiteSettings = {
   copyright: string;
   footerNote: string;
   heroVideoUrl: string;
+  /** Learn page “Introduction to Environmental Action” video (optional). */
+  learnIntroVideoUrl: string;
   subscribeBlurb: string;
 };
 

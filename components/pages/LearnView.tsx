@@ -14,15 +14,19 @@ import { downloadHref, type LearnTopic } from "@/lib/views";
 export default function LearnView({
   locale,
   topics,
+  introVideoUrl,
 }: {
   locale: Locale;
   topics: LearnTopic[];
+  introVideoUrl?: string;
 }) {
   const t = T[locale];
   const tx = (k: string, fb: string) => t[k] ?? fb;
 
   const [active, setActive] = useState<string | null>(null);
-  const [introHidden, setIntroHidden] = useState(false);
+  // Which topic's video has been started (keeps the overlay hidden afterwards).
+  const [startedFor, setStartedFor] = useState<string | null>(null);
+  const [introStarted, setIntroStarted] = useState(false);
 
   // Deep link: /learn?topic=river opens that topic on mount.
   // (One-shot post-hydration navigation; `window` doesn't exist during prerender,
@@ -42,7 +46,14 @@ export default function LearnView({
   };
   const closeTopic = () => {
     setActive(null);
+    setStartedFor(null);
     window.scrollTo(0, 0);
+  };
+
+  /** Play a topic/intro video element by id, when it exists. */
+  const playVideo = (id: string) => {
+    const video = document.getElementById(id) as HTMLVideoElement | null;
+    if (video) void video.play();
   };
 
   const topic = active ? topics.find((tc) => tc.key === active) ?? null : null;
@@ -65,16 +76,42 @@ export default function LearnView({
           <div className="td-grid">
             <div>
               <div className="td-video-box">
-                <button
-                  type="button"
-                  className="tdv-overlay"
-                  aria-label={tx("t-td-play", "Play topic video")}
-                  onClick={(e) => (e.currentTarget.style.display = "none")}
-                >
-                  <div className="tdv-play">
-                    <div className="tri"></div>
+                {topic.videoUrl ? (
+                  <>
+                    <video
+                      id="td-video-el"
+                      src={topic.videoUrl}
+                      controls
+                      playsInline
+                      preload="metadata"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                    {startedFor !== topic.key && (
+                      <button
+                        type="button"
+                        className="tdv-overlay"
+                        aria-label={tx("t-td-play", "Play topic video")}
+                        onClick={() => {
+                          playVideo("td-video-el");
+                          setStartedFor(topic.key);
+                        }}
+                      >
+                        <div className="tdv-play">
+                          <div className="tri"></div>
+                        </div>
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <div className="tdv-overlay off" aria-disabled="true">
+                    <div className="tdv-play">
+                      <div className="tri"></div>
+                    </div>
+                    <div className="tdv-lbl">
+                      {tx("t-td-soon", "Video coming soon")}
+                    </div>
                   </div>
-                </button>
+                )}
               </div>
               <div className="res-hint">
                 <div className="rh-ey">Resources for this topic</div>
@@ -135,20 +172,45 @@ export default function LearnView({
             )}
           </p>
           <div className="tvo-box">
-            {!introHidden && (
-              <button
-                type="button"
-                className="tvo-overlay"
-                aria-label={tx("t-tvo", "Play introduction video")}
-                onClick={() => setIntroHidden(true)}
-              >
+            {introVideoUrl ? (
+              <>
+                <video
+                  id="tvo-vid"
+                  src={introVideoUrl}
+                  controls
+                  playsInline
+                  preload="metadata"
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+                {!introStarted && (
+                  <button
+                    type="button"
+                    className="tvo-overlay"
+                    aria-label={tx("t-tvo", "Play introduction video")}
+                    onClick={() => {
+                      playVideo("tvo-vid");
+                      setIntroStarted(true);
+                    }}
+                  >
+                    <div className="tvo-play">
+                      <div className="tri"></div>
+                    </div>
+                    <div className="tvo-lbl" id="t-tvo">
+                      {tx("t-tvo", "Introduction to Environmental Action")}
+                    </div>
+                  </button>
+                )}
+              </>
+            ) : (
+              <div className="tvo-overlay off" aria-disabled="true">
                 <div className="tvo-play">
                   <div className="tri"></div>
                 </div>
                 <div className="tvo-lbl" id="t-tvo">
                   {tx("t-tvo", "Introduction to Environmental Action")}
                 </div>
-              </button>
+                <div className="tvo-soon">{tx("t-tvo-soon", "Video coming soon")}</div>
+              </div>
             )}
           </div>
         </div>

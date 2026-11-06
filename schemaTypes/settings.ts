@@ -63,6 +63,13 @@ export const settings = defineType({
       type: "url",
       description: "Home hero background video — replace the Google stock sample in Phase 5.",
     }),
+    defineField({
+      name: "learnIntroVideoUrl",
+      title: "Learn page intro video URL",
+      type: "url",
+      description:
+        "The “Introduction to Environmental Action” video shown at the top of the Learn page. Hidden (disabled placeholder) when empty.",
+    }),
     bi("subscribeBlurb", "Newsletter blurb", "text", {
       description: "Text above the newsletter input on the Contact page.",
     }),

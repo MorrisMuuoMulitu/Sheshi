@@ -10,6 +10,7 @@ export const topicsQuery = defineQuery(
     key, title, intro, cardDescription, stepPill, level, icon, thumbClass,
     steps[]{ heading, body },
     resourceTitle, resourceDescription, order,
+    videoFile{ asset->{ url } }, videoUrl,
     relatedResource->{ key, file{ asset->{ url } } }
   }`,
 );
@@ -49,7 +50,7 @@ export const settingsQuery = defineQuery(
   `*[_type == "settings"][0]{
     siteName, tagline, contactEmail, phone, city,
     socials[]{ platform, icon, url },
-    copyright, footerNote, heroVideoUrl,
+    copyright, footerNote, heroVideoUrl, learnIntroVideoUrl,
     subscribeBlurb[]{ language, value }
   }`,
 );

@@ -216,6 +216,8 @@ function buildDocs(): Doc[] {
     footerNote: "Built for Kenya's environmental leaders",
     // Phase 5.3: stock Google sample removed — player hidden until real media.
     heroVideoUrl: "",
+    // Phase 5b: Learn page intro video — hidden (disabled placeholder) until set.
+    learnIntroVideoUrl: "",
     subscribeBlurb: bi("Monthly digest of tools, events, and stories. No spam.", ""),
   });
 

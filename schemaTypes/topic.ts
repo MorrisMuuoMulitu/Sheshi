@@ -57,6 +57,21 @@ export const topic = defineType({
       description: "Legacy topic.resD.",
     }),
     defineField({
+      name: "videoFile",
+      title: "Topic video (upload)",
+      type: "file",
+      options: { accept: "video/*" },
+      description:
+        "Upload the topic's video (MP4/WebM). Takes priority over the external URL. The Learn page plays it in the topic detail.",
+    }),
+    defineField({
+      name: "videoUrl",
+      title: "Topic video (external URL)",
+      type: "url",
+      description:
+        "Alternative to uploading — link a hosted video file (MP4/WebM). Used when no file is uploaded.",
+    }),
+    defineField({
       name: "relatedResource",
       title: "Related resource",
       type: "reference",

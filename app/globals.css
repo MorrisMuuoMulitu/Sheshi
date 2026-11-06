@@ -435,6 +435,10 @@ nav{
 }
 .td-video-box{border-radius:14px;overflow:hidden;border:2px solid rgba(0,0,0,.09);aspect-ratio:16/9;background:#000;position:relative;}
 .tdv-overlay{position:absolute;inset:0;background:rgba(0,0,0,.38);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+/* Phase 5b: no video yet → visibly disabled placeholder (not a fake play button) */
+.tdv-overlay.off,.tvo-overlay.off{background:rgba(0,0,0,.62);cursor:not-allowed;flex-direction:column;gap:10px;}
+.tdv-overlay.off .tdv-play,.tvo-overlay.off .tvo-play{opacity:.35;}
+.tdv-lbl,.tvo-soon{font-size:12px;font-weight:700;letter-spacing:.05em;color:rgba(219,235,187,.78);}
 .tdv-play{width:56px;height:56px;border-radius:50%;background:var(--sage);display:flex;align-items:center;justify-content:center;}
 .tdv-play .tri{width:0;height:0;border-top:11px solid transparent;border-bottom:11px solid transparent;border-left:20px solid var(--black);margin-left:4px;}
 .res-hint{margin-top:18px;background:var(--sage-lt);border-radius:12px;padding:18px;border:1px solid rgba(0,0,0,.07);}
