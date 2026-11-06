@@ -23,7 +23,7 @@ export default function Footer({
     <footer className="site-footer">
       <div className="footer-grid">
         <div className="fg-brand">
-          <img src="/logo.png" alt="Enviro-Hension" />
+          <img src="/logo.png" alt="" />
           <h3>{settings.siteName.toUpperCase()}</h3>
           <p>{settings.tagline}</p>
           <div className="footer-socials">
@@ -66,9 +66,9 @@ export default function Footer({
           <Link href={`${base}/build`}>Templates</Link>
           <Link href={`${base}/build`}>Toolkits</Link>
           <Link href={`${base}/build`}>Zines</Link>
-          <a onClick={() => openShareModal()} style={{ cursor: "pointer" }}>
+          <button type="button" onClick={() => openShareModal()}>
             Share a Story
-          </a>
+          </button>
         </div>
         <div className="footer-col">
           <h4>Contact</h4>

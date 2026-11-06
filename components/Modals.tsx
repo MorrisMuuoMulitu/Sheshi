@@ -149,8 +149,8 @@ export default function Modals({ locale }: { locale: Locale }) {
         style={{ display: shareOpen ? "flex" : "none" }}
         onClick={overlayClick(() => setShareOpen(false))}
       >
-        <div className="modal-box">
-          <button className="modal-close" onClick={() => closeModal("share-modal")}>✕</button>
+        <div className="modal-box" role="dialog" aria-modal="true" aria-labelledby="sm-title">
+          <button type="button" className="modal-close" onClick={() => closeModal("share-modal")} aria-label="Close">✕</button>
           <h3 id="sm-title">{t["sm-title"] ?? "Share Your Story"}</h3>
           <p style={{ fontSize: 14, color: "rgba(0,0,0,.55)", marginBottom: 20 }} id="sm-sub">
             {t["sm-sub"] ?? "What would you like to share with the Enviro-Hension community?"}
@@ -164,48 +164,55 @@ export default function Modals({ locale }: { locale: Locale }) {
               ["🎙️", "st5"],
               ["🎬", "st6"],
             ] as const).map(([icon, key], i) => (
-              <div
+              <button
+                type="button"
                 key={key}
                 className={`stype-btn${shareKind === SHARE_KINDS[i] ? " active" : ""}`}
+                aria-pressed={shareKind === SHARE_KINDS[i]}
                 onClick={() => setShareKind(SHARE_KINDS[i])}
               >
                 <span className="sticon">{icon}</span>
                 <span id={key}>{t[key] ?? key}</span>
-              </div>
+              </button>
             ))}
           </div>
-          <label className="m-lbl" id="sm-nl">{t["sm-nl"] ?? "Your Name"}</label>
+          <label className="m-lbl" id="sm-nl" htmlFor="sm-name">{t["sm-nl"] ?? "Your Name"}</label>
           <input
+            id="sm-name"
             className="m-in"
             type="text"
             placeholder="Full name"
             value={shName}
             onChange={(e) => setShName(e.target.value)}
           />
-          <label className="m-lbl" id="sm-el">{t["sm-el"] ?? "Email"}</label>
+          <label className="m-lbl" id="sm-el" htmlFor="sm-email">{t["sm-el"] ?? "Email"}</label>
           <input
+            id="sm-email"
             className="m-in"
             type="email"
             placeholder="your@email.com"
             value={shEmail}
             onChange={(e) => setShEmail(e.target.value)}
           />
-          <label className="m-lbl" id="sm-tl">{t["sm-tl"] ?? "Title / Caption"}</label>
+          <label className="m-lbl" id="sm-tl" htmlFor="sm-story-title">{t["sm-tl"] ?? "Title / Caption"}</label>
           <input
+            id="sm-story-title"
             className="m-in"
             type="text"
             placeholder="e.g. Our river cleanup in Machakos"
             value={shTitle}
             onChange={(e) => setShTitle(e.target.value)}
           />
-          <label className="m-lbl" id="sm-dl">{t["sm-dl"] ?? "Description"}</label>
+          <label className="m-lbl" id="sm-dl" htmlFor="sm-desc">{t["sm-dl"] ?? "Description"}</label>
           <textarea
+            id="sm-desc"
             className="m-ta"
             placeholder="Tell your story..."
             value={shDesc}
             onChange={(e) => setShDesc(e.target.value)}
           />
-          <div
+          <button
+            type="button"
             className="m-upload-area"
             onClick={() => shareFilesRef.current?.click()}
           >
@@ -217,7 +224,7 @@ export default function Modals({ locale }: { locale: Locale }) {
                 ? `${shareFiles.length} file(s) selected`
                 : "Max 50MB per file"}
             </p>
-          </div>
+          </button>
           <input
             type="file"
             id="share-file-inp"
@@ -237,7 +244,7 @@ export default function Modals({ locale }: { locale: Locale }) {
               ✅ Story submitted! Our team will review and publish it on the site.
             </p>
           )}
-          <button className="m-save" onClick={saveShare} disabled={shStatus === "sending"}>
+          <button type="button" className="m-save" onClick={saveShare} disabled={shStatus === "sending"}>
             {shStatus === "sending"
               ? "…"
               : shStatus === "ok"
@@ -254,8 +261,8 @@ export default function Modals({ locale }: { locale: Locale }) {
         style={{ display: uploadOpen ? "flex" : "none" }}
         onClick={overlayClick(() => setUploadOpen(false))}
       >
-        <div className="modal-box">
-          <button className="modal-close" onClick={() => closeModal("upload-modal")}>✕</button>
+        <div className="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+          <button type="button" className="modal-close" onClick={() => closeModal("upload-modal")} aria-label="Close">✕</button>
           <h3 id="modal-title">Upload Content</h3>
           <label className="m-lbl" id="ml-type">{t["ml-type"] ?? "Content Type"}</label>
           <select
@@ -271,40 +278,45 @@ export default function Modals({ locale }: { locale: Locale }) {
             <option value="documentary">Documentary</option>
             <option value="blog">Blog Post</option>
           </select>
-          <label className="m-lbl" id="ml-title">{t["ml-title"] ?? "Title (English)"}</label>
+          <label className="m-lbl" id="ml-title" htmlFor="ml-title-inp">{t["ml-title"] ?? "Title (English)"}</label>
           <input
+            id="ml-title-inp"
             className="m-in"
             type="text"
             placeholder="e.g. River Cleanup Blueprint v2"
             value={upTitle}
             onChange={(e) => setUpTitle(e.target.value)}
           />
-          <label className="m-lbl" id="ml-title-sw">{t["ml-title-sw"] ?? "Title (Kiswahili)"}</label>
+          <label className="m-lbl" id="ml-title-sw" htmlFor="ml-title-sw-inp">{t["ml-title-sw"] ?? "Title (Kiswahili)"}</label>
           <input
+            id="ml-title-sw-inp"
             className="m-in"
             type="text"
             placeholder="e.g. Ramani ya Kusafisha Mto v2"
             value={upTitleSw}
             onChange={(e) => setUpTitleSw(e.target.value)}
           />
-          <label className="m-lbl" id="ml-desc">{t["ml-desc"] ?? "Short Description"}</label>
+          <label className="m-lbl" id="ml-desc" htmlFor="ml-desc-inp">{t["ml-desc"] ?? "Short Description"}</label>
           <textarea
+            id="ml-desc-inp"
             className="m-ta"
             placeholder="Describe this resource in 1–2 sentences..."
             value={upDesc}
             onChange={(e) => setUpDesc(e.target.value)}
           />
-          <label className="m-lbl" id="ml-email">
+          <label className="m-lbl" id="ml-email" htmlFor="ml-email-inp">
             {t["ml-email"] ?? "Your Email (for follow-up)"}
           </label>
           <input
+            id="ml-email-inp"
             className="m-in"
             type="email"
             placeholder="your@email.com"
             value={upEmail}
             onChange={(e) => setUpEmail(e.target.value)}
           />
-          <div
+          <button
+            type="button"
             className="m-upload-area"
             onClick={() => upFilesRef.current?.click()}
           >
@@ -314,7 +326,7 @@ export default function Modals({ locale }: { locale: Locale }) {
             {upFile && (
               <p style={{ marginTop: 4, fontSize: 12 }}>Selected: {upFile.name}</p>
             )}
-          </div>
+          </button>
           <input
             type="file"
             id="file-inp"
@@ -326,6 +338,7 @@ export default function Modals({ locale }: { locale: Locale }) {
           <input
             className="m-in"
             type="url"
+            aria-label="Or paste a URL instead of uploading"
             placeholder="https://... (paste URL instead of upload)"
             value={upUrl}
             onChange={(e) => setUpUrl(e.target.value)}
@@ -340,7 +353,7 @@ export default function Modals({ locale }: { locale: Locale }) {
               ✅ Submitted! An editor will review and publish it.
             </p>
           )}
-          <button className="m-save" onClick={saveCMS} disabled={upStatus === "sending"}>
+          <button type="button" className="m-save" onClick={saveCMS} disabled={upStatus === "sending"}>
             {upStatus === "sending"
               ? "…"
               : upStatus === "ok"

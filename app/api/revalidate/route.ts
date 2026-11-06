@@ -1,4 +1,4 @@
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 /**
  * On-demand revalidation webhook (PLAN.md Phase 3.2).
@@ -30,9 +30,14 @@ export async function POST(req: Request) {
     return Response.json({ error: "Invalid secret" }, { status: 401 });
   }
 
-  // Two-arg form is required in Next 16; 'max' = recommended profile for
-  // on-demand invalidation (stale entries expire only per their own cacheLife).
-  revalidateTag("cms", "max");
+  // Two-arg form is required in Next 16. `expire: 0` makes the tag expire
+  // immediately (a webhook wants "publish → live now"; the "max" profile would
+  // serve stale content until the 1-minute cacheLife window elapses).
+  revalidateTag("cms", { expire: 0 });
+  // Also mark the prerendered route output stale: on Vercel the CDN holds the
+  // static HTML separately from the `use cache` entries, so tag invalidation
+  // alone leaves the edge copy in place. The root layout covers every page.
+  revalidatePath("/", "layout");
   return Response.json({ revalidated: true, time: new Date().toISOString() });
 }
 

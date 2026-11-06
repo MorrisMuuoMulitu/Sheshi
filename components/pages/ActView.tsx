@@ -125,6 +125,7 @@ export default function ActView({
                 className="fi"
                 type="text"
                 id="ev-nm"
+                aria-label="Event name"
                 placeholder="Event name"
                 value={evName}
                 onChange={(e) => setEvName(e.target.value)}
@@ -134,6 +135,7 @@ export default function ActView({
                 className="fi"
                 type="text"
                 id="ev-loc"
+                aria-label="Location or county"
                 placeholder="Location / County"
                 value={evLoc}
                 onChange={(e) => setEvLoc(e.target.value)}
@@ -145,6 +147,7 @@ export default function ActView({
                 className="fi"
                 type="date"
                 id="ev-dt"
+                aria-label="Event date"
                 value={evDate}
                 onChange={(e) => setEvDate(e.target.value)}
                 required
@@ -153,6 +156,7 @@ export default function ActView({
                 className="fi"
                 type="text"
                 id="ev-org"
+                aria-label="Your name or organisation"
                 placeholder="Your name / org"
                 value={evOrg}
                 onChange={(e) => setEvOrg(e.target.value)}

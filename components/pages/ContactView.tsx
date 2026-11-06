@@ -144,6 +144,7 @@ export default function ContactView({
                   type="email"
                   placeholder="your@email.com"
                   id="nl-inp"
+                  aria-label="Email address for the newsletter"
                   value={nlEmail}
                   onChange={(e) => setNlEmail(e.target.value)}
                   required

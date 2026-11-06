@@ -31,7 +31,7 @@ export default function Nav({ locale }: { locale: Locale }) {
     <>
       <nav id="main-nav">
         <Link className="nav-logo" href={base} onClick={() => setOpen(false)}>
-          <img id="nav-logo-img" src="/logo.png" alt="Enviro-Hension" />
+          <img id="nav-logo-img" src="/logo.png" alt="" />
           <span className="nav-brand">ENVIRO-HENSION</span>
         </Link>
         <ul className="nav-links">
@@ -89,7 +89,7 @@ export default function Nav({ locale }: { locale: Locale }) {
             id={`mn-${it.id}`}
             onClick={() => setOpen(false)}
           >
-            {it.fallback}
+            {t[it.key] ?? it.fallback}
           </Link>
         ))}
         <div className="m-lang">

@@ -72,13 +72,13 @@ export default function WorkView({
         <p className="sec-p" id="t-wp">
           {tx("t-wp", "Podcasts, documentaries, and blog posts from across Kenya's environmental movement.")}
         </p>
-        <div className="work-cms" onClick={() => openUploadModal("work")} style={{ cursor: "pointer" }}>
+        <button type="button" className="work-cms" onClick={() => openUploadModal("work")}>
           <div className="plus">＋</div>
           <h4 id="t-wcms-h">{tx("t-wcms-h", "Upload New Content")}</h4>
           <p id="t-wcms-p">
             {tx("t-wcms-p", "Add a podcast, documentary, or blog post — no developer needed.")}
           </p>
-        </div>
+        </button>
         <div className="work-tabs">
           {tabs.map((tb) => (
             <button

@@ -52,7 +52,7 @@ export default function HomeView({
           {/* LEFT: Logo + brand */}
           <div className="hero-left">
             <div className="hero-logo-block">
-              <img id="hero-logo-img" src="/logo.png" alt="Enviro-Hension" />
+              <img id="hero-logo-img" src="/logo.png" alt="" />
               <div>
                 <div className="hero-brand-name">ENVIRO-HENSION</div>
                 <div className="hero-tagline-txt" id="t-tagline">
@@ -149,7 +149,7 @@ export default function HomeView({
         </div>
 
         {/* SHARE CARD */}
-        <div className="share-card" onClick={() => openShareModal()} style={{ cursor: "pointer" }}>
+        <div className="share-card">
           <div className="share-card-left">
             <div className="sc-icon">🌿</div>
             <div className="sc-text">
@@ -162,7 +162,7 @@ export default function HomeView({
               </p>
             </div>
           </div>
-          <button className="sc-btn" id="t-scb">
+          <button type="button" className="sc-btn" id="t-scb" onClick={() => openShareModal()}>
             {tx("t-scb", "Share Now →")}
           </button>
         </div>

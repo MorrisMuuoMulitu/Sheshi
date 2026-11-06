@@ -65,11 +65,16 @@ export default function LearnView({
           <div className="td-grid">
             <div>
               <div className="td-video-box">
-                <div className="tdv-overlay" onClick={(e) => (e.currentTarget.style.display = "none")}>
+                <button
+                  type="button"
+                  className="tdv-overlay"
+                  aria-label={tx("t-td-play", "Play topic video")}
+                  onClick={(e) => (e.currentTarget.style.display = "none")}
+                >
                   <div className="tdv-play">
                     <div className="tri"></div>
                   </div>
-                </div>
+                </button>
               </div>
               <div className="res-hint">
                 <div className="rh-ey">Resources for this topic</div>
@@ -131,21 +136,31 @@ export default function LearnView({
           </p>
           <div className="tvo-box">
             {!introHidden && (
-              <div className="tvo-overlay" onClick={() => setIntroHidden(true)}>
+              <button
+                type="button"
+                className="tvo-overlay"
+                aria-label={tx("t-tvo", "Play introduction video")}
+                onClick={() => setIntroHidden(true)}
+              >
                 <div className="tvo-play">
                   <div className="tri"></div>
                 </div>
                 <div className="tvo-lbl" id="t-tvo">
                   {tx("t-tvo", "Introduction to Environmental Action")}
                 </div>
-              </div>
+              </button>
             )}
           </div>
         </div>
         <div className="sec-wrap" style={{ paddingTop: 44 }}>
           <div className="topic-grid">
             {topics.map((c) => (
-              <div className="topic-card" key={c.key} onClick={() => openTopic(c.key)}>
+              <button
+                type="button"
+                className="topic-card"
+                key={c.key}
+                onClick={() => openTopic(c.key)}
+              >
                 <div className={`tc-thumb ${c.thumb}`}>{c.icon}</div>
                 <div className="tc-body">
                   <div className="tc-title" id={`tc-t${c.i}`}>
@@ -161,7 +176,7 @@ export default function LearnView({
                     <div className="tc-arr">→</div>
                   </div>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </div>
