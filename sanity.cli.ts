@@ -5,6 +5,15 @@ export default defineCliConfig({
     projectId: 'i9s1a5ax',
     dataset: 'production'
   },
+  /**
+   * Sanity TypeGen: scan lib/ for `defineQuery` usage and generate
+   * types into ./sanity.types.ts (run with `npm run typegen`).
+   */
+  typegen: {
+    path: ['./lib/**/*.ts'],
+    schema: './schema.json',
+    generates: './sanity.types.ts',
+  },
   deployment: {
     /**
      * Enable auto-updates for studios.

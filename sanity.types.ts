@@ -365,3 +365,79 @@ export type AllSanitySchemaTypes =
   | SanityImageAsset
   | Geopoint
   | Slug;
+
+// Source: lib/queries.ts
+// Variable: topicsQuery
+// Query: *[_type == "topic"] | order(order asc){    key, title, intro, cardDescription, stepPill, level, icon, thumbClass,    steps[]{ heading, body },    resourceTitle, resourceDescription, order  }
+export type TopicsQueryResult = Array<{
+  key: string | null;
+  title: InternationalizedArrayString | null;
+  intro: InternationalizedArrayText | null;
+  cardDescription: InternationalizedArrayText | null;
+  stepPill: InternationalizedArrayString | null;
+  level: InternationalizedArrayString | null;
+  icon: string | null;
+  thumbClass: "th1" | "th2" | "th3" | "th4" | "th5" | "th6" | null;
+  steps: Array<{
+    heading: InternationalizedArrayString | null;
+    body: InternationalizedArrayText | null;
+  }> | null;
+  resourceTitle: InternationalizedArrayString | null;
+  resourceDescription: InternationalizedArrayText | null;
+  order: number | null;
+}>;
+
+// Source: lib/queries.ts
+// Variable: resourcesQuery
+// Query: *[_type == "resource"] | order(order asc){    key, title, description, category, languages, order  }
+export type ResourcesQueryResult = Array<{
+  key: string | null;
+  title: InternationalizedArrayString | null;
+  description: InternationalizedArrayText | null;
+  category: "kt" | "tp" | "zn" | null;
+  languages: Array<"en" | "sw"> | null;
+  order: number | null;
+}>;
+
+// Source: lib/queries.ts
+// Variable: campaignsQuery
+// Query: *[_type == "campaign"] | order(order asc){    key, icon, title, description, buttonLabel, tags, order  }
+export type CampaignsQueryResult = Array<{
+  key: string | null;
+  icon: string | null;
+  title: InternationalizedArrayString | null;
+  description: InternationalizedArrayText | null;
+  buttonLabel: InternationalizedArrayString | null;
+  tags: Array<string> | null;
+  order: number | null;
+}>;
+
+// Source: lib/queries.ts
+// Variable: workItemsQuery
+// Query: *[_type == "workItem"] | order(order asc){    key, kind, title, badge, episodeNumber, meta, date, language, icon, order  }
+export type WorkItemsQueryResult = Array<{
+  key: string | null;
+  kind: "blg" | "doc" | "pod" | null;
+  title: InternationalizedArrayString | null;
+  badge: string | null;
+  episodeNumber: number | null;
+  meta: string | null;
+  date: string | null;
+  language: "EN" | "EN/SW" | "SW" | null;
+  icon: string | null;
+  order: number | null;
+}>;
+
+// Query TypeMap
+declare global {
+  interface SanityQueries {
+    '*[_type == "topic"] | order(order asc){\n    key, title, intro, cardDescription, stepPill, level, icon, thumbClass,\n    steps[]{ heading, body },\n    resourceTitle, resourceDescription, order\n  }': TopicsQueryResult;
+    '*[_type == "resource"] | order(order asc){\n    key, title, description, category, languages, order\n  }': ResourcesQueryResult;
+    '*[_type == "campaign"] | order(order asc){\n    key, icon, title, description, buttonLabel, tags, order\n  }': CampaignsQueryResult;
+    '*[_type == "workItem"] | order(order asc){\n    key, kind, title, badge, episodeNumber, meta, date, language, icon, order\n  }': WorkItemsQueryResult;
+  }
+}
+// Lets @sanity/client releases that predate the global registry read it too
+declare module "@sanity/client" {
+  interface SanityQueries extends globalThis.SanityQueries {}
+}
