@@ -126,7 +126,10 @@ your local `npx sanity login` session — production never does.
 - Live preview: **Studio → “Live preview”** (Sanity Presentation). Requires
   `SANITY_PREVIEW_SECRET` + `SANITY_API_READ_TOKEN` on the site and
   `SANITY_STUDIO_PREVIEW_URL` + `SANITY_STUDIO_PREVIEW_SECRET` on the Studio —
-  see [docs/EDITING.md](docs/EDITING.md) §6.
+  see [docs/EDITING.md](docs/EDITING.md) §6. The `SANITY_STUDIO_` prefix is
+  required: Sanity only inlines those into the Studio bundle.
+  Click-an-element-to-jump-to-its-field is **not** wired up (it needs stega
+  encoding); the pane shows live draft content and refreshes on save.
 - Local Studio: `npm run studio`
 - Seed (idempotent, upserts deterministic ids + placeholder PDFs):
   ```bash

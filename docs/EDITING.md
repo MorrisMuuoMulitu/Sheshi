@@ -119,17 +119,30 @@ Live preview needs two settings that must match on both sides.
 | `SANITY_API_READ_TOKEN` | Lets the site read unpublished drafts. Create with `npx sanity tokens add "Preview" --role viewer`. |
 
 **On the Studio (Vercel → the Studio project → Environment Variables,
-or `.env` locally):**
+or `.env.local` locally):**
 
 | Variable | Value |
 |---|---|
 | `SANITY_STUDIO_PREVIEW_URL` | The site origin, e.g. `https://envirohension.vercel.app` (no trailing slash). |
 | `SANITY_STUDIO_PREVIEW_SECRET` | **The same value** as `SANITY_PREVIEW_SECRET` above. |
 
+> The `SANITY_STUDIO_` prefix is required, not cosmetic: Sanity only inlines
+> variables with that prefix into the Studio bundle. A bare
+> `SANITY_PREVIEW_SECRET` is invisible to `presentationTool`, and the preview
+> then fails with a 401.
+
 Then redeploy both. Open the Studio → “Live preview”.
 
-Locally, `SANITY_STUDIO_PREVIEW_URL=http://localhost:3002` and run
-`npm run dev` and `npm run studio` at the same time.
+Locally those two variables are already in `.env.local`, so run
+`npm run dev` and `npm run studio` at the same time and it works.
+
+### What the preview does and does not do
+
+- **Works:** the pane shows the real page and refreshes as you edit, including
+  unpublished changes (it reads drafts through `SANITY_API_READ_TOKEN`).
+- **Does not work yet:** clicking an element in the preview to jump to the
+  matching field. That needs the page’s text to be stega-encoded and an
+  overlay script mounted; it is a separate piece of work.
 
 ### Content health check
 

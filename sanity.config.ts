@@ -21,8 +21,14 @@ const PREVIEW_URL =
 /**
  * Shared secret for the draft-mode handshake. It must match
  * `SANITY_PREVIEW_SECRET` in the Next app's environment.
+ *
+ * Locally both vars live in the same `.env.local`, so the fallback keeps
+ * `npm run studio` + `npm run dev` working without extra setup. On Vercel the
+ * Studio and the site are separate deployments, so the Studio sets
+ * `SANITY_STUDIO_PREVIEW_SECRET` explicitly.
  */
-const PREVIEW_SECRET = process.env.SANITY_STUDIO_PREVIEW_SECRET ?? "";
+const PREVIEW_SECRET =
+  process.env.SANITY_STUDIO_PREVIEW_SECRET ?? process.env.SANITY_PREVIEW_SECRET ?? "";
 
 /**
  * Presentation puts the real page next to the document being edited, and lets
