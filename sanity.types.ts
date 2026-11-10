@@ -395,8 +395,9 @@ export type AllSanitySchemaTypes =
 
 // Source: lib/queries.ts
 // Variable: topicsQuery
-// Query: *[_type == "topic"] | order(order asc){    key, title, intro, cardDescription, stepPill, level, icon, thumbClass,    steps[]{ heading, body },    resourceTitle, resourceDescription, order,    videoFile{ asset->{ url } }, videoUrl,    relatedResource->{ key, file{ asset->{ url } } }  }
+// Query: *[_type == "topic"] | order(order asc){    _id, key, title, intro, cardDescription, stepPill, level, icon, thumbClass,    steps[]{ heading, body },    resourceTitle, resourceDescription, order,    videoFile{ asset->{ url } }, videoUrl,    relatedResource->{ key, file{ asset->{ url } } }  }
 export type TopicsQueryResult = Array<{
+  _id: string;
   key: string | null;
   title: InternationalizedArrayString | null;
   intro: InternationalizedArrayText | null;
@@ -430,8 +431,9 @@ export type TopicsQueryResult = Array<{
 
 // Source: lib/queries.ts
 // Variable: resourcesQuery
-// Query: *[_type == "resource"] | order(order asc){    key, title, description, category, languages, order,    file{ asset->{ url } }  }
+// Query: *[_type == "resource"] | order(order asc){    _id, key, title, description, category, languages, order,    file{ asset->{ url } }  }
 export type ResourcesQueryResult = Array<{
+  _id: string;
   key: string | null;
   title: InternationalizedArrayString | null;
   description: InternationalizedArrayText | null;
@@ -447,8 +449,9 @@ export type ResourcesQueryResult = Array<{
 
 // Source: lib/queries.ts
 // Variable: campaignsQuery
-// Query: *[_type == "campaign"] | order(order asc){    key, icon, title, description, buttonLabel, tags, order,    guide{ asset->{ url } },    relatedTopic->{ key },    relatedResource->{ key }  }
+// Query: *[_type == "campaign"] | order(order asc){    _id, key, icon, title, description, buttonLabel, tags, order,    guide{ asset->{ url } },    relatedTopic->{ key },    relatedResource->{ key }  }
 export type CampaignsQueryResult = Array<{
+  _id: string;
   key: string | null;
   icon: string | null;
   title: InternationalizedArrayString | null;
@@ -471,8 +474,9 @@ export type CampaignsQueryResult = Array<{
 
 // Source: lib/queries.ts
 // Variable: workItemsQuery
-// Query: *[_type == "workItem"] | order(order asc){    key, kind, title, badge, episodeNumber, meta, date, language, icon, order,    mediaUrl  }
+// Query: *[_type == "workItem"] | order(order asc){    _id, key, kind, title, badge, episodeNumber, meta, date, language, icon, order,    mediaUrl  }
 export type WorkItemsQueryResult = Array<{
+  _id: string;
   key: string | null;
   kind: "blg" | "doc" | "pod" | null;
   title: InternationalizedArrayString | null;
@@ -488,8 +492,9 @@ export type WorkItemsQueryResult = Array<{
 
 // Source: lib/queries.ts
 // Variable: storiesQuery
-// Query: *[_type == "story" && status == "published"] | order(submittedAt desc){    kind, title, titleSw, description, authorName, sourceUrl, submittedAt  }
+// Query: *[_type == "story" && status == "published"] | order(submittedAt desc){    _id, kind, title, titleSw, description, authorName, sourceUrl, submittedAt  }
 export type StoriesQueryResult = Array<{
+  _id: string;
   kind:
     "blueprint" | "photos" | "podcast" | "story" | "template" | "video" | null;
   title: string | null;
@@ -527,11 +532,11 @@ export type SettingsQueryResult = {
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    '*[_type == "topic"] | order(order asc){\n    key, title, intro, cardDescription, stepPill, level, icon, thumbClass,\n    steps[]{ heading, body },\n    resourceTitle, resourceDescription, order,\n    videoFile{ asset->{ url } }, videoUrl,\n    relatedResource->{ key, file{ asset->{ url } } }\n  }': TopicsQueryResult;
-    '*[_type == "resource"] | order(order asc){\n    key, title, description, category, languages, order,\n    file{ asset->{ url } }\n  }': ResourcesQueryResult;
-    '*[_type == "campaign"] | order(order asc){\n    key, icon, title, description, buttonLabel, tags, order,\n    guide{ asset->{ url } },\n    relatedTopic->{ key },\n    relatedResource->{ key }\n  }': CampaignsQueryResult;
-    '*[_type == "workItem"] | order(order asc){\n    key, kind, title, badge, episodeNumber, meta, date, language, icon, order,\n    mediaUrl\n  }': WorkItemsQueryResult;
-    '*[_type == "story" && status == "published"] | order(submittedAt desc){\n    kind, title, titleSw, description, authorName, sourceUrl, submittedAt\n  }': StoriesQueryResult;
+    '*[_type == "topic"] | order(order asc){\n    _id, key, title, intro, cardDescription, stepPill, level, icon, thumbClass,\n    steps[]{ heading, body },\n    resourceTitle, resourceDescription, order,\n    videoFile{ asset->{ url } }, videoUrl,\n    relatedResource->{ key, file{ asset->{ url } } }\n  }': TopicsQueryResult;
+    '*[_type == "resource"] | order(order asc){\n    _id, key, title, description, category, languages, order,\n    file{ asset->{ url } }\n  }': ResourcesQueryResult;
+    '*[_type == "campaign"] | order(order asc){\n    _id, key, icon, title, description, buttonLabel, tags, order,\n    guide{ asset->{ url } },\n    relatedTopic->{ key },\n    relatedResource->{ key }\n  }': CampaignsQueryResult;
+    '*[_type == "workItem"] | order(order asc){\n    _id, key, kind, title, badge, episodeNumber, meta, date, language, icon, order,\n    mediaUrl\n  }': WorkItemsQueryResult;
+    '*[_type == "story" && status == "published"] | order(submittedAt desc){\n    _id, kind, title, titleSw, description, authorName, sourceUrl, submittedAt\n  }': StoriesQueryResult;
     '*[_type == "settings"][0]{\n    siteName, tagline, contactEmail, phone, city,\n    socials[]{ platform, icon, url },\n    copyright, footerNote, heroVideoUrl, learnIntroVideoUrl,\n    subscribeBlurb[]{ language, value }\n  }': SettingsQueryResult;
   }
 }

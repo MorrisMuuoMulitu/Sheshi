@@ -2,8 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { ArrowLeft, ArrowRight, Download, Play } from "lucide-react";
 import { T, type Locale } from "@/lib/i18n";
 import { downloadHref, type LearnTopic } from "@/lib/views";
+import { Icon } from "@/components/ui/Icon";
+import Reveal from "@/components/ui/Reveal";
 
 /**
  * Learn page — topic grid + step-by-step detail (client interactivity).
@@ -22,6 +25,7 @@ export default function LearnView({
 }) {
   const t = T[locale];
   const tx = (k: string, fb: string) => t[k] ?? fb;
+  const isEn = locale === "en";
 
   const [active, setActive] = useState<string | null>(null);
   // Which topic's video has been started (keeps the overlay hidden afterwards).
@@ -60,98 +64,105 @@ export default function LearnView({
 
   if (topic && active) {
     return (
-      <div className="page active" id="page-learn">
-        <div id="topic-detail" style={{ display: "block" }}>
-          <div className="td-hero">
-            <button className="td-back" onClick={closeTopic}>
-              ← <span id="t-back">{tx("t-back", "Back to Topics")}</span>
-            </button>
-            <h2 className="td-title" id="td-title">
-              {topic.title}
-            </h2>
-            <p className="td-intro" id="td-intro">
-              {topic.intro}
-            </p>
-          </div>
-          <div className="td-grid">
-            <div>
-              <div className="td-video-box">
-                {topic.videoUrl ? (
-                  <>
-                    <video
-                      id="td-video-el"
-                      src={topic.videoUrl}
-                      controls
-                      playsInline
-                      preload="metadata"
-                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                    />
-                    {startedFor !== topic.key && (
-                      <button
-                        type="button"
-                        className="tdv-overlay"
-                        aria-label={tx("t-td-play", "Play topic video")}
-                        onClick={() => {
-                          playVideo("td-video-el");
-                          setStartedFor(topic.key);
-                        }}
-                      >
-                        <div className="tdv-play">
-                          <div className="tri"></div>
-                        </div>
-                      </button>
-                    )}
-                  </>
-                ) : (
-                  <div className="tdv-overlay off" aria-disabled="true">
-                    <div className="tdv-play">
-                      <div className="tri"></div>
-                    </div>
-                    <div className="tdv-lbl">
-                      {tx("t-td-soon", "Video coming soon")}
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className="res-hint">
-                <div className="rh-ey">Resources for this topic</div>
-                <h4 id="td-res-t">{topic.res}</h4>
-                <p id="td-res-d">{topic.resD}</p>
-                {topic.kitFileUrl ? (
-                  <a
-                    className="dl-btn"
-                    style={{ background: "var(--black)", color: "var(--sage)" }}
-                    href={downloadHref(topic.kitFileUrl, topic.res)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    ⬇ Download Kit
-                  </a>
-                ) : (
-                  <Link
-                    className="dl-btn"
-                    style={{ background: "var(--black)", color: "var(--sage)" }}
-                    href={`/${locale}/build`}
-                  >
-                    ⬇ Download Kit
-                  </Link>
-                )}
-              </div>
+      <div className="page" id="page-learn">
+        <div id="topic-detail">
+          <section className="topic-detail-hero">
+            <div className="container">
+              <button type="button" className="td-back" onClick={closeTopic}>
+                <ArrowLeft size={16} aria-hidden="true" />
+                <span id="t-back">{tx("t-back", "Back to Topics")}</span>
+              </button>
+              <h1 className="td-title" id="td-title">
+                {topic.title}
+              </h1>
+              <p className="td-intro" id="td-intro">
+                {topic.intro}
+              </p>
             </div>
-            <div>
-              <div className="step-ey" id="t-steps-ey">
-                {tx("t-steps-ey", "Step-by-Step Guide")}
-              </div>
-              <div className="steps-list" id="steps-list">
-                {topic.steps.map((s, i) => (
-                  <div className="step" key={i}>
-                    <div className="step-num">{i + 1}</div>
-                    <div className="step-txt">
-                      <h4>{s.h}</h4>
-                      <p>{s.p}</p>
+          </section>
+
+          <div className="container section">
+            <div className="td-grid">
+              <div>
+                <div className="video-frame">
+                  {topic.videoUrl ? (
+                    <>
+                      <video
+                        id="td-video-el"
+                        src={topic.videoUrl}
+                        controls
+                        playsInline
+                        preload="metadata"
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                      {startedFor !== topic.key && (
+                        <button
+                          type="button"
+                          className="video-overlay"
+                          aria-label={tx("t-td-play", "Play topic video")}
+                          onClick={() => {
+                            playVideo("td-video-el");
+                            setStartedFor(topic.key);
+                          }}
+                        >
+                          <div className="play-btn">
+                            <Play size={24} aria-hidden="true" style={{ marginLeft: 2 }} />
+                          </div>
+                        </button>
+                      )}
+                    </>
+                  ) : (
+                    <div className="video-overlay is-disabled" aria-disabled="true">
+                      <div className="play-btn">
+                        <Play size={24} aria-hidden="true" style={{ marginLeft: 2 }} />
+                      </div>
+                      <div className="vo-label">{tx("t-td-soon", "Video coming soon")}</div>
                     </div>
+                  )}
+                </div>
+
+                <div className="res-hint">
+                  <div className="rh-ey">
+                    {isEn ? "Resources for this topic" : "Rasilimali za mada hii"}
                   </div>
-                ))}
+                  <h3 id="td-res-t">{topic.res}</h3>
+                  <p id="td-res-d">{topic.resD}</p>
+                  {topic.kitFileUrl ? (
+                    <a
+                      className="btn btn-primary"
+                      href={downloadHref(topic.kitFileUrl, topic.res)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Download size={16} aria-hidden="true" />
+                      {isEn ? "Download Kit" : "Pakua Kifurushi"}
+                    </a>
+                  ) : (
+                    <Link className="btn btn-primary" href={`/${locale}/build`}>
+                      <Download size={16} aria-hidden="true" />
+                      {isEn ? "Download Kit" : "Pakua Kifurushi"}
+                    </Link>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <p className="eyebrow" id="t-steps-ey" style={{ marginBottom: "var(--space-5)" }}>
+                  {tx("t-steps-ey", "Step-by-Step Guide")}
+                </p>
+                <ol className="steps-list" id="steps-list">
+                  {topic.steps.map((s, i) => (
+                    <li className="step" key={i}>
+                      <span className="step-num" aria-hidden="true">
+                        {i + 1}
+                      </span>
+                      <div className="step-txt">
+                        <h3>{s.h}</h3>
+                        <p>{s.p}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
               </div>
             </div>
           </div>
@@ -161,84 +172,82 @@ export default function LearnView({
   }
 
   return (
-    <div className="page active" id="page-learn">
+    <div className="page" id="page-learn">
       <div id="topic-list">
-        <div className="learn-hero">
-          <h1 id="t-lh">{tx("t-lh", "Choose What to Learn")}</h1>
-          <p id="t-lp">
-            {tx(
-              "t-lp",
-              "Select a topic. Each module has an intro video and step-by-step guide — in English and Kiswahili.",
-            )}
-          </p>
-          <div className="tvo-box">
-            {introVideoUrl ? (
-              <>
-                <video
-                  id="tvo-vid"
-                  src={introVideoUrl}
-                  controls
-                  playsInline
-                  preload="metadata"
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-                {!introStarted && (
-                  <button
-                    type="button"
-                    className="tvo-overlay"
-                    aria-label={tx("t-tvo", "Play introduction video")}
-                    onClick={() => {
-                      playVideo("tvo-vid");
-                      setIntroStarted(true);
-                    }}
-                  >
-                    <div className="tvo-play">
-                      <div className="tri"></div>
-                    </div>
-                    <div className="tvo-lbl" id="t-tvo">
-                      {tx("t-tvo", "Introduction to Environmental Action")}
-                    </div>
-                  </button>
-                )}
-              </>
-            ) : (
-              <div className="tvo-overlay off" aria-disabled="true">
-                <div className="tvo-play">
-                  <div className="tri"></div>
-                </div>
-                <div className="tvo-lbl" id="t-tvo">
-                  {tx("t-tvo", "Introduction to Environmental Action")}
-                </div>
-                <div className="tvo-soon">{tx("t-tvo-soon", "Video coming soon")}</div>
-              </div>
-            )}
+        <section className="page-head">
+          <div className="container">
+            <p className="eyebrow" id="t-lh-ey">
+              {isEn ? "Learn" : "Jifunze"}
+            </p>
+            <h1 id="t-lh">{tx("t-lh", "Choose What to Learn")}</h1>
+            <p id="t-lp">
+              {tx(
+                "t-lp",
+                "Select a topic. Each module has an intro video and step-by-step guide — in English and Kiswahili.",
+              )}
+            </p>
           </div>
-        </div>
-        <div className="sec-wrap" style={{ paddingTop: 44 }}>
+        </section>
+
+        {introVideoUrl && (
+          <div className="container section-tight">
+            <div className="video-frame">
+              <video
+                id="tvo-vid"
+                src={introVideoUrl}
+                controls
+                playsInline
+                preload="metadata"
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+              {!introStarted && (
+                <button
+                  type="button"
+                  className="video-overlay"
+                  aria-label={tx("t-tvo", "Play introduction video")}
+                  onClick={() => {
+                    playVideo("tvo-vid");
+                    setIntroStarted(true);
+                  }}
+                >
+                  <div className="play-btn">
+                    <Play size={24} aria-hidden="true" style={{ marginLeft: 2 }} />
+                  </div>
+                  <div className="vo-label" id="t-tvo">
+                    {tx("t-tvo", "Introduction to Environmental Action")}
+                  </div>
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        <div className="container section" style={{ paddingTop: 0 }}>
           <div className="topic-grid">
-            {topics.map((c) => (
-              <button
-                type="button"
-                className="topic-card"
-                key={c.key}
-                onClick={() => openTopic(c.key)}
-              >
-                <div className={`tc-thumb ${c.thumb}`}>{c.icon}</div>
-                <div className="tc-body">
-                  <div className="tc-title" id={`tc-t${c.i}`}>
-                    {c.title}
+            {topics.map((c, idx) => (
+              <Reveal key={c.docId} delay={(idx % 3) + 1}>
+                <button type="button" className="topic-card" onClick={() => openTopic(c.key)}>
+                  <div className={`tc-thumb ${c.thumb}`}>
+                    <Icon name={c.icon} size={44} strokeWidth={1.5} />
                   </div>
-                  <div className="tc-desc" id={`tc-d${c.i}`}>
-                    {c.desc}
-                  </div>
-                  <div className="tc-foot">
-                    <span className="tc-pill" id={`tc-p${c.i}`}>
-                      {c.pill}
+                  <div className="tc-body">
+                    <span className="tc-title" id={`tc-t${c.i}`}>
+                      {c.title}
                     </span>
-                    <div className="tc-arr">→</div>
+                    <span className="tc-desc" id={`tc-d${c.i}`}>
+                      {c.desc}
+                    </span>
+                    <span className="tc-foot">
+                      <span className="badge badge-brand" id={`tc-p${c.i}`}>
+                        {c.pill}
+                      </span>
+                      <span className="tc-arr">
+                        <ArrowRight size={15} aria-hidden="true" />
+                      </span>
+                    </span>
                   </div>
-                </div>
-              </button>
+                </button>
+              </Reveal>
             ))}
           </div>
         </div>

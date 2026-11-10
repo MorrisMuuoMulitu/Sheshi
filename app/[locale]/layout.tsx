@@ -27,14 +27,18 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const l = locale as Locale;
+  const isEn = l === "en";
 
   // Settings singleton drives the footer (Phase 5.2).
   const settings = await getSettings(l);
 
   return (
     <>
+      <a className="skip-link" href="#main-content">
+        {isEn ? "Skip to main content" : "Rukia yaliyomo makuu"}
+      </a>
       <Nav locale={l} />
-      {children}
+      <main id="main-content">{children}</main>
       <Footer locale={l} settings={settings} />
       <Modals locale={l} />
     </>

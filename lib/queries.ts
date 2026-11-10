@@ -3,11 +3,16 @@ import { defineQuery } from "groq";
 /**
  * One query per content page (PLAN.md Phase 3.2).
  * Typed by Sanity TypeGen (`npm run typegen` → sanity.types.ts).
+ *
+ * Every query selects `_id`: it is the only field that is guaranteed unique
+ * per document. The human-authored `key` field can collide (the Studio lets
+ * editors create documents that reuse an existing key), so `_id` is what the
+ * app uses for React identity and the `key` is only used for content lookups.
  */
 
 export const topicsQuery = defineQuery(
   `*[_type == "topic"] | order(order asc){
-    key, title, intro, cardDescription, stepPill, level, icon, thumbClass,
+    _id, key, title, intro, cardDescription, stepPill, level, icon, thumbClass,
     steps[]{ heading, body },
     resourceTitle, resourceDescription, order,
     videoFile{ asset->{ url } }, videoUrl,
@@ -17,14 +22,14 @@ export const topicsQuery = defineQuery(
 
 export const resourcesQuery = defineQuery(
   `*[_type == "resource"] | order(order asc){
-    key, title, description, category, languages, order,
+    _id, key, title, description, category, languages, order,
     file{ asset->{ url } }
   }`,
 );
 
 export const campaignsQuery = defineQuery(
   `*[_type == "campaign"] | order(order asc){
-    key, icon, title, description, buttonLabel, tags, order,
+    _id, key, icon, title, description, buttonLabel, tags, order,
     guide{ asset->{ url } },
     relatedTopic->{ key },
     relatedResource->{ key }
@@ -33,7 +38,7 @@ export const campaignsQuery = defineQuery(
 
 export const workItemsQuery = defineQuery(
   `*[_type == "workItem"] | order(order asc){
-    key, kind, title, badge, episodeNumber, meta, date, language, icon, order,
+    _id, key, kind, title, badge, episodeNumber, meta, date, language, icon, order,
     mediaUrl
   }`,
 );
@@ -41,7 +46,7 @@ export const workItemsQuery = defineQuery(
 /** Published community stories — shown on the Work page (Phase 4 gate). */
 export const storiesQuery = defineQuery(
   `*[_type == "story" && status == "published"] | order(submittedAt desc){
-    kind, title, titleSw, description, authorName, sourceUrl, submittedAt
+    _id, kind, title, titleSw, description, authorName, sourceUrl, submittedAt
   }`,
 );
 

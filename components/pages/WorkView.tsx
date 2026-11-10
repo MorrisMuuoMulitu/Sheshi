@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Download, Pause, Play, Plus } from "lucide-react";
 import { T, type Locale } from "@/lib/i18n";
 import { openUploadModal } from "@/lib/ui";
 import type { StoryCard, WorkCard, WorkEpisode } from "@/lib/views";
+import { Icon } from "@/components/ui/Icon";
+import Reveal from "@/components/ui/Reveal";
 
 const tabs = [
   { cat: "all", id: "wt-all", label: "All" },
@@ -26,6 +29,7 @@ export default function WorkView({
 }) {
   const t = T[locale];
   const tx = (k: string, fb: string) => t[k] ?? fb;
+  const isEn = locale === "en";
   const [cat, setCat] = useState("all");
 
   // Podcast playback (Phase 5.1): ▶ plays the episode's mediaUrl when set.
@@ -61,141 +65,169 @@ export default function WorkView({
   const showGrid = cat !== "pod";
 
   return (
-    <div className="page active" id="page-work">
-      <div className="work-inner">
-        <div className="sec-ey" id="t-wey">
-          {tx("t-wey", "Our Work")}
-        </div>
-        <h2 className="sec-h" id="t-wh">
-          {tx("t-wh", "Stories. Voices. Impact.")}
-        </h2>
-        <p className="sec-p" id="t-wp">
-          {tx("t-wp", "Podcasts, documentaries, and blog posts from across Kenya's environmental movement.")}
-        </p>
-        <button type="button" className="work-cms" onClick={() => openUploadModal("work")}>
-          <div className="plus">＋</div>
-          <h4 id="t-wcms-h">{tx("t-wcms-h", "Upload New Content")}</h4>
-          <p id="t-wcms-p">
-            {tx("t-wcms-p", "Add a podcast, documentary, or blog post — no developer needed.")}
+    <div className="page" id="page-work">
+      <section className="page-head">
+        <div className="container">
+          <p className="eyebrow" id="t-wey">
+            {tx("t-wey", "Our Work")}
           </p>
+          <h1 id="t-wh">{tx("t-wh", "Stories. Voices. Impact.")}</h1>
+          <p id="t-wp">
+            {tx(
+              "t-wp",
+              "Podcasts, documentaries, and blog posts from across Kenya's environmental movement.",
+            )}
+          </p>
+        </div>
+      </section>
+
+      <div className="container section">
+        <button type="button" className="cms-banner" onClick={() => openUploadModal("work")}>
+          <span className="icon-tile">
+            <Plus size={22} aria-hidden="true" />
+          </span>
+          <div>
+            <h3 id="t-wcms-h">{tx("t-wcms-h", "Upload New Content")}</h3>
+            <p id="t-wcms-p">
+              {tx("t-wcms-p", "Add a podcast, documentary, or blog post — no developer needed.")}
+            </p>
+          </div>
         </button>
-        <div className="work-tabs">
+
+        <div className="chip-row" role="group" aria-label={isEn ? "Filter content" : "Chuja maudhui"}>
           {tabs.map((tb) => (
             <button
               key={tb.cat}
-              className={`wt${cat === tb.cat ? " on" : ""}`}
+              type="button"
+              className={`chip${cat === tb.cat ? " is-active" : ""}`}
               id={tb.id}
               onClick={() => setCat(tb.cat)}
+              aria-pressed={cat === tb.cat}
             >
               {tx(tb.id, tb.label)}
             </button>
           ))}
         </div>
+
         {showPods && (
-          <div id="pod-section">
+          <section id="pod-section" style={{ marginTop: "var(--space-8)" }} aria-labelledby="t-pod-h">
             <div className="pod-card">
-              <h3 id="t-pod-h">{tx("t-pod-h", "Latest Episodes")}</h3>
-              {episodes.map((e) => (
-                <div className="pod-row" key={e.n}>
-                  <div className="pod-num">{e.n}</div>
-                  <div className="pod-info">
-                    <div className="pod-title" id={`po${e.i}t`}>
-                      {e.title}
-                    </div>
-                    <div className="pod-dur">{e.dur}</div>
-                  </div>
-                  {e.mediaUrl ? (
-                    <>
-                      <audio
-                        ref={(el) => {
-                          audioRefs.current[e.n] = el;
-                        }}
-                        src={e.mediaUrl}
-                        preload="none"
-                      />
-                      <div
-                        className="pod-play"
-                        role="button"
-                        tabIndex={0}
-                        title={playing === e.n ? "Pause episode" : "Play episode"}
-                        aria-label={playing === e.n ? "Pause episode" : "Play episode"}
-                        onClick={() => togglePlay(e)}
-                        onKeyDown={(ev) => {
-                          if (ev.key === "Enter" || ev.key === " ") {
-                            ev.preventDefault();
-                            togglePlay(e);
-                          }
-                        }}
-                      >
-                        {playing === e.n ? "⏸" : "▶"}
-                      </div>
-                    </>
-                  ) : (
-                    <div
-                      className="pod-play off"
-                      title="Audio coming soon"
-                      aria-disabled="true"
-                    >
-                      ▶
-                    </div>
-                  )}
+              <h2 id="t-pod-h">{tx("t-pod-h", "Latest Episodes")}</h2>
+              {episodes.length === 0 ? (
+                <div className="empty-state">
+                  <Icon name="mic" size={32} />
+                  <h3>{isEn ? "No episodes yet" : "Hakuna vipindi bado"}</h3>
+                  <p>
+                    {isEn
+                      ? "Subscribe to the newsletter to hear new episodes as they land."
+                      : "Jisajili kwa barua pepe ili kusikiliza vipindi vipya."}
+                  </p>
                 </div>
-              ))}
+              ) : (
+                episodes.map((e) => (
+                  <div className="pod-row" key={e.docId}>
+                    <span className="pod-num" aria-hidden="true">
+                      {e.n}
+                    </span>
+                    <div className="pod-info">
+                      <div className="pod-title" id={`po${e.i}t`}>
+                        {e.title}
+                      </div>
+                      <div className="pod-dur">{e.dur}</div>
+                    </div>
+                    {e.mediaUrl ? (
+                      <>
+                        <audio
+                          ref={(el) => {
+                            audioRefs.current[e.n] = el;
+                          }}
+                          src={e.mediaUrl}
+                          preload="none"
+                        />
+                        <button
+                          type="button"
+                          className="pod-play"
+                          title={playing === e.n ? "Pause episode" : "Play episode"}
+                          aria-label={
+                            playing === e.n
+                              ? `Pause episode: ${e.title}`
+                              : `Play episode: ${e.title}`
+                          }
+                          aria-pressed={playing === e.n}
+                          onClick={() => togglePlay(e)}
+                        >
+                          {playing === e.n ? (
+                            <Pause size={16} aria-hidden="true" />
+                          ) : (
+                            <Play size={16} aria-hidden="true" style={{ marginLeft: 2 }} />
+                          )}
+                        </button>
+                      </>
+                    ) : (
+                      <span
+                        className="pod-play is-disabled"
+                        title={isEn ? "Audio coming soon" : "Sauti itakuja"}
+                        role="button"
+                        aria-disabled="true"
+                        aria-label={isEn ? "Audio coming soon" : "Sauti itakuja"}
+                      >
+                        <Play size={16} aria-hidden="true" />
+                      </span>
+                    )}
+                  </div>
+                ))
+              )}
             </div>
-          </div>
+          </section>
         )}
+
         {showGrid && (
-          <div className="work-grid" id="work-grid" style={{ marginTop: 24 }}>
+          <section className="work-grid" id="work-grid" style={{ marginTop: "var(--space-8)" }}>
             {works
               .filter((w) => cat === "all" || cat === w.wc)
-              .map((w) => (
-                <div className="work-card" key={w.i} data-wc={w.wc}>
-                  <div className={`wc-thumb ${w.wc}`}>
-                    {w.icon}
-                    <div className="wc-badge">{w.badge}</div>
-                  </div>
-                  <div className="wc-body">
-                    <div className="wc-t" id={`w${w.i}t`}>
-                      {w.title}
+              .map((w, idx) => (
+                <Reveal key={w.docId} delay={(idx % 3) + 1}>
+                  <article className="work-card" data-wc={w.wc}>
+                    <div className={`wc-thumb ${w.wc}`}>
+                      <Icon name={w.icon} size={42} strokeWidth={1.5} />
+                      <div className="wc-badge">{w.badge}</div>
                     </div>
-                    <div className="wc-meta">
-                      <span className="wc-date">{w.date}</span>
-                      <span className="wc-lang">{w.lang}</span>
+                    <div className="wc-body">
+                      <h3 id={`w${w.i}t`}>{w.title}</h3>
+                      <div className="wc-meta">
+                        <span className="wc-date">{w.date}</span>
+                        <span className="badge badge-brand">{w.lang}</span>
+                      </div>
                     </div>
-                  </div>
-                </div>
+                  </article>
+                </Reveal>
               ))}
-          </div>
+          </section>
         )}
+
         {cat === "all" && stories.length > 0 && (
-          <div id="story-section" style={{ marginTop: 32 }}>
-            <div className="pod-card" style={{ padding: "28px 24px" }}>
-              <h3 id="t-str-h">{tx("t-str-h", "Community Stories")}</h3>
-              <p style={{ fontSize: 14, color: "rgba(0,0,0,.55)", margin: "4px 0 18px" }}>
+          <section id="story-section" style={{ marginTop: "var(--space-16)" }} aria-labelledby="t-str-h">
+            <div className="pod-card">
+              <h2 id="t-str-h">{tx("t-str-h", "Community Stories")}</h2>
+              <p className="wc-story-desc" style={{ margin: "4px 0 18px" }}>
                 {tx(
                   "t-str-p",
                   "Submitted by communities across Kenya — reviewed and published by our editors.",
                 )}
               </p>
               <div className="work-grid">
-                {stories.map((s, i) => (
-                  <div className="work-card" key={`${s.kind}-${i}`} data-wc="story">
-                    <div className="wc-thumb doc">
-                      {s.icon}
-                      <div className="wc-badge">
-                        {tx(`stk-${s.kind}`, "Community")}
-                      </div>
+                {stories.map((s) => (
+                  <article className="work-card" key={s.docId} data-wc="story">
+                    <div className="wc-thumb story">
+                      <Icon name={s.icon} size={42} strokeWidth={1.5} />
+                      <div className="wc-badge">{tx(`stk-${s.kind}`, "Community")}</div>
                     </div>
                     <div className="wc-body">
-                      <div className="wc-t">{s.title}</div>
-                      {s.desc && (
-                        <div style={{ fontSize: 13, color: "rgba(0,0,0,.55)", marginTop: 6 }}>
-                          {s.desc}
-                        </div>
-                      )}
+                      <h3>{s.title}</h3>
+                      {s.desc && <p className="wc-story-desc">{s.desc}</p>}
                       <div className="wc-meta">
                         <span className="wc-date">{s.author}</span>
-                        <span className="wc-lang">{s.date}</span>
+                        <span className="badge">{s.date}</span>
                       </div>
                       {s.href && (
                         <a
@@ -203,17 +235,18 @@ export default function WorkView({
                           href={s.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          style={{ marginTop: 12, display: "inline-block" }}
+                          style={{ alignSelf: "flex-start", marginTop: 4 }}
                         >
-                          ⬇ Open
+                          <Download size={14} aria-hidden="true" />
+                          {isEn ? "Open" : "Fungua"}
                         </a>
                       )}
                     </div>
-                  </div>
+                  </article>
                 ))}
               </div>
             </div>
-          </div>
+          </section>
         )}
       </div>
     </div>

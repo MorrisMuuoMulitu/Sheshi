@@ -14,6 +14,9 @@ export type Bi = "en" | "sw";
 export type LearnStep = { h: string; p: string };
 
 export type LearnTopic = {
+  /** Sanity document id — unique per document, used as the React key. */
+  docId: string;
+  /** Content key (`river`, `trees`, …) — used for deep links and lookups. */
   key: string;
   i: number;
   thumb: string;
@@ -37,12 +40,16 @@ export type LearnTopic = {
 };
 
 export type LibraryResource = Resource & {
+  /** Sanity document id — unique per document, used as the React key. */
+  docId: string;
   rt: string;
   /** Sanity file URL powering the Download button (undefined → disabled). */
   fileUrl?: string;
 };
 
 export type ActCampaign = {
+  /** Sanity document id — unique per document, used as the React key. */
+  docId: string;
   icon: string;
   i: number;
   title: string;
@@ -58,6 +65,8 @@ export type ActCampaign = {
 };
 
 export type WorkEpisode = {
+  /** Sanity document id — unique per document, used as the React key. */
+  docId: string;
   n: number;
   i: number;
   title: string;
@@ -67,6 +76,8 @@ export type WorkEpisode = {
 };
 
 export type WorkCard = {
+  /** Sanity document id — unique per document, used as the React key. */
+  docId: string;
   wc: "doc" | "blg";
   i: number;
   icon: string;
@@ -78,6 +89,8 @@ export type WorkCard = {
 
 /** A published community story (Work page section). */
 export type StoryCard = {
+  /** Sanity document id — unique per document, used as the React key. */
+  docId: string;
   kind: string;
   icon: string;
   title: string;

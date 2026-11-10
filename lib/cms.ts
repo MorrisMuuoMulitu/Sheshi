@@ -60,6 +60,53 @@ function tx(locale: Locale, key: string, fallback: string): string {
   return T[locale][key] ?? fallback;
 }
 
+/**
+ * Pick a language from a bilingual field WITHOUT falling back to English.
+ * Used where an English-only CMS value would leak into the Kiswahili UI —
+ * the caller's own localized fallback is better than the English original.
+ */
+function pickBiExact(items: BiItem[] | undefined | null, locale: Locale): string {
+  if (!Array.isArray(items) || items.length === 0) return "";
+  const exact = items.find((x) => x.language === locale && x.value);
+  return exact?.value ?? "";
+}
+
+/**
+ * Collapse documents that share the same `key`.
+ *
+ * The Studio lets an editor create a document that reuses an existing `key`
+ * (the seed upserts by `_id`, so a hand-created copy keeps the same `key`).
+ * Duplicate keys break React's reconciliation and make filters ambiguous.
+ *
+ * The winner is the seeded document (`_id === "<prefix>-<key>"`) when it
+ * exists — that is the canonical, translated copy — otherwise the first
+ * document in query order. Documents with no key are kept as-is.
+ */
+function dedupeByKey<T extends { _id?: string | null; key?: string | null }>(
+  docs: T[],
+  idPrefix: string,
+): T[] {  const byKey = new Map<string, T>();
+  const noKey: T[] = [];
+
+  for (const doc of docs) {
+    if (!doc.key) {
+      noKey.push(doc);
+      continue;
+    }
+    const existing = byKey.get(doc.key);
+    if (!existing) {
+      byKey.set(doc.key, doc);
+      continue;
+    }
+    // Prefer the seeded canonical document over a hand-created duplicate.
+    const canonical = `_id` === `${idPrefix}-${doc.key}`;
+    const existingCanonical = existing._id === `${idPrefix}-${existing.key}`;
+    if (canonical && !existingCanonical) byKey.set(doc.key, doc);
+  }
+
+  return [...byKey.values(), ...noKey];
+}
+
 // ── Learn page ──────────────────────────────────────────────────────────────
 
 export async function getLearnTopics(locale: Locale): Promise<LearnTopic[]> {
@@ -69,10 +116,12 @@ export async function getLearnTopics(locale: Locale): Promise<LearnTopic[]> {
   try {
     const docs = await sanityClient.fetch(topicsQuery);
     if (!docs || docs.length === 0) throw new Error("no topic documents");
-    console.log(`[cms] topics: ${docs.length} docs from Sanity (${locale})`);
-    return docs.map((d): LearnTopic => {
+    const unique = dedupeByKey<typeof docs[number]>(docs, "topic");
+    console.log(`[cms] topics: ${unique.length} docs from Sanity (${locale})`);
+    return unique.map((d): LearnTopic => {
       const card = topicCards.find((c) => c.key === d.key);
       return {
+        docId: d._id,
         key: d.key ?? card?.key ?? "",
         i: d.order ?? card?.i ?? 0,
         thumb: d.thumbClass ?? card?.thumb ?? "th1",
@@ -104,6 +153,7 @@ function staticLearnTopics(locale: Locale): LearnTopic[] {
     const t = topicData[c.key];
     const i = c.i;
     return {
+      docId: `topic-${c.key}`,
       key: c.key,
       i,
       thumb: c.thumb,
@@ -129,12 +179,14 @@ export async function getResources(locale: Locale): Promise<LibraryResource[]> {
   try {
     const docs = await sanityClient.fetch(resourcesQuery);
     if (!docs || docs.length === 0) throw new Error("no resource documents");
-    console.log(`[cms] resources: ${docs.length} docs from Sanity (${locale})`);
-    return docs.map((d): LibraryResource => {
+    const unique = dedupeByKey<typeof docs[number]>(docs, "resource");
+    console.log(`[cms] resources: ${unique.length} docs from Sanity (${locale})`);
+    return unique.map((d): LibraryResource => {
       const cat = (d.category ?? "tp") as LibraryResource["cat"];
       return {
         cat,
         rt: RESOURCE_BADGE[cat],
+        docId: d._id,
         id: d.key ?? "",
         title: pickBi(d.title, locale),
         desc: pickBi(d.description, locale),
@@ -151,6 +203,7 @@ export async function getResources(locale: Locale): Promise<LibraryResource[]> {
 function staticResources(locale: Locale): LibraryResource[] {
   return resources.map((r) => ({
     ...r,
+    docId: `resource-${r.id}`,
     rt: RESOURCE_BADGE[r.cat],
     title: tx(locale, `${r.id}t`, r.title),
   }));
@@ -165,8 +218,10 @@ export async function getCampaigns(locale: Locale): Promise<ActCampaign[]> {
   try {
     const docs = await sanityClient.fetch(campaignsQuery);
     if (!docs || docs.length === 0) throw new Error("no campaign documents");
-    console.log(`[cms] campaigns: ${docs.length} docs from Sanity (${locale})`);
-    return docs.map((d): ActCampaign => ({
+    const unique = dedupeByKey<typeof docs[number]>(docs, "campaign");
+    console.log(`[cms] campaigns: ${unique.length} docs from Sanity (${locale})`);
+    return unique.map((d): ActCampaign => ({
+      docId: d._id,
       icon: d.icon ?? "📣",
       i: d.order ?? 0,
       title: pickBi(d.title, locale),
@@ -185,6 +240,7 @@ export async function getCampaigns(locale: Locale): Promise<ActCampaign[]> {
 
 function staticCampaigns(locale: Locale): ActCampaign[] {
   return campaigns.map((c) => ({
+    docId: `campaign-ca${c.i}`,
     icon: c.icon,
     i: c.i,
     title: tx(locale, `ca${c.i}t`, c.title),
@@ -205,12 +261,14 @@ export async function getWorkContent(locale: Locale): Promise<WorkContent> {
   try {
     const docs = await sanityClient.fetch(workItemsQuery);
     if (!docs || docs.length === 0) throw new Error("no workItem documents");
-    console.log(`[cms] workItems: ${docs.length} docs from Sanity (${locale})`);
+    const unique = dedupeByKey<typeof docs[number]>(docs, "workitem");
+    console.log(`[cms] workItems: ${unique.length} docs from Sanity (${locale})`);
     const episodes: WorkEpisode[] = [];
     const cardItems: WorkCard[] = [];
-    for (const d of docs) {
+    for (const d of unique) {
       if (d.kind === "pod") {
         episodes.push({
+          docId: d._id,
           n: d.episodeNumber ?? 0,
           i: d.order ?? 0,
           title: pickBi(d.title, locale),
@@ -219,6 +277,7 @@ export async function getWorkContent(locale: Locale): Promise<WorkContent> {
         });
       } else if (d.kind === "doc" || d.kind === "blg") {
         cardItems.push({
+          docId: d._id,
           wc: d.kind,
           i: d.order ?? 0,
           icon: d.icon ?? (d.kind === "doc" ? "🎬" : "✍️"),
@@ -239,12 +298,14 @@ export async function getWorkContent(locale: Locale): Promise<WorkContent> {
 function staticWork(locale: Locale): WorkContent {
   return {
     episodes: episodes.map((e) => ({
+      docId: `workitem-ep${e.n}`,
       n: e.n,
       i: e.i,
       title: tx(locale, `po${e.i}t`, e.title),
       dur: e.dur,
     })),
     works: works.map((w) => ({
+      docId: `workitem-w${w.i}`,
       wc: w.wc,
       i: w.i,
       icon: w.icon,
@@ -266,8 +327,10 @@ export async function getPublishedStories(locale: Locale): Promise<StoryCard[]> 
     const docs = await sanityClient.fetch(storiesQuery);
     if (!docs) throw new Error("stories query failed");
     // Zero stories is a normal state (nothing submitted/approved yet).
-    console.log(`[cms] stories: ${docs.length} published docs (${locale})`);
-    return docs.map((d): StoryCard => ({
+    const unique = dedupeByKey<typeof docs[number]>(docs, "story");
+    console.log(`[cms] stories: ${unique.length} published docs (${locale})`);
+    return unique.map((d): StoryCard => ({
+      docId: d._id,
       kind: d.kind ?? "story",
       icon: STORY_ICON[d.kind ?? "story"] ?? "✍️",
       title: locale === "sw" && d.titleSw ? d.titleSw : (d.title ?? ""),
@@ -323,10 +386,14 @@ export async function getSettings(locale: Locale): Promise<SiteSettings> {
       footerNote: doc.footerNote ?? STATIC_SETTINGS.footerNote,
       heroVideoUrl: doc.heroVideoUrl ?? "",
       learnIntroVideoUrl: doc.learnIntroVideoUrl ?? "",
-      subscribeBlurb: pickBi(doc.subscribeBlurb, locale) || STATIC_SETTINGS.subscribeBlurb,
+      subscribeBlurb:
+        pickBiExact(doc.subscribeBlurb, locale) || tx(locale, "t-nlp", ""),
     };
   } catch (err) {
     console.warn("[cms] settings: Sanity unreachable — using static fallback:", err);
-    return { ...STATIC_SETTINGS, subscribeBlurb: STATIC_SETTINGS.subscribeBlurb };
+    return {
+      ...STATIC_SETTINGS,
+      subscribeBlurb: tx(locale, "t-nlp", STATIC_SETTINGS.subscribeBlurb),
+    };
   }
 }

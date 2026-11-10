@@ -15,9 +15,44 @@ submissions (stories, events, messages, newsletters) arrive as documents with
 |---|---|
 | Framework | Next.js 16.4 (App Router, `cacheComponents`, `proxy.ts` locale routing) |
 | CMS | Sanity (`i9s1a5ax` / dataset `production`), hosted Studio |
-| Styling | Hand-written CSS (`app/globals.css`) — legacy visual design preserved |
+| Styling | Hand-written CSS design system (`app/styles/*.css`, layered tokens) |
+| Typography | Fraunces (display) + Andika (body), self-hosted via `next/font` |
+| Icons | `lucide-react` SVG + a hand-rolled brand set (`components/ui/SocialIcons.tsx`) |
+| Theming | Light + dark, token-driven, persisted in `localStorage` |
 | i18n | `/en/…` and `/sw/…` route segments, EN→SW fallback for CMS fields |
 | Deploy | Vercel |
+
+## Design system
+
+The UI is built on a four-layer token system in `app/styles/`:
+
+| File | Layer | Contains |
+|---|---|---|
+| `tokens.css` | primitives → semantic | Colour ramps, semantic surface/text tokens, type scale, 4/8pt spacing, radii, elevation scale, motion tokens, z-index scale |
+| `base.css` | reset + document | Reset, typography defaults, layout/type utilities, a11y utilities (`.sr-only`, `.skip-link`), motion + reduced-motion, print styles |
+| `components.css` | components | Buttons, cards, badges, chips, forms, nav, drawer, footer, modals, skeletons |
+| `pages.css` | page layouts | Home hero, page headers, Learn/Build/Act/Work/Contact layouts, responsive rules |
+
+**Rules**
+
+- Never hardcode a hex, radius, shadow or duration in a component — reference a token.
+- Inverse surfaces (`--bg-inverse`) stay dark in *both* themes: the footer and page
+  headers are a brand surface, not a light/dark mirror.
+- All icons are SVG. Emoji are never used as structural icons. CMS `icon`
+  fields still hold legacy emoji — `components/ui/Icon.tsx` maps them to SVG.
+- Every page has exactly one `h1`, a skip link, and visible form labels.
+- Motion respects `prefers-reduced-motion`; scroll reveals are hidden only when
+  scripting is enabled, so content is never invisible without JS.
+
+**Dark mode** — `data-theme` on `<html>`, resolved before first paint by an inline
+script (`components/ui/ThemeScript.tsx`), toggled by `components/ui/ThemeToggle.tsx`.
+With no stored preference the OS `prefers-color-scheme` is followed.
+
+**Type** — Fraunces is a warm editorial serif with optical sizing, used for
+display. Andika is a dyslexia-aware sans with wide apertures and a large
+x-height, used for body copy — it keeps long-form instructions legible for
+the community audience and in Kiswahili, on low-end Android and on paper.
+
 
 ## Getting started
 
@@ -144,11 +179,16 @@ published edits appear within about a minute without a redeploy.
 ```
 app/
   [locale]/            # en + sw routes (layout, home, learn, build, act, work, contact)
+    loading.tsx       # route-level skeleton
+    error.tsx         # route-level error boundary
   api/                 # contact, newsletter, event, story, upload, revalidate
+  styles/              # design system: tokens → base → components → pages
+  not-found.tsx        # global 404
   sitemap.ts, robots.ts
 components/
   Nav, Footer, Modals
   pages/               # client views receiving localized data as props
+  ui/                  # Icon, Reveal, Skeleton, ThemeToggle, ThemeScript, SocialIcons
 lib/
   cms.ts               # cached data getters (Sanity → view models, fallbacks)
   queries.ts           # GROQ queries (typed by TypeGen)
@@ -159,4 +199,17 @@ lib/
 schemaTypes/           # Sanity schemas + desk structure
 scripts/               # seed.ts, verify.ts
 proxy.ts               # locale routing (/ → /en or /sw)
+tests/                 # smoke.spec.ts (legacy) + uiux.spec.ts (design-system a11y)
 ```
+
+## Tests
+
+```bash
+npm run test:e2e                       # smoke + UI/UX regression suite
+E2E_PORT=3115 npm run test:e2e         # move the test server off a busy port
+```
+
+`tests/uiux.spec.ts` covers the design-system contract: skip link, one `h1`
+per page, theme toggle + persistence, SVG-only icons, drawer and modal focus
+trapping, filter state, visible labels, no horizontal overflow at 375px, and
+reduced-motion behaviour.

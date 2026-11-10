@@ -1,8 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { CheckCircle2, Loader2 } from "lucide-react";
 import { T, type Locale } from "@/lib/i18n";
 import type { SiteSettings } from "@/lib/views";
+import { Icon } from "@/components/ui/Icon";
+import { socialBrandIcon } from "@/components/ui/SocialIcons";
 
 type Status = "idle" | "sending" | "ok" | "error";
 
@@ -22,6 +25,7 @@ export default function ContactView({
 }) {
   const t = T[locale];
   const tx = (k: string, fb: string) => t[k] ?? fb;
+  const isEn = locale === "en";
 
   // Newsletter
   const [nlEmail, setNlEmail] = useState("");
@@ -88,153 +92,224 @@ export default function ContactView({
   };
 
   return (
-    <div className="page active" id="page-contact">
-      <div className="contact-inner">
+    <div className="page" id="page-contact" style={{ background: "var(--bg-inverse)" }}>
+      <div className="container section">
         <div className="contact-grid">
           <div>
-            <div className="sec-ey inv" style={{ marginBottom: 10 }} id="t-cey">
+            <p className="eyebrow" style={{ color: "var(--brand-300)" }} id="t-cey">
               {tx("t-cey", "Get In Touch")}
-            </div>
-            <h2 className="cti" id="t-ch">
+            </p>
+            <h1 className="contact-title" id="t-ch">
               {tx("t-ch", "Let's Build This Together")}
-            </h2>
-            <p className="ctp" id="t-cp">
+            </h1>
+            <p className="contact-lede" id="t-cp">
               {tx(
                 "t-cp",
                 "Reach out to partner, volunteer, or share your community's work. We respond in both English and Kiswahili.",
               )}
             </p>
-            <div className="csoc-row">
-              {settings.socials.map((s) =>
-                s.url ? (
-                  <a
-                    key={s.platform}
-                    className="csoc"
-                    href={s.url}
-                    title={s.platform}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {s.icon}
-                  </a>
-                ) : (
-                  <span
-                    key={s.platform}
-                    className="csoc"
-                    title={`${s.platform} — link coming soon`}
-                    aria-disabled="true"
-                    style={{ opacity: 0.4, cursor: "not-allowed" }}
-                  >
-                    {s.icon}
-                  </span>
-                ),
-              )}
-            </div>
+
+            {settings.socials.length > 0 && (
+              <div className="csoc-row">
+                {settings.socials.map((s) => {
+                  const IconCmp = socialBrandIcon(s.platform);
+                  return s.url ? (
+                    <a
+                      key={s.platform}
+                      className="social-btn"
+                      href={s.url}
+                      title={s.platform}
+                      aria-label={`${s.platform} — ${settings.siteName}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {IconCmp ? (
+                        <IconCmp aria-hidden="true" />
+                      ) : (
+                        <span aria-hidden="true">{s.icon}</span>
+                      )}
+                    </a>
+                  ) : (
+                    <span
+                      key={s.platform}
+                      className="social-btn"
+                      title={`${s.platform} — ${isEn ? "link coming soon" : "kiungo kitataka kuja"}`}
+                      role="button"
+                      aria-disabled="true"
+                      aria-label={`${s.platform} — ${isEn ? "link coming soon" : "kiungo kitataka kuja"}`}
+                    >
+                      {IconCmp ? (
+                        <IconCmp aria-hidden="true" />
+                      ) : (
+                        <span aria-hidden="true">{s.icon}</span>
+                      )}
+                    </span>
+                  );
+                })}
+              </div>
+            )}
+
             <form className="nl-box" onSubmit={submitNewsletter}>
-              <h4 id="t-nlh">{tx("t-nlh", "Stay in the Loop")}</h4>
+              <h2 id="t-nlh">{tx("t-nlh", "Stay in the Loop")}</h2>
               <p id="t-nlp">
-                {settings.subscribeBlurb || tx("t-nlp", "Monthly digest of tools, events, and stories. No spam.")}
+                {settings.subscribeBlurb ||
+                  tx("t-nlp", "Monthly digest of tools, events, and stories. No spam.")}
               </p>
               {/* honeypot — hidden from real users */}
-              <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true"
-                style={{ position: "absolute", left: -9999, opacity: 0, height: 0, width: 0 }} />
+              <input
+                type="text"
+                name="website"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                className="hp-field"
+              />
               <div className="nl-row">
                 <input
-                  className="nl-in"
+                  className="input"
                   type="email"
+                  name="email"
                   placeholder="your@email.com"
                   id="nl-inp"
-                  aria-label="Email address for the newsletter"
+                  aria-label={isEn ? "Email address for the newsletter" : "Barua pepe kwa ajenda"}
+                  autoComplete="email"
                   value={nlEmail}
                   onChange={(e) => setNlEmail(e.target.value)}
                   required
                 />
-                <button className="nl-sub" id="t-nlb" type="submit" disabled={nlStatus === "sending"}>
-                  {nlStatus === "sending"
-                    ? "…"
-                    : nlStatus === "ok"
-                      ? "✅ " + tx("t-nlb-ok", "Subscribed")
-                      : tx("t-nlb", "Subscribe")}
+                <button
+                  className="btn btn-brand"
+                  id="t-nlb"
+                  type="submit"
+                  disabled={nlStatus === "sending"}
+                >
+                  {nlStatus === "sending" ? (
+                    <Loader2 size={16} aria-hidden="true" className="spin" />
+                  ) : nlStatus === "ok" ? (
+                    <CheckCircle2 size={16} aria-hidden="true" />
+                  ) : null}
+                  {nlStatus === "ok"
+                    ? tx("t-nlb-ok", "Subscribed")
+                    : tx("t-nlb", "Subscribe")}
                 </button>
               </div>
               {nlStatus === "error" && (
-                <p role="alert" style={{ color: "#b3261e", fontSize: 13, marginTop: 8 }}>
+                <p className="form-status form-status-error" role="alert" style={{ marginTop: 10 }}>
+                  <Icon name="error" size={16} />
                   {nlError}
                 </p>
               )}
               {nlStatus === "ok" && (
-                <p role="status" style={{ fontSize: 13, marginTop: 8 }}>
+                <p className="form-status form-status-success" role="status" style={{ marginTop: 10 }}>
+                  <Icon name="check" size={16} />
                   {tx("t-nlb-done", "You're on the list — asante!")}
                 </p>
               )}
             </form>
           </div>
-          <form className="cform" onSubmit={submitContact}>
-            <h3 id="t-cfh">{tx("t-cfh", "Send a Message")}</h3>
-            <label className="cf-l" htmlFor="cf-name" id="t-cfl1">
-              {tx("t-cfl1", "Your Name")}
-            </label>
-            <input
-              className="cf-in"
-              id="cf-name"
-              type="text"
-              placeholder="Full name"
-              value={cName}
-              onChange={(e) => setCName(e.target.value)}
-              required
-            />
-            <label className="cf-l" htmlFor="cf-email" id="t-cfl2">
-              {tx("t-cfl2", "Email")}
-            </label>
-            <input
-              className="cf-in"
-              id="cf-email"
-              type="email"
-              placeholder="you@email.com"
-              value={cEmail}
-              onChange={(e) => setCEmail(e.target.value)}
-              required
-            />
-            <label className="cf-l" htmlFor="cf-subject" id="t-cfl3">
-              {tx("t-cfl3", "Subject")}
-            </label>
-            <input
-              className="cf-in"
-              id="cf-subject"
-              type="text"
-              placeholder="What's this about?"
-              value={cSubject}
-              onChange={(e) => setCSubject(e.target.value)}
-              required
-            />
-            <label className="cf-l" htmlFor="cf-body" id="t-cfl4">
-              {tx("t-cfl4", "Message")}
-            </label>
-            <textarea
-              className="cf-ta"
-              id="cf-body"
-              placeholder="Your message..."
-              value={cBody}
-              onChange={(e) => setCBody(e.target.value)}
-              required
-            />
+
+          <form className="cform" onSubmit={submitContact} noValidate>
+            <h2 id="t-cfh">{tx("t-cfh", "Send a Message")}</h2>
+
+            <div className="field">
+              <label className="field-label" htmlFor="cf-name" id="t-cfl1">
+                {tx("t-cfl1", "Your Name")}
+              </label>
+              <input
+                className="input"
+                id="cf-name"
+                name="name"
+                type="text"
+                placeholder={isEn ? "Full name" : "Jina kamili"}
+                autoComplete="name"
+                value={cName}
+                onChange={(e) => setCName(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="field">
+              <label className="field-label" htmlFor="cf-email" id="t-cfl2">
+                {tx("t-cfl2", "Email")}
+              </label>
+              <input
+                className="input"
+                id="cf-email"
+                name="email"
+                type="email"
+                placeholder="you@email.com"
+                autoComplete="email"
+                value={cEmail}
+                onChange={(e) => setCEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="field">
+              <label className="field-label" htmlFor="cf-subject" id="t-cfl3">
+                {tx("t-cfl3", "Subject")}
+              </label>
+              <input
+                className="input"
+                id="cf-subject"
+                name="subject"
+                type="text"
+                placeholder={isEn ? "What's this about?" : "Ni nini hasa?"}
+                value={cSubject}
+                onChange={(e) => setCSubject(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="field">
+              <label className="field-label" htmlFor="cf-body" id="t-cfl4">
+                {tx("t-cfl4", "Message")}
+              </label>
+              <textarea
+                className="textarea"
+                id="cf-body"
+                name="body"
+                placeholder={isEn ? "Your message..." : "Ujumbe wako..."}
+                value={cBody}
+                onChange={(e) => setCBody(e.target.value)}
+                required
+              />
+            </div>
+
             {/* honeypot */}
-            <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true"
-              style={{ position: "absolute", left: -9999, opacity: 0, height: 0, width: 0 }} />
-            <button className="cf-sub" id="t-cfb" type="submit" disabled={cStatus === "sending"}>
+            <input
+              type="text"
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              className="hp-field"
+            />
+
+            <button className="btn btn-brand btn-block" id="t-cfb" type="submit" disabled={cStatus === "sending"}>
+              {cStatus === "sending" ? (
+                <Loader2 size={16} aria-hidden="true" className="spin" />
+              ) : cStatus === "ok" ? (
+                <CheckCircle2 size={16} aria-hidden="true" />
+              ) : null}
               {cStatus === "sending"
-                ? "…"
+                ? isEn
+                  ? "Sending…"
+                  : "Inatuma…"
                 : cStatus === "ok"
-                  ? "✅ " + tx("t-cfb-sent", "Message Sent")
+                  ? tx("t-cfb-sent", "Message Sent")
                   : tx("t-cfb", "Send Message →")}
             </button>
+
             {cStatus === "error" && (
-              <p role="alert" style={{ color: "#b3261e", fontSize: 13, marginTop: 10 }}>
+              <p className="form-status form-status-error" role="alert" style={{ marginTop: 10 }}>
+                <Icon name="error" size={16} />
                 {cError}
               </p>
             )}
             {cStatus === "ok" && (
-              <p role="status" style={{ fontSize: 13, marginTop: 10 }}>
+              <p className="form-status form-status-success" role="status" style={{ marginTop: 10 }}>
+                <Icon name="check" size={16} />
                 {tx("t-cfb-done", "Thanks! We'll get back to you soon.")}
               </p>
             )}

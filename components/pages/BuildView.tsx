@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { Download, Upload } from "lucide-react";
 import { T, type Locale } from "@/lib/i18n";
 import { openUploadModal } from "@/lib/ui";
 import { downloadHref, type LibraryResource } from "@/lib/views";
+import { Icon } from "@/components/ui/Icon";
+import Reveal from "@/components/ui/Reveal";
 
 const filters = [
   { cat: "all", id: "fb-all", label: "All" },
@@ -11,6 +14,13 @@ const filters = [
   { cat: "kt", id: "fb-kt", label: "Toolkits" },
   { cat: "zn", id: "fb-zn", label: "Zines" },
 ];
+
+/** Category → icon (replaces the emoji baked into the legacy badge string). */
+const CAT_ICON: Record<string, string> = {
+  tp: "file",
+  kt: "package",
+  zn: "newspaper",
+};
 
 /** Build (Resource Library) page — filterable resource grid. */
 export default function BuildView({
@@ -22,83 +32,131 @@ export default function BuildView({
 }) {
   const t = T[locale];
   const tx = (k: string, fb: string) => t[k] ?? fb;
+  const isEn = locale === "en";
   const [cat, setCat] = useState("all");
 
+  const visible = resources.filter((r) => cat === "all" || cat === r.cat);
+
   return (
-    <div className="page active" id="page-build">
-      <div className="build-inner">
-        <div className="sec-ey" id="t-bey">
-          {tx("t-bey", "Resource Library")}
+    <div className="page" id="page-build">
+      <section className="page-head">
+        <div className="container">
+          <p className="eyebrow" id="t-bey">
+            {tx("t-bey", "Resource Library")}
+          </p>
+          <h1 id="t-bh">{tx("t-bh", "Download. Adapt. Deploy.")}</h1>
+          <p id="t-bp">
+            {tx(
+              "t-bp",
+              "Free bilingual resources — blueprints, toolkits, zines, templates — all downloadable.",
+            )}
+          </p>
         </div>
-        <h2 className="sec-h" id="t-bh">
-          {tx("t-bh", "Download. Adapt. Deploy.")}
-        </h2>
-        <p className="sec-p" id="t-bp">
-          {tx("t-bp", "Free bilingual resources — blueprints, toolkits, zines, templates — all downloadable.")}
-        </p>
+      </section>
+
+      <div className="container section">
         <div className="cms-banner">
-          <div className="cms-icon">⬆️</div>
-          <div className="cms-txt">
-            <h4 id="t-cms-h">{tx("t-cms-h", "Add a New Resource")}</h4>
+          <span className="icon-tile">
+            <Icon name="upload" size={24} />
+          </span>
+          <div style={{ flex: 1, minWidth: 220 }}>
+            <h3 id="t-cms-h">{tx("t-cms-h", "Add a New Resource")}</h3>
             <p id="t-cms-p">
               {tx("t-cms-p", "Upload a template, toolkit, or zine — no developer needed.")}{" "}
-              <a onClick={() => openUploadModal("resource")} style={{ cursor: "pointer" }}>
-                Click here →
-              </a>
+              <button
+                type="button"
+                className="text-link"
+                onClick={() => openUploadModal("resource")}
+              >
+                {isEn ? "Click here" : "Bofya hapa"} →
+              </button>
             </p>
           </div>
         </div>
-        <div className="filter-row">
+
+        <div className="chip-row" role="group" aria-label={isEn ? "Filter resources" : "Chuja rasilimali"}>
           {filters.map((f) => (
             <button
               key={f.cat}
-              className={`fr-btn${cat === f.cat ? " on" : ""}`}
+              type="button"
+              className={`chip${cat === f.cat ? " is-active" : ""}`}
               id={f.id}
               onClick={() => setCat(f.cat)}
+              aria-pressed={cat === f.cat}
             >
               {tx(f.id, f.label)}
             </button>
           ))}
         </div>
-        <div className="res-grid" id="res-grid">
-          {resources.map((r) => (
-            <div
-              className="res-card"
-              key={r.id}
-              data-cat={r.cat}
-              style={{ display: cat === "all" || cat === r.cat ? "block" : "none" }}
+
+        {visible.length === 0 ? (
+          <div className="empty-state" style={{ marginTop: "var(--space-8)" }}>
+            <Icon name="package" size={32} />
+            <h3>{isEn ? "No resources in this category yet" : "Hakuna rasilimali kwa kategoria hii bado"}</h3>
+            <p>
+              {isEn
+                ? "Be the first to add one — upload a template or toolkit for your community."
+                : "Wewe ndiye mwingi wa kwanza kuongeza — pakua kiolezo au zana kwa jamii yako."}
+            </p>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => openUploadModal("resource")}
             >
-              <div className={`rt ${r.cat}`}>{r.rt}</div>
-              <div className="rc-t" id={`${r.id}t`}>
-                {r.title}
-              </div>
-              <div className="rc-d">{r.desc}</div>
-              <div className="rc-foot">
-                <div className="rc-langs">
-                  {r.langs.map((l) => (
-                    <span className={`ldot ${l}`} key={l}>
-                      {l.toUpperCase()}
-                    </span>
-                  ))}
-                </div>
-                {r.fileUrl ? (
-                  <a
-                    className="dl-btn"
-                    href={downloadHref(r.fileUrl, r.title)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    ⬇ Download
-                  </a>
-                ) : (
-                  <button className="dl-btn" disabled title="File coming soon">
-                    ⬇ Download
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+              <Upload size={16} aria-hidden="true" />
+              {isEn ? "Add a resource" : "Ongeza rasilimali"}
+            </button>
+          </div>
+        ) : (
+          <div className="res-grid" id="res-grid" style={{ marginTop: "var(--space-8)" }}>
+            {visible.map((r, idx) => (
+              <Reveal key={r.docId} delay={(idx % 3) + 1}>
+                <article className="res-card" data-cat={r.cat}>
+                  <span className="badge badge-brand">
+                    <Icon name={CAT_ICON[r.cat]} size={13} />
+                    {tx(`cat-${r.cat}`, r.rt.replace(/^\S+\s*/, ""))}
+                  </span>
+                  <h3 id={`${r.id}t`}>{r.title}</h3>
+                  <p>{r.desc}</p>
+                  <div className="res-foot">
+                    <div className="res-langs">
+                      {r.langs.map((l) => (
+                        <span
+                          className={`lang-dot${l === "en" ? " is-primary" : ""}`}
+                          key={l}
+                          lang={l}
+                        >
+                          {l.toUpperCase()}
+                        </span>
+                      ))}
+                    </div>
+                    {r.fileUrl ? (
+                      <a
+                        className="dl-btn"
+                        href={downloadHref(r.fileUrl, r.title)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Download size={14} aria-hidden="true" />
+                        {isEn ? "Download" : "Pakua"}
+                      </a>
+                    ) : (
+                      <button
+                        type="button"
+                        className="dl-btn"
+                        disabled
+                        title={isEn ? "File coming soon" : "Faili itakuja"}
+                      >
+                        <Download size={14} aria-hidden="true" />
+                        {isEn ? "Download" : "Pakua"}
+                      </button>
+                    )}
+                  </div>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
