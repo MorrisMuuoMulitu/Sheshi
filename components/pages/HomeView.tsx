@@ -12,8 +12,9 @@ import Reveal from "@/components/ui/Reveal";
 /**
  * Home page.
  *
- * It carries the value proposition *and* real content: the featured modules and
- * the newest resources come from the CMS, so what an editor publishes in the
+ * Photography-led: the hero is a real Kenyan landscape (freely licensed, see
+ * docs/CREDITS.md), and the three pillars are backed by field photographs. The
+ * featured modules and newest resources come from the CMS, so publishing in the
  * Studio changes the home page too.
  */
 export default function HomeView({
@@ -44,6 +45,10 @@ export default function HomeView({
     {
       accent: "learn",
       icon: "book",
+      photo: "/img/field-learning.jpg",
+      photoAlt: isEn
+        ? "Community members gathered for an environmental education session in Kenya"
+        : "Wanajamii wamekusanyika kwa kikao cha elimu ya mazingira nchini Kenya",
       title: tx("t-ac1", "Learn"),
       desc: tx(
         "t-ac1d",
@@ -55,6 +60,10 @@ export default function HomeView({
     {
       accent: "build",
       icon: "tools",
+      photo: "/img/field-working.jpg",
+      photoAlt: isEn
+        ? "Tea pickers working a hillside near Kericho, Kenya"
+        : "Wachunaji chai wakifanya kazi kwenye kilima karibu na Kericho, Kenya",
       title: tx("t-ac2", "Build"),
       desc: tx(
         "t-ac2d",
@@ -66,6 +75,10 @@ export default function HomeView({
     {
       accent: "act",
       icon: "hands",
+      photo: "/img/field-planting.jpg",
+      photoAlt: isEn
+        ? "A community group preparing to plant tree seedlings in Kenya"
+        : "Kikundi cha jamii kikijiandaa kupanda miche ya miti nchini Kenya",
       title: tx("t-ac3", "Act"),
       desc: tx(
         "t-ac3d",
@@ -76,48 +89,50 @@ export default function HomeView({
     },
   ];
 
-  // Real content from the CMS.
   const featured = topics.slice(0, 3);
   // "Latest" means most recently edited in the Studio, not the seed order.
   const latest = [...resources]
     .sort((a, b) => (b.updatedAt ?? "").localeCompare(a.updatedAt ?? ""))
     .slice(0, 4);
-  const videoCount = topics.filter((x) => x.videoUrl).length;
 
   const stats = isEn
     ? [
         { n: String(topics.length), l: "Modules" },
         { n: String(resources.length), l: "Resources" },
-        { n: String(videoCount), l: "Videos" },
-        { n: "EN/SW", l: "Languages" },
+        { n: "EN/SW", l: "Bilingual" },
       ]
     : [
         { n: String(topics.length), l: "Moduli" },
         { n: String(resources.length), l: "Rasilimali" },
-        { n: String(videoCount), l: "Video" },
-        { n: "EN/SW", l: "Lugha" },
+        { n: "EN/SW", l: "Lugha mbili" },
       ];
 
   return (
     <div className="page page-home" id="page-home">
-      <div className="hero-bg" id="hero-bg-el" aria-hidden="true"></div>
+      {/* ═══ HERO — a real landscape carries the page ═══════════ */}
+      <section className="hero" aria-labelledby="hero-title">
+        <Image
+          src="/img/hero-field.jpg"
+          alt={
+            isEn
+              ? "Open grassland and woodland on the Lolldaiga conservancy in Laikipia, Kenya"
+              : "Nyasi na misitu ya wazi katika hifadhi ya Lolldaiga, Laikipia, Kenya"
+          }
+          fill
+          priority
+          sizes="100vw"
+          className="hero-photo"
+        />
+        <div className="hero-scrim" aria-hidden="true" />
 
-      <div className="hero-inner">
-        <div className="hero-two-col">
-          {/* LEFT: the pitch */}
-          <div className="hero-left">
-            <Reveal as="div" className="hero-logo-block">
-              <Image id="hero-logo-img" src="/mark-tile.png" alt="" width={120} height={107} priority />
-              <div>
-                <div className="hero-brand-name">ENVIRO-HENSION</div>
-                <div className="hero-tagline-txt" id="t-tagline">
-                  {tx("t-tagline", "Discover · Engage · Empower")}
-                </div>
-              </div>
+        <div className="hero-content">
+          <div className="hero-copy">
+            <Reveal as="p" className="hero-eyebrow">
+              {tx("t-tagline", "Discover · Engage · Empower")}
             </Reveal>
 
             <Reveal delay={1}>
-              <h1 className="display-2">
+              <h1 className="hero-title" id="hero-title">
                 {isEn
                   ? "Capacity for the people who protect Kenya's environment."
                   : "Uwezo kwa watu wanaolinda mazingira ya Kenya."}
@@ -125,7 +140,7 @@ export default function HomeView({
             </Reveal>
 
             <Reveal delay={2}>
-              <p className="hero-intro-txt" id="t-heroIntro">
+              <p className="hero-lede" id="t-heroIntro">
                 {tx(
                   "t-heroIntro",
                   "A capacity-building platform for environmental community leaders — in English and Kiswahili.",
@@ -134,28 +149,19 @@ export default function HomeView({
             </Reveal>
 
             <Reveal delay={3} className="hero-actions">
-              <Link className="btn btn-primary btn-lg" href={`${base}/learn`}>
+              <Link className="btn btn-brand btn-lg" href={`${base}/learn`}>
                 {isEn ? "Start learning" : "Anza kujifunza"}
                 <ArrowRight size={16} aria-hidden="true" />
               </Link>
-              <Link className="btn btn-secondary btn-lg" href={`${base}/build`}>
+              <Link className="btn btn-ghost-light btn-lg" href={`${base}/build`}>
                 {isEn ? "Get the tools" : "Pata zana"}
               </Link>
             </Reveal>
-
-            <Reveal delay={4} className="hero-stats">
-              {stats.map((s) => (
-                <div className="hero-stat" key={s.l}>
-                  <b>{s.n}</b>
-                  <span>{s.l}</span>
-                </div>
-              ))}
-            </Reveal>
           </div>
 
-          {/* RIGHT: the CMS video, or the brand mark */}
-          {heroVideoUrl ? (
-            <Reveal delay={2} className="hero-right">
+          {/* Optional CMS video, bottom-right of the hero. */}
+          {heroVideoUrl && (
+            <Reveal delay={2} className="hero-video-slot">
               <div className="video-frame" id="hero-video-wrap">
                 <video id="hero-vid" preload="none" src={heroVideoUrl} />
                 <div className="video-overlay" id="hero-vo" onClick={playHeroVid}>
@@ -165,61 +171,62 @@ export default function HomeView({
                   <div className="vo-label" id="t-vlabel">
                     {tx("t-vlabel", "Watch: Our Story")}
                   </div>
-                  <div className="vo-sub" id="t-vsub">
-                    {tx("t-vsub", "Discover what Enviro-Hension is building")}
-                  </div>
                 </div>
-              </div>
-            </Reveal>
-          ) : (
-            <Reveal delay={2} className="hero-right">
-              <div className="hero-mark">
-                <span className="hero-mark-ring" aria-hidden="true" />
-                <Image
-                  src="/mark-tile.png"
-                  alt=""
-                  width={520}
-                  height={464}
-                  priority
-                  sizes="(max-width: 900px) 70vw, 26rem"
-                />
-                <span className="hero-mark-chip is-top">
-                  <Icon name="users" size={15} />
-                  {isEn ? "Community" : "Jamii"}
-                </span>
-                <span className="hero-mark-chip is-bottom">
-                  <Icon name="leaf" size={15} />
-                  {isEn ? "Environment" : "Mazingira"}
-                </span>
               </div>
             </Reveal>
           )}
         </div>
 
-        {/* 3 PILLARS */}
-        <div id="hero-cards-section"></div>
-        <div className="action-cards">
-          {pillars.map((p, i) => (
-            <Reveal key={p.title} delay={i + 1}>
-              <Link className="action-card" href={p.href} data-accent={p.accent}>
-                <span className="icon-tile">
-                  <Icon name={p.icon} size={24} />
-                </span>
-                <h3 id={`t-ac${i + 1}`}>{p.title}</h3>
-                <p id={`t-ac${i + 1}d`}>{p.desc}</p>
-                <span className="link-arrow" id={`t-ac${i + 1}a`}>
-                  {p.cta}
-                  <ArrowRight size={15} aria-hidden="true" />
-                </span>
-              </Link>
-            </Reveal>
-          ))}
+        <div className="hero-stats-bar">
+          <div className="hero-stats">
+            {stats.map((s) => (
+              <div className="hero-stat" key={s.l}>
+                <b>{s.n}</b>
+                <span>{s.l}</span>
+              </div>
+            ))}
+            <div className="hero-stat hero-stat-mark">
+              <Image src="/mark-light.png" alt="" width={84} height={75} />
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* ── CONTENT BELOW THE HERO ─────────────────────────────────── */}
+      {/* ═══ PILLARS — each backed by a field photograph ════════ */}
+      <section className="pillars" id="hero-cards-section" aria-label={isEn ? "What you can do" : "Unachoweza kufanya"}>
+        <div className="container">
+          <div className="action-cards">
+            {pillars.map((p, i) => (
+              <Reveal key={p.title} delay={i + 1}>
+                <Link className="action-card" href={p.href} data-accent={p.accent}>
+                  <div className="action-card-photo">
+                    <Image
+                      src={p.photo}
+                      alt={p.photoAlt}
+                      fill
+                      sizes="(max-width: 900px) 100vw, 33vw"
+                    />
+                    <span className="icon-tile">
+                      <Icon name={p.icon} size={22} />
+                    </span>
+                  </div>
+                  <div className="action-card-body">
+                    <h2 id={`t-ac${i + 1}`}>{p.title}</h2>
+                    <p id={`t-ac${i + 1}d`}>{p.desc}</p>
+                    <span className="link-arrow" id={`t-ac${i + 1}a`}>
+                      {p.cta}
+                      <ArrowRight size={15} aria-hidden="true" />
+                    </span>
+                  </div>
+                </Link>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <div className="home-body">
-        {/* FEATURED MODULES — real CMS content */}
+        {/* ═══ FEATURED MODULES ═══════════════════════════════════ */}
         {featured.length > 0 && (
           <section className="container section-tight" aria-labelledby="h-mod-title">
             <div className="section-head">
@@ -279,16 +286,24 @@ export default function HomeView({
           </section>
         )}
 
-        {/* IMPACT — real numbers from the dataset */}
+        {/* ═══ IMPACT — real numbers, photographic band ═══════════ */}
         <section className="impact-band" aria-labelledby="impact-title">
-          <div className="container">
+          <Image
+            src="/img/band-tea.jpg"
+            alt=""
+            fill
+            sizes="100vw"
+            className="impact-band-photo"
+          />
+          <div className="impact-band-scrim" aria-hidden="true" />
+          <div className="container impact-inner">
             <Reveal>
               <p className="eyebrow" style={{ color: "var(--sage-300)" }}>
                 {isEn ? "In the library today" : "Kwenye maktaba leo"}
               </p>
             </Reveal>
             <Reveal delay={1}>
-              <h2 className="display-3" id="impact-title" style={{ marginBottom: "var(--space-10)" }}>
+              <h2 className="display-3" id="impact-title">
                 {isEn
                   ? "Everything you need to run a campaign."
                   : "Kila kitu unachohitaji kuendesha kampeni."}
@@ -301,8 +316,8 @@ export default function HomeView({
                   <h3>{s.l}</h3>
                   <p>
                     {isEn
-                      ? ["Step-by-step guides", "Free downloads", "In Kiswahili and English", "Every page, both ways"][i]
-                      : ["Miongozo ya hatua", "Vipakuliwa bure", "Kwa Kiswahili na Kiingereza", "Kila ukurasa, lugha mbili"][i]}
+                      ? ["Step-by-step guides", "Free downloads", "Every page, both ways"][i]
+                      : ["Miongozo ya hatua", "Vipakuliwa bure", "Kila ukurasa, lugha mbili"][i]}
                   </p>
                 </Reveal>
               ))}
@@ -310,7 +325,7 @@ export default function HomeView({
           </div>
         </section>
 
-        {/* LATEST RESOURCES — real CMS content */}
+        {/* ═══ LATEST RESOURCES ═══════════════════════════════════ */}
         {latest.length > 0 && (
           <section className="container section-tight" aria-labelledby="h-res-title">
             <div className="section-head">
@@ -383,16 +398,24 @@ export default function HomeView({
           </section>
         )}
 
-        {/* SHARE */}
+        {/* ═══ SHARE ══════════════════════════════════════════════ */}
         <div className="container" style={{ paddingBottom: "var(--section-y)" }}>
           <Reveal>
             <div className="share-card">
+              <Image
+                src="/img/hills.jpg"
+                alt=""
+                fill
+                sizes="100vw"
+                className="share-card-photo"
+              />
+              <div className="share-card-scrim" aria-hidden="true" />
               <div className="share-card-left">
                 <span className="icon-tile">
                   <Icon name="leaf" size={24} />
                 </span>
                 <div>
-                  <h3 id="t-sch">{tx("t-sch", "Share Your Story")}</h3>
+                  <h2 id="t-sch">{tx("t-sch", "Share Your Story")}</h2>
                   <p id="t-scp">
                     {tx(
                       "t-scp",

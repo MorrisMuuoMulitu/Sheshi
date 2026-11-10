@@ -455,6 +455,70 @@
   background: color-mix(in srgb, var(--bg-brand) 96%, transparent);
 }
 
+/* Over the home page hero the nav is transparent, so everything in it flips
+   to light-on-dark. It returns to the sage bar as soon as the page scrolls. */
+.nav.is-transparent {
+  background: transparent;
+  border-bottom-color: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.nav.is-transparent .nav-brand,
+.nav.is-transparent .nav-link {
+  color: #fff;
+}
+
+.nav.is-transparent .nav-link:hover {
+  background: color-mix(in srgb, #fff 16%, transparent);
+}
+
+.nav.is-transparent .nav-link.is-active {
+  background: #fff;
+  color: var(--forest-800);
+}
+
+.nav.is-transparent .nav-logo img {
+  background: color-mix(in srgb, #fff 92%, transparent);
+}
+
+.nav.is-transparent .lang-switch {
+  background: color-mix(in srgb, #fff 16%, transparent);
+}
+
+.nav.is-transparent .lang-switch a {
+  color: color-mix(in srgb, #fff 82%, transparent);
+}
+
+.nav.is-transparent .lang-switch a.is-active {
+  background: #fff;
+  color: var(--forest-800);
+}
+
+.nav.is-transparent .icon-btn,
+.nav.is-transparent .hamburger span {
+  color: #fff;
+}
+
+.nav.is-transparent .hamburger span {
+  background: #fff;
+}
+
+.nav.is-transparent .icon-btn:hover,
+.nav.is-transparent .hamburger:hover {
+  background: color-mix(in srgb, #fff 16%, transparent);
+}
+
+.nav.is-transparent .nav-cta {
+  background: #fff;
+  color: var(--forest-800);
+}
+
+.nav.is-transparent .nav-cta:hover {
+  background: var(--sage-200);
+}
+
 .nav-logo {
   display: flex;
   align-items: center;

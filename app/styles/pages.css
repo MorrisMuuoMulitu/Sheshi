@@ -2,274 +2,88 @@
    PAGES — home, learn, build, act, work, contact
    ═══════════════════════════════════════════════════════════════ */
 
-/* ═══ HOME — HERO ══════════════════════════════════════════════ */
+/* ═══ HOME — HERO (photographic) ═══════════════════════════════ */
 .page-home {
   position: relative;
-  overflow: hidden;
-  padding-top: var(--nav-h);
-  background: var(--bg-brand);
+  background: var(--bg);
+}
+
+.hero {
+  position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
+  min-height: clamp(38rem, 34rem + 22vw, 54rem);
+  padding-top: calc(var(--nav-h) + var(--space-16));
+  overflow: hidden;
+  color: var(--text-on-dark);
 }
 
-/* Content below the hero sits on the standard page surface. */
-.home-body {
-  position: relative;
-  z-index: var(--z-raised);
-  background: var(--bg);
-  border-top-left-radius: var(--radius-xl);
-  border-top-right-radius: var(--radius-xl);
-  margin-top: calc(var(--space-10) * -1);
-  padding-top: var(--space-10);
-  box-shadow: var(--shadow-lg);
+.hero-photo {
+  object-fit: cover;
+  object-position: 50% 42%;
+  z-index: -2;
 }
 
-/* The hero field: the logo's sage, with a warm horizon and layered hills —
-   the motif from the brand mark, rebuilt in CSS. */
-.hero-bg {
+/* Deep forest scrim: dark at the bottom-left where the copy sits, clearing
+   toward the top-right so the landscape stays visible. */
+.hero-scrim {
   position: absolute;
   inset: 0;
-  z-index: var(--z-base);
+  z-index: -1;
   background:
-    radial-gradient(52rem 30rem at 78% -6%, color-mix(in srgb, var(--ochre-300) 42%, transparent), transparent 66%),
-    radial-gradient(40rem 26rem at 6% 12%, color-mix(in srgb, var(--sage-100) 70%, transparent), transparent 70%),
-    linear-gradient(178deg, var(--sage-200) 0%, var(--sage-200) 52%, var(--sage-100) 100%);
+    linear-gradient(to top, color-mix(in srgb, var(--forest-950) 96%, transparent) 0%,
+      color-mix(in srgb, var(--forest-950) 62%, transparent) 38%,
+      color-mix(in srgb, var(--forest-950) 18%, transparent) 68%,
+      color-mix(in srgb, var(--forest-950) 42%, transparent) 100%),
+    linear-gradient(100deg, color-mix(in srgb, var(--forest-950) 78%, transparent) 0%,
+      color-mix(in srgb, var(--forest-950) 12%, transparent) 62%);
 }
 
-/* Rolling hills — drawn as oversized rounded shapes, like the mark. */
-.hero-bg::before {
-  content: "";
-  position: absolute;
-  left: -10%;
-  right: -10%;
-  bottom: -14%;
-  height: 46%;
-  background:
-    radial-gradient(60% 100% at 18% 100%, var(--sage-300) 0 62%, transparent 63%),
-    radial-gradient(52% 100% at 62% 100%, var(--sage-400) 0 60%, transparent 61%),
-    radial-gradient(46% 100% at 96% 100%, var(--sage-300) 0 58%, transparent 59%);
-  opacity: 0.55;
-}
-
-/* Fine field-grid texture — the "editorial field" motif. */
-.hero-bg::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(to right, color-mix(in srgb, var(--forest-900) 5%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--forest-900) 5%, transparent) 1px, transparent 1px);
-  background-size: 68px 68px;
-  mask-image: radial-gradient(75% 65% at 50% 34%, #000 20%, transparent 100%);
-  -webkit-mask-image: radial-gradient(75% 65% at 50% 34%, #000 20%, transparent 100%);
-  pointer-events: none;
-}
-
-/* Dark theme: the field turns to a night canopy, keeping the warm horizon. */
-:root[data-theme="dark"] .hero-bg {
-  background:
-    radial-gradient(52rem 30rem at 78% -6%, color-mix(in srgb, var(--ochre-500) 26%, transparent), transparent 66%),
-    radial-gradient(40rem 26rem at 6% 12%, color-mix(in srgb, var(--sage-700) 30%, transparent), transparent 70%),
-    linear-gradient(178deg, var(--forest-800) 0%, var(--forest-800) 52%, var(--forest-900) 100%);
-}
-
-:root[data-theme="dark"] .hero-bg::before { opacity: 0.3; }
-
-:root[data-theme="dark"] .hero-bg::after {
-  background-image:
-    linear-gradient(to right, color-mix(in srgb, var(--sage-300) 7%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--sage-300) 7%, transparent) 1px, transparent 1px);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .hero-bg {
-    background:
-      radial-gradient(52rem 30rem at 78% -6%, color-mix(in srgb, var(--ochre-500) 26%, transparent), transparent 66%),
-      radial-gradient(40rem 26rem at 6% 12%, color-mix(in srgb, var(--sage-700) 30%, transparent), transparent 70%),
-      linear-gradient(178deg, var(--forest-800) 0%, var(--forest-800) 52%, var(--forest-900) 100%);
-  }
-
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .hero-bg::before { opacity: 0.3; }
-
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .hero-bg::after {
-    background-image:
-      linear-gradient(to right, color-mix(in srgb, var(--sage-300) 7%, transparent) 1px, transparent 1px),
-      linear-gradient(to bottom, color-mix(in srgb, var(--sage-300) 7%, transparent) 1px, transparent 1px);
-  }
-}
-
-.hero-inner {
-  position: relative;
-  z-index: var(--z-raised);
+.hero-content {
   width: 100%;
   max-width: var(--max-w);
   margin-inline: auto;
-  padding: calc(var(--nav-h) + clamp(2rem, 1rem + 4vw, 4rem)) var(--gutter)
-    clamp(3rem, 2rem + 4vw, 4.5rem);
+  padding: 0 var(--gutter) var(--space-8);
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: var(--space-8);
+  align-items: end;
+}
+
+.hero-copy {
   display: flex;
   flex-direction: column;
-  gap: clamp(2.5rem, 1.5rem + 4vw, 4rem);
+  gap: var(--space-5);
+  max-width: 44rem;
 }
 
-.hero-two-col {
-  display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: clamp(2rem, 1rem + 3vw, 3.5rem);
-  align-items: center;
-}
-
-/* No hero video in the CMS → the copy takes the full width, centred. */
-.hero-two-col.hero-single {
-  grid-template-columns: minmax(0, 1fr);
-  justify-items: start;
-}
-
-.hero-two-col.hero-single .hero-left {
-  max-width: 46rem;
-}
-
-/* The brand mark, lifted out of the logo file and given presence as the
-   hero's visual anchor — it carries the community + landscape idea. */
-.hero-mark {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 100%;
-  max-width: 26rem;
-  margin-inline: auto;
-  aspect-ratio: 1;
-}
-
-.hero-mark-ring {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 50% 46%, color-mix(in srgb, var(--sage-100) 92%, transparent) 0 52%, transparent 53%),
-    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--ochre-200) 50%, transparent) 0 65%, transparent 66%);
-  animation: eh-breathe 9s var(--ease-in-out) infinite;
-}
-
-.hero-mark-ring::after {
-  content: "";
-  position: absolute;
-  inset: 5%;
-  border-radius: 50%;
-  border: 1.5px dashed color-mix(in srgb, var(--forest-700) 24%, transparent);
-}
-
-@keyframes eh-breathe {
-  0%, 100% { transform: scale(1); }
-  50%      { transform: scale(1.04); }
-}
-
-.hero-mark img {
-  position: relative;
-  width: 74%;
-  height: auto;
-  border-radius: 50%;
-  background: var(--sage-200);
-  box-shadow: var(--shadow-warm);
-}
-
-/* Small floating chips around the mark — people, not decoration. */
-.hero-mark-chip {
-  position: absolute;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-full);
-  background: var(--bg-elevated);
-  color: var(--text);
-  font-size: var(--fs-xs);
-  font-weight: 700;
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
-  box-shadow: var(--shadow-md);
-  white-space: nowrap;
-}
-
-.hero-mark-chip svg {
-  width: 16px;
-  height: 16px;
-  color: var(--accent);
-}
-
-.hero-mark-chip.is-top {
-  top: 6%;
-  left: -4%;
-  animation: eh-float 6s var(--ease-in-out) infinite;
-}
-
-.hero-mark-chip.is-bottom {
-  bottom: 8%;
-  right: -3%;
-  animation: eh-float 6s var(--ease-in-out) 1.2s infinite;
-}
-
-.hero-mark-chip.is-bottom svg { color: var(--accent-warm); }
-
-/* Dark theme: the pillar washes become deep tinted tones, not grey. */
-:root[data-theme="dark"] .action-card[data-accent="learn"] { --card-accent-soft: #23301a; }
-:root[data-theme="dark"] .action-card[data-accent="build"] { --card-accent-soft: #33290f; }
-:root[data-theme="dark"] .action-card[data-accent="act"]   { --card-accent-soft: #33200f; }
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .action-card[data-accent="learn"] { --card-accent-soft: #23301a; }
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .action-card[data-accent="build"] { --card-accent-soft: #33290f; }
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .action-card[data-accent="act"]   { --card-accent-soft: #33200f; }
-}
-
-@keyframes eh-float {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-7px); }
-}
-
-.hero-left {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-  align-items: flex-start;
-}
-
-.hero-logo-block {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-}
-
-.hero-logo-block img {
-  height: clamp(52px, 7vw, 64px);
-  width: auto;
-  border-radius: 50%;
-  flex-shrink: 0;
-  box-shadow: var(--shadow-sm);
-}
-
-.hero-brand-name {
-  font-family: var(--font-display);
-  font-size: clamp(1.25rem, 0.9rem + 1.6vw, 1.75rem);
-  font-weight: 700;
-  letter-spacing: var(--tracking-wide);
-  color: var(--text);
-  line-height: 1.1;
-}
-
-.hero-tagline-txt {
+.hero-eyebrow {
   font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: var(--tracking-widest);
   text-transform: uppercase;
-  color: var(--accent);
-  margin-top: var(--space-1);
+  color: var(--sage-200);
 }
 
-.hero-intro-txt {
-  font-size: clamp(1rem, 0.9rem + 0.5vw, 1.15rem);
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.35rem, 1.5rem + 3.6vw, 4.15rem);
+  font-weight: 700;
+  line-height: 1.03;
+  letter-spacing: -0.03em;
+  color: #fff;
+  text-wrap: balance;
+  text-shadow: 0 2px 24px rgba(8, 14, 5, 0.35);
+}
+
+.hero-lede {
+  font-size: clamp(1rem, 0.94rem + 0.35vw, 1.2rem);
   line-height: var(--lh-relaxed);
-  color: var(--text-muted);
-  max-width: 46ch;
+  color: color-mix(in srgb, #fff 84%, transparent);
+  max-width: 40ch;
+  text-shadow: 0 1px 12px rgba(8, 14, 5, 0.4);
 }
 
 .hero-actions {
@@ -277,16 +91,44 @@
   flex-wrap: wrap;
   gap: var(--space-3);
   align-items: center;
+  margin-top: var(--space-2);
 }
 
-/* Hero stat strip. */
-.hero-stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: clamp(1.5rem, 1rem + 2vw, 3rem);
-  padding-top: var(--space-5);
-  border-top: 1px solid color-mix(in srgb, var(--ink-950) 12%, transparent);
+.btn-ghost-light {
+  background: color-mix(in srgb, #fff 10%, transparent);
+  color: #fff;
+  border-color: color-mix(in srgb, #fff 42%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+.btn-ghost-light:hover:not(:disabled) {
+  background: color-mix(in srgb, #fff 22%, transparent);
+  border-color: #fff;
+  color: #fff;
+}
+
+.hero-video-slot {
+  justify-self: end;
   width: 100%;
+  max-width: 28rem;
+}
+
+/* Stat bar across the bottom of the hero. */
+.hero-stats-bar {
+  position: relative;
+  border-top: 1px solid color-mix(in srgb, #fff 18%, transparent);
+  background: color-mix(in srgb, var(--forest-950) 42%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.hero-stats {
+  width: 100%;
+  max-width: var(--max-w);
+  margin-inline: auto;
+  padding: var(--space-5) var(--gutter);
+  display: flex;
+  align-items: center;
+  gap: clamp(1.75rem, 1rem + 4vw, 4.5rem);
 }
 
 .hero-stat {
@@ -297,11 +139,11 @@
 
 .hero-stat b {
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+  font-size: clamp(1.4rem, 1.1rem + 1.1vw, 1.9rem);
   font-weight: 700;
   line-height: 1;
   letter-spacing: var(--tracking-tight);
-  color: var(--text);
+  color: #fff;
   font-variant-numeric: tabular-nums;
 }
 
@@ -309,97 +151,25 @@
   font-size: var(--fs-xs);
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
-  color: var(--text-subtle);
+  color: color-mix(in srgb, #fff 70%, transparent);
   font-weight: 700;
 }
 
-.hero-right {
-  width: 100%;
+.hero-stat-mark {
+  margin-left: auto;
 }
 
-/* Video frame. */
-.video-frame {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  background: var(--ink-950);
-  border: 1px solid color-mix(in srgb, var(--ink-950) 14%, transparent);
-  box-shadow: var(--shadow-xl);
-}
-
-.video-frame video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.video-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-3);
-  padding: var(--space-6);
-  text-align: center;
-  background: linear-gradient(140deg, rgba(16, 19, 9, 0.72), rgba(47, 61, 28, 0.62));
-  color: var(--sage-100);
-  transition: opacity var(--dur-3) var(--ease-out);
-}
-
-.video-overlay:hover {
+.hero-stat-mark img {
+  height: 44px;
+  width: auto;
   opacity: 0.9;
 }
 
-.play-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: clamp(56px, 8vw, 76px);
-  height: clamp(56px, 8vw, 76px);
-  border-radius: var(--radius-full);
-  background: var(--sage-200);
-  color: var(--ink-950);
-  transition: transform var(--dur-2) var(--ease-spring),
-              box-shadow var(--dur-2) var(--ease-out);
-  animation: eh-pulse-ring 3s var(--ease-out) infinite;
-}
-
-.video-overlay:hover .play-btn {
-  transform: scale(1.08);
-}
-
-.play-btn svg {
-  width: 26px;
-  height: 26px;
-  margin-left: 3px;
-}
-
-.vo-label {
-  font-family: var(--font-display);
-  font-size: clamp(1rem, 0.9rem + 0.5vw, 1.15rem);
-  font-weight: 600;
-  letter-spacing: var(--tracking-normal);
-}
-
-.vo-sub {
-  font-size: var(--fs-sm);
-  color: color-mix(in srgb, var(--sage-100) 72%, transparent);
-  max-width: 34ch;
-}
-
-/* Video overlay in a disabled state (no media yet). */
-.video-overlay.is-disabled {
-  background: color-mix(in srgb, var(--ink-950) 78%, transparent);
-  cursor: not-allowed;
-}
-
-.video-overlay.is-disabled .play-btn {
-  opacity: 0.4;
-  animation: none;
+/* ═══ HOME — PILLARS ═══════════════════════════════════════════ */
+.pillars {
+  position: relative;
+  background: var(--bg);
+  padding-block: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
 }
 
 /* ═══ HOME — ACTION CARDS ═════════════════════════════════════ */
@@ -414,46 +184,16 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-6);
   background: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
+  overflow: hidden;
   text-decoration: none;
   color: inherit;
-  overflow: hidden;
   box-shadow: var(--shadow-sm);
   transition: transform var(--dur-3) var(--ease-out),
               box-shadow var(--dur-3) var(--ease-out),
               border-color var(--dur-3) var(--ease-out);
-}
-
-/* Each pillar gets its own accent — Learn/Build/Act are three distinct
-   journeys, not three grey boxes. */
-.action-card::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 4px;
-  background: var(--card-accent, var(--accent));
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--dur-3) var(--ease-out);
-  z-index: var(--z-raised);
-}
-
-/* A soft wash of the pillar colour in the corner. */
-.action-card::after {
-  content: "";
-  position: absolute;
-  inset: auto -22% -48% auto;
-  width: 13rem;
-  height: 13rem;
-  border-radius: 50%;
-  background: var(--card-accent-soft, var(--accent-soft));
-  opacity: 0.55;
-  transition: transform var(--dur-4) var(--ease-out);
-  pointer-events: none;
 }
 
 .action-card:hover {
@@ -462,17 +202,41 @@
   border-color: var(--border-strong);
 }
 
-.action-card:hover::before {
-  transform: scaleX(1);
+/* Photograph band at the top of each pillar. */
+.action-card-photo {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--bg-sunken);
 }
 
-.action-card:hover::after {
-  transform: scale(1.3);
+.action-card-photo img {
+  object-fit: cover;
+  transition: transform var(--dur-4) var(--ease-out);
+}
+
+.action-card:hover .action-card-photo img {
+  transform: scale(1.05);
+}
+
+/* The accent rule sits over the photo, so each pillar stays identifiable. */
+.action-card-photo::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 3px;
+  background: var(--card-accent, var(--accent));
 }
 
 .action-card .icon-tile {
-  background: var(--card-accent-soft, var(--accent-soft));
+  position: absolute;
+  left: var(--space-4);
+  bottom: var(--space-4);
+  background: var(--bg-elevated);
   color: var(--card-accent, var(--accent));
+  box-shadow: var(--shadow-sm);
+  transition: background-color var(--dur-2) var(--ease-out),
+              color var(--dur-2) var(--ease-out);
 }
 
 .action-card:hover .icon-tile {
@@ -480,8 +244,20 @@
   color: #fff;
 }
 
-.action-card h3 {
+.action-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  flex: 1;
+}
+
+.action-card h2 {
+  font-family: var(--font-display);
   font-size: var(--fs-xl);
+  font-weight: 700;
+  letter-spacing: var(--tracking-tight);
+  color: var(--text);
 }
 
 .action-card p {
@@ -492,20 +268,10 @@
 }
 
 .action-card .link-arrow {
-  margin-top: var(--space-2);
+  margin-top: var(--space-3);
   align-self: flex-start;
-  position: relative;
-  z-index: var(--z-raised);
 }
 
-.action-card .icon-tile,
-.action-card h3,
-.action-card p {
-  position: relative;
-  z-index: var(--z-raised);
-}
-
-/* Pillar accents. */
 .action-card[data-accent="learn"] {
   --card-accent: var(--forest-500);
   --card-accent-soft: var(--sage-100);
@@ -656,19 +422,41 @@
 
 /* ═══ HOME — SHARE CARD ════════════════════════════════════════ */
 .share-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-5);
   flex-wrap: wrap;
-  padding: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+  padding: clamp(1.75rem, 1rem + 3vw, 3rem);
   background: var(--bg-inverse);
   color: var(--text-on-dark);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
 }
 
+.share-card-photo {
+  object-fit: cover;
+  object-position: 50% 60%;
+  z-index: -2;
+}
+
+.share-card-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(100deg,
+      color-mix(in srgb, var(--forest-950) 92%, transparent) 0%,
+      color-mix(in srgb, var(--forest-950) 76%, transparent) 55%,
+      color-mix(in srgb, var(--forest-950) 52%, transparent) 100%);
+}
+
 .share-card-left {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: flex-start;
   gap: var(--space-4);
@@ -676,12 +464,17 @@
   min-width: 0;
 }
 
+.share-card .btn {
+  position: relative;
+  z-index: 1;
+}
+
 .share-card .icon-tile {
   background: color-mix(in srgb, var(--sage-200) 16%, transparent);
   color: var(--sage-200);
 }
 
-.share-card h3 {
+.share-card h2 {
   font-size: var(--fs-xl);
   color: var(--text-on-dark);
   margin-bottom: var(--space-1);
@@ -696,9 +489,34 @@
 
 /* ═══ HOME — IMPACT BAND ═══════════════════════════════════════ */
 .impact-band {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   background: var(--bg-inverse);
   color: var(--text-on-dark);
   padding-block: var(--section-y);
+}
+
+.impact-band-photo {
+  object-fit: cover;
+  object-position: 50% 55%;
+  z-index: -2;
+}
+
+.impact-band-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(105deg,
+      color-mix(in srgb, var(--forest-950) 94%, transparent) 0%,
+      color-mix(in srgb, var(--forest-950) 82%, transparent) 46%,
+      color-mix(in srgb, var(--forest-950) 62%, transparent) 100%);
+}
+
+.impact-inner {
+  position: relative;
+  z-index: 1;
 }
 
 .impact-band h2,
@@ -800,6 +618,7 @@
 /* ═══ PAGE HEADER (learn / build / act / work) ═════════════════ */
 .page-head {
   position: relative;
+  isolation: isolate;
   background: var(--bg-inverse);
   color: var(--text-on-dark);
   padding-block: clamp(3rem, 2rem + 5vw, 5.5rem);
@@ -810,9 +629,32 @@
   content: "";
   position: absolute;
   inset: 0;
+  z-index: -1;
   background:
     radial-gradient(40rem 26rem at 88% -20%, color-mix(in srgb, var(--sage-500) 26%, transparent), transparent 70%);
   pointer-events: none;
+}
+
+/* Photographic page heads. */
+.page-head-photo {
+  padding-block: clamp(4rem, 2.5rem + 7vw, 8rem);
+}
+
+.page-head-img {
+  object-fit: cover;
+  object-position: 50% 45%;
+  z-index: -3;
+}
+
+.page-head-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    linear-gradient(100deg,
+      color-mix(in srgb, var(--forest-950) 92%, transparent) 0%,
+      color-mix(in srgb, var(--forest-950) 76%, transparent) 52%,
+      color-mix(in srgb, var(--forest-950) 46%, transparent) 100%);
 }
 
 .page-head .container {
@@ -1623,7 +1465,7 @@
 
 /* ═══ RESPONSIVE ═══════════════════════════════════════════════ */
 @media (max-width: 900px) {
-  .hero-two-col,
+  .hero-content,
   .learn-intro,
   .td-grid,
   .event-box,
@@ -1631,8 +1473,18 @@
     grid-template-columns: 1fr;
   }
 
-  .hero-left {
-    align-items: flex-start;
+  .hero-video-slot {
+    justify-self: start;
+    max-width: 100%;
+  }
+
+  .hero-stats {
+    flex-wrap: wrap;
+    gap: var(--space-5) var(--space-8);
+  }
+
+  .hero-stat-mark {
+    margin-left: 0;
   }
 
   .td-grid {
@@ -1662,5 +1514,65 @@
 
   .scroll-cue {
     display: none;
+  }
+}
+
+/* ═══ CREDITS ══════════════════════════════════════════════════ */
+.credit-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.credit-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  padding: var(--space-4);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.credit-list img {
+  width: 160px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.credit-list h2 {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  letter-spacing: normal;
+  margin-bottom: var(--space-1);
+}
+
+.credit-list p {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.credit-list a {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.credit-used {
+  font-size: var(--fs-xs) !important;
+  color: var(--text-subtle) !important;
+  margin-top: 2px;
+}
+
+@media (max-width: 600px) {
+  .credit-list li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .credit-list img {
+    width: 100%;
+    height: 140px;
   }
 }

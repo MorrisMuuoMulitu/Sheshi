@@ -7,6 +7,7 @@ import { T, type Locale } from "@/lib/i18n";
 import { downloadHref, type ActCampaign } from "@/lib/views";
 import { Icon } from "@/components/ui/Icon";
 import Reveal from "@/components/ui/Reveal";
+import PageHead from "@/components/ui/PageHead";
 
 type Status = "idle" | "sending" | "ok" | "error";
 
@@ -62,20 +63,20 @@ export default function ActView({
 
   return (
     <div className="page" id="page-act">
-      <section className="page-head">
-        <div className="container">
-          <p className="eyebrow" id="t-aey">
-            {tx("t-aey", "Community Action")}
-          </p>
-          <h1 id="t-ah">{tx("t-ah", "Organize. Mobilize. Lead.")}</h1>
-          <p id="t-ap">
-            {tx(
-              "t-ap",
-              "Turn knowledge into action with campaign guides built for Kenyan communities.",
-            )}
-          </p>
-        </div>
-      </section>
+      <PageHead
+        eyebrow={tx("t-aey", "Community Action")}
+        title={tx("t-ah", "Organize. Mobilize. Lead.")}
+        lede={tx(
+          "t-ap",
+          "Turn knowledge into action with campaign guides built for Kenyan communities.",
+        )}
+        image="/img/field-planting.jpg"
+        imageAlt={
+          isEn
+            ? "A Kenyan community group preparing to plant tree seedlings"
+            : "Kikundi cha jamii cha Kenya kikijiandaa kupanda miche ya miti"
+        }
+      />
 
       <div className="container section">
         <div className="camp-grid">

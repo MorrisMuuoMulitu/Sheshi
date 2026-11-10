@@ -7,6 +7,7 @@ import { openUploadModal } from "@/lib/ui";
 import type { StoryCard, WorkCard, WorkEpisode } from "@/lib/views";
 import { Icon } from "@/components/ui/Icon";
 import Reveal from "@/components/ui/Reveal";
+import PageHead from "@/components/ui/PageHead";
 
 const tabs = [
   { cat: "all", id: "wt-all", label: "All" },
@@ -66,20 +67,18 @@ export default function WorkView({
 
   return (
     <div className="page" id="page-work">
-      <section className="page-head">
-        <div className="container">
-          <p className="eyebrow" id="t-wey">
-            {tx("t-wey", "Our Work")}
-          </p>
-          <h1 id="t-wh">{tx("t-wh", "Stories. Voices. Impact.")}</h1>
-          <p id="t-wp">
-            {tx(
-              "t-wp",
-              "Podcasts, documentaries, and blog posts from across Kenya's environmental movement.",
-            )}
-          </p>
-        </div>
-      </section>
+      <PageHead
+        eyebrow={tx("t-wey", "Our Work")}
+        title={tx("t-wh", "Stories. Voices. Impact.")}
+        lede={tx(
+          "t-wp",
+          "Podcasts, documentaries, and blog posts from across Kenya's environmental movement.",
+        )}
+        image="/img/band-tea.jpg"
+        imageAlt={
+          isEn ? "A tea plantation stretching across a hillside in Kenya" : "Shamba la chai kwenye kilima nchini Kenya"
+        }
+      />
 
       <div className="container section">
         <button type="button" className="cms-banner" onClick={() => openUploadModal("work")}>

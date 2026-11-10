@@ -34,6 +34,10 @@ export default function Nav({ locale }: { locale: Locale }) {
   const isActive = (path: string) =>
     path === "" ? pathname === base : pathname.startsWith(`${base}/${path}`);
 
+  // The home page opens on a dark photographic hero, so the nav starts
+  // transparent over it and becomes solid as soon as the page scrolls.
+  const overHero = pathname === base && !scrolled && !open;
+
   /** Same page, other language. */
   const otherLocale: Locale = locale === "en" ? "sw" : "en";
   const switchHref = pathname.replace(`/${locale}`, `/${otherLocale}`) || `/${otherLocale}`;
@@ -95,7 +99,10 @@ export default function Nav({ locale }: { locale: Locale }) {
 
   return (
     <>
-      <nav id="main-nav" className={`nav${scrolled ? " is-scrolled" : ""}`}>
+      <nav
+        id="main-nav"
+        className={`nav${scrolled ? " is-scrolled" : ""}${overHero ? " is-transparent" : ""}`}
+      >
         <Link className="nav-logo" href={base} onClick={close}>
           <Image id="nav-logo-img" src="/mark-tile.png" alt="" width={72} height={64} priority />
           <span className="nav-brand">ENVIRO-HENSION</span>

@@ -145,7 +145,12 @@ export default function Footer({
         </div>
 
         <div className="footer-bottom">
-          <p>{settings.copyright}</p>
+          <p>
+            {settings.copyright}{" "}
+            <Link className="footer-credit-link" href={`${base}/credits`}>
+              {isEn ? "Photography credits" : "Wahusika wa picha"}
+            </Link>
+          </p>
           <p>{settings.footerNote}</p>
         </div>
       </div>

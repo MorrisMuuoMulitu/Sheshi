@@ -70,6 +70,16 @@ Topic thumbnails derive their terrain from the topic's icon, so the picture
 always matches the subject even when an editor changes the glyph and the
 thumbnail class independently.
 
+**Photography** — `public/img/*` holds the site's photographs. They are
+freely licensed images from Wikimedia Commons (CC0 / CC BY / CC BY-SA), graded
+in-process to one palette so mixed sources read as a single set. Each is
+attributed on `/[locale]/credits`, which the footer links to; delete the
+matching entry in `lib/credits.ts` when a photo is swapped out.
+
+To use Enviro-Hension's own photography, drop replacement files into
+`public/img/` with the same names — no code changes needed. Every image slot
+degrades gracefully: if a file is missing, the surface behind it still reads.
+
 **Brand assets** — `public/logo.png` is the original file (it has browser-tab
 artifacts baked into the top-right corner, so it is not used at small sizes).
 `public/mark.png` is the extracted artwork on transparency, `mark-tile.png` the
@@ -222,6 +232,7 @@ published edits appear within about a minute without a redeploy.
 ```
 app/
   [locale]/            # en + sw routes (layout, home, learn, build, act, work, contact)
+    credits/page.tsx  # photography attribution
     loading.tsx       # route-level skeleton
     error.tsx         # route-level error boundary
   api/                 # contact, newsletter, event, story, upload, revalidate

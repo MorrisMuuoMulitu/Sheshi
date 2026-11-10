@@ -7,6 +7,7 @@ import { T, type Locale } from "@/lib/i18n";
 import { downloadHref, type LearnTopic } from "@/lib/views";
 import { Icon, terrainFor } from "@/components/ui/Icon";
 import Reveal from "@/components/ui/Reveal";
+import PageHead from "@/components/ui/PageHead";
 
 /**
  * Learn page — topic grid + step-by-step detail (client interactivity).
@@ -174,20 +175,21 @@ export default function LearnView({
   return (
     <div className="page" id="page-learn">
       <div id="topic-list">
-        <section className="page-head">
-          <div className="container">
-            <p className="eyebrow" id="t-lh-ey">
-              {isEn ? "Learn" : "Jifunze"}
-            </p>
-            <h1 id="t-lh">{tx("t-lh", "Choose What to Learn")}</h1>
-            <p id="t-lp">
-              {tx(
-                "t-lp",
-                "Select a topic. Each module has an intro video and step-by-step guide — in English and Kiswahili.",
-              )}
-            </p>
-          </div>
-        </section>
+        <PageHead
+          eyebrow={isEn ? "Learn" : "Jifunze"}
+          title={tx("t-lh", "Choose What to Learn")}
+          lede={tx(
+            "t-lp",
+            "Select a topic. Each module has an intro video and step-by-step guide — in English and Kiswahili.",
+          )}
+          id="t-lh"
+          image="/img/hills.jpg"
+          imageAlt={
+            isEn
+              ? "Green hills and acacia woodland in Kenya"
+              : "Milima ya kijani na misitu ya migunga nchini Kenya"
+          }
+        />
 
         {introVideoUrl && (
           <div className="container section-tight">

@@ -7,6 +7,7 @@ import { openUploadModal } from "@/lib/ui";
 import { downloadHref, type LibraryResource } from "@/lib/views";
 import { Icon } from "@/components/ui/Icon";
 import Reveal from "@/components/ui/Reveal";
+import PageHead from "@/components/ui/PageHead";
 
 const filters = [
   { cat: "all", id: "fb-all", label: "All" },
@@ -39,20 +40,20 @@ export default function BuildView({
 
   return (
     <div className="page" id="page-build">
-      <section className="page-head">
-        <div className="container">
-          <p className="eyebrow" id="t-bey">
-            {tx("t-bey", "Resource Library")}
-          </p>
-          <h1 id="t-bh">{tx("t-bh", "Download. Adapt. Deploy.")}</h1>
-          <p id="t-bp">
-            {tx(
-              "t-bp",
-              "Free bilingual resources — blueprints, toolkits, zines, templates — all downloadable.",
-            )}
-          </p>
-        </div>
-      </section>
+      <PageHead
+        eyebrow={tx("t-bey", "Resource Library")}
+        title={tx("t-bh", "Download. Adapt. Deploy.")}
+        lede={tx(
+          "t-bp",
+          "Free bilingual resources — blueprints, toolkits, zines, templates — all downloadable.",
+        )}
+        image="/img/field-working.jpg"
+        imageAlt={
+          isEn
+            ? "Farm workers picking tea on a hillside near Kericho, Kenya"
+            : "Wakulima wakichuna chai kwenye kilima karibu na Kericho, Kenya"
+        }
+      />
 
       <div className="container section">
         <div className="cms-banner">
