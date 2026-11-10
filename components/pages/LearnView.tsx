@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, Download, Play } from "lucide-react";
 import { T, type Locale } from "@/lib/i18n";
 import { downloadHref, type LearnTopic } from "@/lib/views";
-import { Icon } from "@/components/ui/Icon";
+import { Icon, terrainFor } from "@/components/ui/Icon";
 import Reveal from "@/components/ui/Reveal";
 
 /**
@@ -227,7 +227,7 @@ export default function LearnView({
             {topics.map((c, idx) => (
               <Reveal key={c.docId} delay={(idx % 3) + 1}>
                 <button type="button" className="topic-card" onClick={() => openTopic(c.key)}>
-                  <div className={`tc-thumb ${c.thumb}`}>
+                  <div className={`tc-thumb ${terrainFor(c.icon)}`}>
                     <Icon name={c.icon} size={44} strokeWidth={1.5} />
                   </div>
                   <div className="tc-body">

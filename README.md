@@ -16,7 +16,7 @@ submissions (stories, events, messages, newsletters) arrive as documents with
 | Framework | Next.js 16.4 (App Router, `cacheComponents`, `proxy.ts` locale routing) |
 | CMS | Sanity (`i9s1a5ax` / dataset `production`), hosted Studio |
 | Styling | Hand-written CSS design system (`app/styles/*.css`, layered tokens) |
-| Typography | Fraunces (display) + Andika (body), self-hosted via `next/font` |
+| Typography | Plus Jakarta Sans (display) + Andika (body), self-hosted via `next/font` |
 | Icons | `lucide-react` SVG + a hand-rolled brand set (`components/ui/SocialIcons.tsx`) |
 | Theming | Light + dark, token-driven, persisted in `localStorage` |
 | i18n | `/en/…` and `/sw/…` route segments, EN→SW fallback for CMS fields |
@@ -48,10 +48,33 @@ The UI is built on a four-layer token system in `app/styles/`:
 script (`components/ui/ThemeScript.tsx`), toggled by `components/ui/ThemeToggle.tsx`.
 With no stored preference the OS `prefers-color-scheme` is followed.
 
-**Type** — Fraunces is a warm editorial serif with optical sizing, used for
-display. Andika is a dyslexia-aware sans with wide apertures and a large
+**Type** — Plus Jakarta Sans is a geometric humanist sans that pairs with the
+brand mark's own geometric wordmark; it reads warm and approachable rather
+than institutional, which is the register an environmental community platform
+needs. Andika is a dyslexia-aware sans with wide apertures and a large
 x-height, used for body copy — it keeps long-form instructions legible for
 the community audience and in Kiswahili, on low-end Android and on paper.
+
+**Palette** — derived from the brand mark itself: two profiles holding a
+landscape, in sage and black. Five ramps carry it:
+
+| Ramp | Role |
+|---|---|
+| `--sage-*` | the logo field (#dfecbe) — brand surfaces, hero, active states |
+| `--forest-*` | deep canopy — dark surfaces, primary actions, headings |
+| `--ochre-*` | sunset over the hills — warm accent, Build pillar |
+| `--clay-*` | Kenyan earth — Act pillar |
+| `--water-*` | rivers and coast — Learn pillar, topic thumbnails |
+
+Topic thumbnails derive their terrain from the topic's icon, so the picture
+always matches the subject even when an editor changes the glyph and the
+thumbnail class independently.
+
+**Brand assets** — `public/logo.png` is the original file (it has browser-tab
+artifacts baked into the top-right corner, so it is not used at small sizes).
+`public/mark.png` is the extracted artwork on transparency, `mark-tile.png` the
+same on the sage field, and `mark-light.png` the light version for dark
+surfaces.
 
 
 ## Getting started

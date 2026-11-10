@@ -5,13 +5,13 @@
 /* ═══ HOME — HERO ══════════════════════════════════════════════ */
 .page-home {
   position: relative;
-  min-height: 100dvh;
   overflow: hidden;
   padding-top: var(--nav-h);
   background: var(--bg-brand);
   display: flex;
   flex-direction: column;
 }
+
 /* Content below the hero sits on the standard page surface. */
 .home-body {
   position: relative;
@@ -19,19 +19,36 @@
   background: var(--bg);
   border-top-left-radius: var(--radius-xl);
   border-top-right-radius: var(--radius-xl);
-  margin-top: calc(var(--space-8) * -1);
-  padding-top: var(--space-8);
+  margin-top: calc(var(--space-10) * -1);
+  padding-top: var(--space-10);
   box-shadow: var(--shadow-lg);
 }
 
+/* The hero field: the logo's sage, with a warm horizon and layered hills —
+   the motif from the brand mark, rebuilt in CSS. */
 .hero-bg {
   position: absolute;
   inset: 0;
   z-index: var(--z-base);
   background:
-    radial-gradient(48rem 34rem at 8% 4%, color-mix(in srgb, var(--brand-400) 45%, transparent), transparent 68%),
-    radial-gradient(40rem 30rem at 96% 92%, color-mix(in srgb, var(--ink-400) 40%, transparent), transparent 70%),
-    var(--bg-brand);
+    radial-gradient(52rem 30rem at 78% -6%, color-mix(in srgb, var(--ochre-300) 42%, transparent), transparent 66%),
+    radial-gradient(40rem 26rem at 6% 12%, color-mix(in srgb, var(--sage-100) 70%, transparent), transparent 70%),
+    linear-gradient(178deg, var(--sage-200) 0%, var(--sage-200) 52%, var(--sage-100) 100%);
+}
+
+/* Rolling hills — drawn as oversized rounded shapes, like the mark. */
+.hero-bg::before {
+  content: "";
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: -14%;
+  height: 46%;
+  background:
+    radial-gradient(60% 100% at 18% 100%, var(--sage-300) 0 62%, transparent 63%),
+    radial-gradient(52% 100% at 62% 100%, var(--sage-400) 0 60%, transparent 61%),
+    radial-gradient(46% 100% at 96% 100%, var(--sage-300) 0 58%, transparent 59%);
+  opacity: 0.55;
 }
 
 /* Fine field-grid texture — the "editorial field" motif. */
@@ -40,41 +57,44 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(to right, color-mix(in srgb, var(--ink-950) 5%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--ink-950) 5%, transparent) 1px, transparent 1px);
-  background-size: 72px 72px;
-  mask-image: radial-gradient(70% 70% at 50% 40%, #000 25%, transparent 100%);
-  -webkit-mask-image: radial-gradient(70% 70% at 50% 40%, #000 25%, transparent 100%);
+    linear-gradient(to right, color-mix(in srgb, var(--forest-900) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--forest-900) 5%, transparent) 1px, transparent 1px);
+  background-size: 68px 68px;
+  mask-image: radial-gradient(75% 65% at 50% 34%, #000 20%, transparent 100%);
+  -webkit-mask-image: radial-gradient(75% 65% at 50% 34%, #000 20%, transparent 100%);
   pointer-events: none;
 }
 
-/* Dark theme: mute the hero field so it sits behind the content instead of
-   competing with it. */
+/* Dark theme: the field turns to a night canopy, keeping the warm horizon. */
 :root[data-theme="dark"] .hero-bg {
   background:
-    radial-gradient(48rem 34rem at 8% 4%, color-mix(in srgb, var(--brand-700) 26%, transparent), transparent 68%),
-    radial-gradient(40rem 30rem at 96% 92%, color-mix(in srgb, var(--brand-800) 40%, transparent), transparent 70%),
-    var(--bg-brand);
+    radial-gradient(52rem 30rem at 78% -6%, color-mix(in srgb, var(--ochre-500) 26%, transparent), transparent 66%),
+    radial-gradient(40rem 26rem at 6% 12%, color-mix(in srgb, var(--sage-700) 30%, transparent), transparent 70%),
+    linear-gradient(178deg, var(--forest-800) 0%, var(--forest-800) 52%, var(--forest-900) 100%);
 }
+
+:root[data-theme="dark"] .hero-bg::before { opacity: 0.3; }
 
 :root[data-theme="dark"] .hero-bg::after {
   background-image:
-    linear-gradient(to right, color-mix(in srgb, var(--brand-300) 6%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--brand-300) 6%, transparent) 1px, transparent 1px);
+    linear-gradient(to right, color-mix(in srgb, var(--sage-300) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--sage-300) 7%, transparent) 1px, transparent 1px);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]):not([data-theme="dark"]) .hero-bg {
     background:
-      radial-gradient(48rem 34rem at 8% 4%, color-mix(in srgb, var(--brand-700) 26%, transparent), transparent 68%),
-      radial-gradient(40rem 30rem at 96% 92%, color-mix(in srgb, var(--brand-800) 40%, transparent), transparent 70%),
-      var(--bg-brand);
+      radial-gradient(52rem 30rem at 78% -6%, color-mix(in srgb, var(--ochre-500) 26%, transparent), transparent 66%),
+      radial-gradient(40rem 26rem at 6% 12%, color-mix(in srgb, var(--sage-700) 30%, transparent), transparent 70%),
+      linear-gradient(178deg, var(--forest-800) 0%, var(--forest-800) 52%, var(--forest-900) 100%);
   }
+
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .hero-bg::before { opacity: 0.3; }
 
   :root:not([data-theme="light"]):not([data-theme="dark"]) .hero-bg::after {
     background-image:
-      linear-gradient(to right, color-mix(in srgb, var(--brand-300) 6%, transparent) 1px, transparent 1px),
-      linear-gradient(to bottom, color-mix(in srgb, var(--brand-300) 6%, transparent) 1px, transparent 1px);
+      linear-gradient(to right, color-mix(in srgb, var(--sage-300) 7%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--sage-300) 7%, transparent) 1px, transparent 1px);
   }
 }
 
@@ -84,18 +104,17 @@
   width: 100%;
   max-width: var(--max-w);
   margin-inline: auto;
-  padding: calc(var(--nav-h) + clamp(1.5rem, 1rem + 3vw, 3rem)) var(--gutter)
+  padding: calc(var(--nav-h) + clamp(2rem, 1rem + 4vw, 4rem)) var(--gutter)
     clamp(3rem, 2rem + 4vw, 4.5rem);
   display: flex;
   flex-direction: column;
-  gap: clamp(2rem, 1.5rem + 3vw, 3.5rem);
-  flex: 1;
+  gap: clamp(2.5rem, 1.5rem + 4vw, 4rem);
 }
 
 .hero-two-col {
   display: grid;
-  grid-template-columns: 1fr 1.15fr;
-  gap: clamp(2rem, 1rem + 4vw, 4rem);
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: clamp(2rem, 1rem + 3vw, 3.5rem);
   align-items: center;
 }
 
@@ -107,6 +126,104 @@
 
 .hero-two-col.hero-single .hero-left {
   max-width: 46rem;
+}
+
+/* The brand mark, lifted out of the logo file and given presence as the
+   hero's visual anchor — it carries the community + landscape idea. */
+.hero-mark {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: 26rem;
+  margin-inline: auto;
+  aspect-ratio: 1;
+}
+
+.hero-mark-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 46%, color-mix(in srgb, var(--sage-100) 92%, transparent) 0 52%, transparent 53%),
+    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--ochre-200) 50%, transparent) 0 65%, transparent 66%);
+  animation: eh-breathe 9s var(--ease-in-out) infinite;
+}
+
+.hero-mark-ring::after {
+  content: "";
+  position: absolute;
+  inset: 5%;
+  border-radius: 50%;
+  border: 1.5px dashed color-mix(in srgb, var(--forest-700) 24%, transparent);
+}
+
+@keyframes eh-breathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.04); }
+}
+
+.hero-mark img {
+  position: relative;
+  width: 74%;
+  height: auto;
+  border-radius: 50%;
+  background: var(--sage-200);
+  box-shadow: var(--shadow-warm);
+}
+
+/* Small floating chips around the mark — people, not decoration. */
+.hero-mark-chip {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  background: var(--bg-elevated);
+  color: var(--text);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  box-shadow: var(--shadow-md);
+  white-space: nowrap;
+}
+
+.hero-mark-chip svg {
+  width: 16px;
+  height: 16px;
+  color: var(--accent);
+}
+
+.hero-mark-chip.is-top {
+  top: 6%;
+  left: -4%;
+  animation: eh-float 6s var(--ease-in-out) infinite;
+}
+
+.hero-mark-chip.is-bottom {
+  bottom: 8%;
+  right: -3%;
+  animation: eh-float 6s var(--ease-in-out) 1.2s infinite;
+}
+
+.hero-mark-chip.is-bottom svg { color: var(--accent-warm); }
+
+/* Dark theme: the pillar washes become deep tinted tones, not grey. */
+:root[data-theme="dark"] .action-card[data-accent="learn"] { --card-accent-soft: #23301a; }
+:root[data-theme="dark"] .action-card[data-accent="build"] { --card-accent-soft: #33290f; }
+:root[data-theme="dark"] .action-card[data-accent="act"]   { --card-accent-soft: #33200f; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .action-card[data-accent="learn"] { --card-accent-soft: #23301a; }
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .action-card[data-accent="build"] { --card-accent-soft: #33290f; }
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .action-card[data-accent="act"]   { --card-accent-soft: #33200f; }
+}
+
+@keyframes eh-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-7px); }
 }
 
 .hero-left {
@@ -123,9 +240,11 @@
 }
 
 .hero-logo-block img {
-  height: clamp(48px, 7vw, 68px);
+  height: clamp(52px, 7vw, 64px);
   width: auto;
+  border-radius: 50%;
   flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
 }
 
 .hero-brand-name {
@@ -227,7 +346,7 @@
   padding: var(--space-6);
   text-align: center;
   background: linear-gradient(140deg, rgba(16, 19, 9, 0.72), rgba(47, 61, 28, 0.62));
-  color: var(--brand-100);
+  color: var(--sage-100);
   transition: opacity var(--dur-3) var(--ease-out);
 }
 
@@ -242,7 +361,7 @@
   width: clamp(56px, 8vw, 76px);
   height: clamp(56px, 8vw, 76px);
   border-radius: var(--radius-full);
-  background: var(--brand-200);
+  background: var(--sage-200);
   color: var(--ink-950);
   transition: transform var(--dur-2) var(--ease-spring),
               box-shadow var(--dur-2) var(--ease-out);
@@ -268,7 +387,7 @@
 
 .vo-sub {
   font-size: var(--fs-sm);
-  color: color-mix(in srgb, var(--brand-100) 72%, transparent);
+  color: color-mix(in srgb, var(--sage-100) 72%, transparent);
   max-width: 34ch;
 }
 
@@ -309,15 +428,32 @@
               border-color var(--dur-3) var(--ease-out);
 }
 
-.action-card::after {
+/* Each pillar gets its own accent — Learn/Build/Act are three distinct
+   journeys, not three grey boxes. */
+.action-card::before {
   content: "";
   position: absolute;
-  inset: auto 0 0 0;
-  height: 3px;
-  background: var(--accent);
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: var(--card-accent, var(--accent));
   transform: scaleX(0);
   transform-origin: left;
   transition: transform var(--dur-3) var(--ease-out);
+  z-index: var(--z-raised);
+}
+
+/* A soft wash of the pillar colour in the corner. */
+.action-card::after {
+  content: "";
+  position: absolute;
+  inset: auto -22% -48% auto;
+  width: 13rem;
+  height: 13rem;
+  border-radius: 50%;
+  background: var(--card-accent-soft, var(--accent-soft));
+  opacity: 0.55;
+  transition: transform var(--dur-4) var(--ease-out);
+  pointer-events: none;
 }
 
 .action-card:hover {
@@ -326,13 +462,22 @@
   border-color: var(--border-strong);
 }
 
-.action-card:hover::after {
+.action-card:hover::before {
   transform: scaleX(1);
 }
 
+.action-card:hover::after {
+  transform: scale(1.3);
+}
+
+.action-card .icon-tile {
+  background: var(--card-accent-soft, var(--accent-soft));
+  color: var(--card-accent, var(--accent));
+}
+
 .action-card:hover .icon-tile {
-  background: var(--accent);
-  color: var(--bg-elevated);
+  background: var(--card-accent, var(--accent));
+  color: #fff;
 }
 
 .action-card h3 {
@@ -349,6 +494,31 @@
 .action-card .link-arrow {
   margin-top: var(--space-2);
   align-self: flex-start;
+  position: relative;
+  z-index: var(--z-raised);
+}
+
+.action-card .icon-tile,
+.action-card h3,
+.action-card p {
+  position: relative;
+  z-index: var(--z-raised);
+}
+
+/* Pillar accents. */
+.action-card[data-accent="learn"] {
+  --card-accent: var(--forest-500);
+  --card-accent-soft: var(--sage-100);
+}
+
+.action-card[data-accent="build"] {
+  --card-accent: var(--ochre-600);
+  --card-accent-soft: var(--ochre-100);
+}
+
+.action-card[data-accent="act"] {
+  --card-accent: var(--clay-600);
+  --card-accent-soft: var(--clay-100);
 }
 
 /* ═══ HOME — SHARE CARD ════════════════════════════════════════ */
@@ -374,8 +544,8 @@
 }
 
 .share-card .icon-tile {
-  background: color-mix(in srgb, var(--brand-200) 16%, transparent);
-  color: var(--brand-200);
+  background: color-mix(in srgb, var(--sage-200) 16%, transparent);
+  color: var(--sage-200);
 }
 
 .share-card h3 {
@@ -416,7 +586,7 @@
   font-weight: 700;
   line-height: 1;
   letter-spacing: var(--tracking-tight);
-  color: var(--brand-200);
+  color: var(--sage-200);
   font-variant-numeric: tabular-nums;
 }
 
@@ -439,21 +609,45 @@
 }
 
 .process-step {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  padding-top: var(--space-5);
-  border-top: 2px solid var(--border);
+  padding-top: var(--space-6);
 }
 
+/* A connecting rail through the steps, with the number as a node. */
 .process-step::before {
   counter-increment: step;
   content: counter(step, decimal-leading-zero);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background: var(--forest-700);
+  color: var(--sage-100);
   font-family: var(--font-display);
   font-size: var(--fs-sm);
   font-weight: 700;
   letter-spacing: var(--tracking-wide);
-  color: var(--accent);
+  margin-bottom: var(--space-2);
+}
+
+.process-step::after {
+  content: "";
+  position: absolute;
+  top: calc(var(--space-6) + 22px);
+  left: calc(44px + var(--space-4));
+  right: calc(var(--space-6) * -1);
+  height: 2px;
+  background: linear-gradient(to right, var(--border-strong), transparent);
+  z-index: var(--z-base);
+}
+
+.process-step:last-child::after {
+  display: none;
 }
 
 .process-step h3 {
@@ -479,7 +673,7 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(40rem 26rem at 88% -20%, color-mix(in srgb, var(--brand-500) 26%, transparent), transparent 70%);
+    radial-gradient(40rem 26rem at 88% -20%, color-mix(in srgb, var(--sage-500) 26%, transparent), transparent 70%);
   pointer-events: none;
 }
 
@@ -489,7 +683,7 @@
 }
 
 .page-head .eyebrow {
-  color: var(--brand-300);
+  color: var(--sage-300);
 }
 
 .page-head h1 {
@@ -555,12 +749,23 @@
   stroke-width: 1.5;
 }
 
-.tc-thumb.th1 { background: linear-gradient(135deg, var(--brand-200), var(--brand-400)); }
-.tc-thumb.th2 { background: linear-gradient(135deg, var(--brand-300), var(--brand-600)); }
-.tc-thumb.th3 { background: linear-gradient(135deg, var(--ink-200), var(--ink-400)); }
-.tc-thumb.th4 { background: linear-gradient(135deg, #c8d8e8, #7d93ab); }
-.tc-thumb.th5 { background: linear-gradient(135deg, #d8e8d0, #7fa578); }
-.tc-thumb.th6 { background: linear-gradient(135deg, #e0d8f0, #8b83b5); }
+/* Topic thumbnails draw from the brand's landscape palette — the terrain
+   is derived from the topic's icon, so the picture always matches the
+   subject. */
+.tc-thumb.t-sage    { background: linear-gradient(140deg, var(--sage-200), var(--sage-400)); color: var(--forest-700); }
+.tc-thumb.t-water   { background: linear-gradient(140deg, var(--water-200), var(--water-400)); color: var(--water-700); }
+.tc-thumb.t-waste   { background: linear-gradient(140deg, var(--clay-200), var(--clay-400)); color: var(--clay-700); }
+.tc-thumb.t-energy  { background: linear-gradient(140deg, var(--ochre-200), var(--ochre-400)); color: var(--ochre-700); }
+.tc-thumb.t-green   { background: linear-gradient(140deg, var(--sage-300), var(--forest-500)); color: var(--forest-800); }
+.tc-thumb.t-air     { background: linear-gradient(140deg, var(--ochre-100), var(--ochre-300)); color: var(--ochre-700); }
+
+/* Fallbacks for the legacy CMS thumbClass values. */
+.tc-thumb.th1 { background: linear-gradient(140deg, var(--sage-200), var(--sage-400)); color: var(--forest-700); }
+.tc-thumb.th2 { background: linear-gradient(140deg, var(--water-200), var(--water-400)); color: var(--water-700); }
+.tc-thumb.th3 { background: linear-gradient(140deg, var(--clay-200), var(--clay-400)); color: var(--clay-700); }
+.tc-thumb.th4 { background: linear-gradient(140deg, var(--sage-300), var(--forest-500)); color: var(--forest-800); }
+.tc-thumb.th5 { background: linear-gradient(140deg, var(--ochre-200), var(--ochre-400)); color: var(--ochre-700); }
+.tc-thumb.th6 { background: linear-gradient(140deg, var(--water-100), var(--water-300)); color: var(--water-700); }
 
 .tc-body {
   display: flex;
@@ -621,7 +826,7 @@
 
 .topic-card:hover .tc-arr {
   background: var(--ink-950);
-  color: var(--brand-200);
+  color: var(--sage-200);
   transform: rotate(45deg);
 }
 
@@ -642,7 +847,7 @@
   font-weight: 700;
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
-  color: var(--brand-200);
+  color: var(--sage-200);
   opacity: 0.85;
   transition: opacity var(--dur-2) var(--ease-out);
 }
@@ -744,7 +949,7 @@
   height: 32px;
   border-radius: var(--radius-sm);
   background: var(--ink-950);
-  color: var(--brand-200);
+  color: var(--sage-200);
   font-size: var(--fs-sm);
   font-weight: 700;
   flex-shrink: 0;
@@ -968,18 +1173,18 @@
 }
 
 .event-form .input {
-  background: color-mix(in srgb, var(--brand-100) 7%, transparent);
+  background: color-mix(in srgb, var(--sage-100) 7%, transparent);
   border-color: var(--border-inverse);
   color: var(--text-on-dark);
 }
 
 .event-form .input::placeholder {
-  color: color-mix(in srgb, var(--brand-100) 35%, transparent);
+  color: color-mix(in srgb, var(--sage-100) 35%, transparent);
 }
 
 .event-form .input:focus-visible {
-  border-color: var(--brand-300);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-300) 30%, transparent);
+  border-color: var(--sage-300);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sage-300) 30%, transparent);
 }
 
 .field-row {
@@ -1054,7 +1259,7 @@
   height: var(--tap-min);
   border-radius: var(--radius-full);
   background: var(--ink-950);
-  color: var(--brand-200);
+  color: var(--sage-200);
   flex-shrink: 0;
   transition: background-color var(--dur-2) var(--ease-out),
               transform var(--dur-2) var(--ease-out);
@@ -1106,7 +1311,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--brand-100);
+  color: var(--sage-100);
 }
 
 .wc-thumb svg {
@@ -1118,7 +1323,7 @@
 .wc-thumb.pod { background: linear-gradient(135deg, #1a1a2e, #2d1b4e); }
 .wc-thumb.doc { background: linear-gradient(135deg, #0d1b0d, #1b3a1b); }
 .wc-thumb.blg { background: linear-gradient(135deg, #1a1208, #3a2810); }
-.wc-thumb.story { background: linear-gradient(135deg, var(--brand-800), var(--brand-600)); }
+.wc-thumb.story { background: linear-gradient(135deg, var(--forest-700), var(--forest-500)); }
 
 .wc-badge {
   position: absolute;
@@ -1195,7 +1400,7 @@
   padding: var(--space-5);
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-inverse);
-  background: color-mix(in srgb, var(--brand-100) 6%, transparent);
+  background: color-mix(in srgb, var(--sage-100) 6%, transparent);
 }
 
 .nl-box h2,
@@ -1220,18 +1425,18 @@
 .nl-row .input {
   flex: 1;
   min-width: 180px;
-  background: color-mix(in srgb, var(--brand-100) 7%, transparent);
+  background: color-mix(in srgb, var(--sage-100) 7%, transparent);
   border-color: var(--border-inverse);
   color: var(--text-on-dark);
 }
 
 .nl-row .input::placeholder {
-  color: color-mix(in srgb, var(--brand-100) 35%, transparent);
+  color: color-mix(in srgb, var(--sage-100) 35%, transparent);
 }
 
 .nl-row .input:focus-visible {
-  border-color: var(--brand-300);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-300) 30%, transparent);
+  border-color: var(--sage-300);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sage-300) 30%, transparent);
 }
 
 .cform {
@@ -1241,7 +1446,7 @@
   padding: clamp(1.5rem, 1rem + 2.5vw, 2.5rem);
   border-radius: var(--radius-xl);
   border: 1px solid var(--border-inverse);
-  background: color-mix(in srgb, var(--brand-100) 6%, transparent);
+  background: color-mix(in srgb, var(--sage-100) 6%, transparent);
 }
 
 .cform h2 {
@@ -1255,20 +1460,20 @@
 
 .cform .input,
 .cform .textarea {
-  background: color-mix(in srgb, var(--brand-100) 7%, transparent);
+  background: color-mix(in srgb, var(--sage-100) 7%, transparent);
   border-color: var(--border-inverse);
   color: var(--text-on-dark);
 }
 
 .cform .input::placeholder,
 .cform .textarea::placeholder {
-  color: color-mix(in srgb, var(--brand-100) 35%, transparent);
+  color: color-mix(in srgb, var(--sage-100) 35%, transparent);
 }
 
 .cform .input:focus-visible,
 .cform .textarea:focus-visible {
-  border-color: var(--brand-300);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-300) 30%, transparent);
+  border-color: var(--sage-300);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sage-300) 30%, transparent);
 }
 
 .csoc-row {
@@ -1301,6 +1506,12 @@
   .share-card {
     flex-direction: column;
     align-items: stretch;
+    gap: var(--space-5);
+  }
+
+  /* Let the text block size to its content instead of growing to fill. */
+  .share-card-left {
+    flex: 0 0 auto;
   }
 
   .share-card .btn {

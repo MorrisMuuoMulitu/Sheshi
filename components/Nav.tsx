@@ -97,7 +97,7 @@ export default function Nav({ locale }: { locale: Locale }) {
     <>
       <nav id="main-nav" className={`nav${scrolled ? " is-scrolled" : ""}`}>
         <Link className="nav-logo" href={base} onClick={close}>
-          <Image id="nav-logo-img" src="/logo.png" alt="" width={72} height={72} priority />
+          <Image id="nav-logo-img" src="/mark-tile.png" alt="" width={72} height={64} priority />
           <span className="nav-brand">ENVIRO-HENSION</span>
         </Link>
 

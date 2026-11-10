@@ -272,7 +272,7 @@ ul, ol {
   z-index: var(--z-toast);
   transform: translateY(-200%);
   background: var(--ink-950);
-  color: var(--brand-200);
+  color: var(--sage-200);
   padding: var(--space-3) var(--space-5);
   border-radius: var(--radius-sm);
   font-weight: 700;

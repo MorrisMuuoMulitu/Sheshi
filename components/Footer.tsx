@@ -56,7 +56,7 @@ export default function Footer({
       <div className="container">
         <div className="footer-grid">
           <div className="footer-brand">
-            <Image src="/logo.png" alt="" width={88} height={88} />
+            <Image src="/mark-light.png" alt="" width={88} height={78} />
             <h2>{settings.siteName.toUpperCase()}</h2>
             <p>{settings.tagline}</p>
             <div className="footer-socials">

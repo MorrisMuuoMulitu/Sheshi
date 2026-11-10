@@ -1,36 +1,78 @@
 /* ═══════════════════════════════════════════════════════════════
    ENVIRO-HENSION — DESIGN TOKENS
-   "Editorial Field" system: sage + deep forest + bone paper.
+
+   The palette is derived from the brand mark itself: two profiles
+   holding a landscape — sage field, deep forest, and the warm sky
+   of a Kenyan sunset.
+
+     sage   #dfecbe   the logo field (brand signature)
+     forest           deep canopy — dark surfaces, primary actions
+     ochre            sunset over the hills — accent, highlights
+     clay             Kenyan earth — secondary accent, warmth
+     sand             warm paper — page background
+
    Every value below is a token. Components must never hardcode a
    raw hex, radius, shadow, or duration — see README §Design System.
    ═══════════════════════════════════════════════════════════════ */
 
 :root {
-  /* ── Brand ramp (sage → deep forest) ───────────────────────── */
-  --brand-50:  #f4f9e8;
-  --brand-100: #eaf3d6;
-  --brand-200: #dbeebb;  /* the legacy hero sage — kept for continuity */
-  --brand-300: #c4dc98;
-  --brand-400: #a9c878;
-  --brand-500: #8cb055;
-  --brand-600: #6e9140;
-  --brand-700: #56712f;
-  --brand-800: #43582a;
-  --brand-900: #2f3d1c;
-  --brand-950: #1d2611;
+  /* ── Brand: sage (the logo field) ──────────────────────────── */
+  --sage-50:  #f6faea;
+  --sage-100: #eaf4d4;
+  --sage-200: #dfecbe;  /* the exact logo green — brand signature */
+  --sage-300: #c9dfa0;
+  --sage-400: #aecb7c;
+  --sage-500: #8fb25c;
+  --sage-600: #6f9244;
 
-  /* ── Neutral ramp (warm bone → ink) ─────────────────────────── */
-  --ink-50:   #f7f8f4;
-  --ink-100:  #eef0e9;
-  --ink-200:  #e2e6dc;
-  --ink-300:  #cdd3c4;
-  --ink-400:  #a8b09f;
-  --ink-500:  #7c8574;
-  --ink-600:  #5c6555;
-  --ink-700:  #434b3d;
-  --ink-800:  #2a3027;
-  --ink-900:  #1a1e17;
-  --ink-950:  #101309;
+  /* ── Brand: forest (canopy) ────────────────────────────────── */
+  --forest-400: #4e7a33;
+  --forest-500: #3f6628;
+  --forest-600: #325220;
+  --forest-700: #274018;
+  --forest-800: #1d2f12;
+  --forest-900: #14210c;
+  --forest-950: #0c1407;
+
+  /* ── Brand: ochre (sunset) ─────────────────────────────────── */
+  --ochre-100: #fbeecd;
+  --ochre-200: #f6dd9c;
+  --ochre-300: #eec76b;
+  --ochre-400: #e0ac3c;
+  --ochre-500: #c78f22;
+  --ochre-600: #a06f18;
+  --ochre-700: #7a5314;
+
+  /* ── Brand: clay (earth) ───────────────────────────────────── */
+  --clay-100: #f9e5da;
+  --clay-200: #f2cbb4;
+  --clay-300: #e5a885;
+  --clay-400: #d4855a;
+  --clay-500: #bf6739;
+  --clay-600: #9d4f27;
+  --clay-700: #7a3d1f;
+
+  /* ── Brand: water (rivers, coastal) ────────────────────────── */
+  --water-100: #dceef0;
+  --water-200: #b6dde1;
+  --water-300: #84c4cc;
+  --water-400: #55a3af;
+  --water-500: #3a8691;
+  --water-600: #2d6b75;
+  --water-700: #23545c;
+
+  /* ── Neutral: warm ink ─────────────────────────────────────── */
+  --ink-50:   #fbfaf6;
+  --ink-100:  #f4f2ea;
+  --ink-200:  #e8e5d9;
+  --ink-300:  #d5d1c1;
+  --ink-400:  #b0ab99;
+  --ink-500:  #86816f;
+  --ink-600:  #666254;
+  --ink-700:  #4b483d;
+  --ink-800:  #2f2d26;
+  --ink-900:  #1d1c17;
+  --ink-950:  #11110d;
 
   /* ── Status ─────────────────────────────────────────────────── */
   --danger-100: #fbe4e2;
@@ -50,39 +92,42 @@
   --bg:            var(--ink-50);
   --bg-elevated:   #ffffff;
   --bg-sunken:     var(--ink-100);
-  --bg-brand:      var(--brand-200);
-  --bg-brand-soft: var(--brand-50);
-  --overlay-scrim: rgba(10, 13, 9, 0.62);
+  --bg-brand:      var(--sage-200);
+  --bg-brand-soft: var(--sage-50);
+  --overlay-scrim: rgba(24, 26, 18, 0.6);
 
-  /* Inverse surfaces (footer, page headers, hero bands) stay DARK in both
-     themes — they are a brand surface, not a light/dark mirror. */
-  --bg-inverse:    var(--ink-950);
-  --bg-inverse-2:  #1c2216;
+  /* Inverse surfaces (footer, page headers, hero bands) stay DARK in
+     both themes — they are a brand surface, not a light/dark mirror. */
+  --bg-inverse:    var(--forest-900);
+  --bg-inverse-2:  var(--forest-800);
 
   /* Text */
   --text:          var(--ink-950);
-  --text-muted:    #4d5648;
-  --text-subtle:   #68715f;
-  --text-on-brand: var(--ink-950);
-  --text-on-dark:  #f2f5ec;
-  --text-on-dark-muted: rgba(226, 236, 208, 0.72);
+  --text-muted:    #4f4c41;
+  --text-subtle:   #6b6759;
+  --text-on-brand: var(--forest-900);
+  --text-on-dark:  #f4f6ee;
+  --text-on-dark-muted: rgba(240, 243, 231, 0.74);
+
   /* Lines */
-  --border:        #dbe1d2;
-  --border-strong: #c2cbb6;
-  --border-inverse: rgba(226, 236, 208, 0.14);
+  --border:        #e2dfd2;
+  --border-strong: #cbc7b6;
+  --border-inverse: rgba(240, 243, 231, 0.15);
 
   /* Accents */
-  --accent:        var(--brand-700);
-  --accent-hover:  var(--brand-800);
-  --accent-soft:   var(--brand-100);
-  --focus-ring:    var(--brand-700);
+  --accent:        var(--forest-600);
+  --accent-hover:  var(--forest-700);
+  --accent-soft:   var(--sage-100);
+  --accent-warm:   var(--ochre-600);
+  --accent-warm-soft: var(--ochre-100);
+  --focus-ring:    var(--forest-600);
 
   /* Buttons */
-  --btn-primary-bg:   var(--ink-950);
-  --btn-primary-fg:   var(--brand-200);
-  --btn-primary-bg-hover: var(--brand-900);
+  --btn-primary-bg:   var(--forest-700);
+  --btn-primary-fg:   var(--sage-100);
+  --btn-primary-bg-hover: var(--forest-800);
   --btn-secondary-bg: transparent;
-  --btn-secondary-fg: var(--ink-950);
+  --btn-secondary-fg: var(--forest-800);
   --btn-secondary-border: var(--border-strong);
 
   /* Feedback */
@@ -92,7 +137,7 @@
   --success-bg:    var(--success-100);
 
   /* ── Typography ─────────────────────────────────────────────── */
-  --font-display: var(--font-fraunces), "Fraunces", Georgia, serif;
+  --font-display: var(--font-display-face), "Plus Jakarta Sans", system-ui, sans-serif;
   --font-body:    var(--font-andika), "Andika", system-ui, -apple-system, sans-serif;
   --font-mono:    ui-monospace, "SFMono-Regular", "Menlo", monospace;
 
@@ -105,17 +150,17 @@
   --fs-2xl:  clamp(1.5rem, 1.15rem + 1.5vw, 2rem);
   --fs-3xl:  clamp(1.875rem, 1.35rem + 2.2vw, 2.75rem);
   --fs-4xl:  clamp(2.25rem, 1.5rem + 3.2vw, 3.75rem);
-  --fs-5xl:  clamp(2.75rem, 1.6rem + 4.6vw, 5rem);
+  --fs-5xl:  clamp(2.5rem, 1.6rem + 4vw, 4.25rem);
 
   --lh-tight: 1.08;
   --lh-snug:  1.25;
   --lh-normal: 1.5;
-  --lh-relaxed: 1.75;
+  --lh-relaxed: 1.7;
 
-  --tracking-tight: -0.02em;
+  --tracking-tight: -0.03em;
   --tracking-normal: 0;
-  --tracking-wide: 0.08em;
-  --tracking-widest: 0.16em;
+  --tracking-wide: 0.02em;
+  --tracking-widest: 0.14em;
 
   --measure: 62ch;      /* readable line length */
   --measure-narrow: 46ch;
@@ -142,20 +187,20 @@
   --max-w-prose: 44rem;
 
   /* ── Radii ──────────────────────────────────────────────────── */
-  --radius-xs: 6px;
-  --radius-sm: 10px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
-  --radius-xl: 28px;
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 30px;
   --radius-full: 999px;
 
   /* ── Elevation scale (consistent, never ad-hoc) ─────────────── */
-  --shadow-xs: 0 1px 2px rgba(16, 19, 9, 0.06);
-  --shadow-sm: 0 2px 8px rgba(16, 19, 9, 0.07);
-  --shadow-md: 0 8px 24px rgba(16, 19, 9, 0.09);
-  --shadow-lg: 0 18px 48px rgba(16, 19, 9, 0.13);
-  --shadow-xl: 0 32px 80px rgba(16, 19, 9, 0.18);
-  --shadow-focus: 0 0 0 3px var(--bg), 0 0 0 6px var(--focus-ring);
+  --shadow-xs: 0 1px 2px rgba(28, 30, 20, 0.06);
+  --shadow-sm: 0 2px 8px rgba(28, 30, 20, 0.07);
+  --shadow-md: 0 8px 24px rgba(28, 30, 20, 0.09);
+  --shadow-lg: 0 18px 48px rgba(28, 30, 20, 0.12);
+  --shadow-xl: 0 32px 80px rgba(28, 30, 20, 0.16);
+  --shadow-warm: 0 12px 32px rgba(63, 102, 40, 0.16);
 
   /* ── Motion ─────────────────────────────────────────────────── */
   --dur-1: 120ms;
@@ -186,37 +231,37 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --bg:            #0d1109;
-  --bg-elevated:   #161b10;
-  --bg-sunken:     #10150c;
-  --bg-brand:      var(--brand-900);
-  --bg-brand-soft: #1a2113;
-  --overlay-scrim: rgba(3, 5, 2, 0.72);
+  --bg:            #131710;
+  --bg-elevated:   #1c2118;
+  --bg-sunken:     #171b13;
+  --bg-brand:      var(--forest-800);
+  --bg-brand-soft: #1e2417;
+  --overlay-scrim: rgba(6, 8, 4, 0.72);
 
-  /* Inverse surfaces stay dark — a slightly different tone so they still
-     read as distinct bands against the page background. */
-  --bg-inverse:    #05070a;
-  --bg-inverse-2:  #0b0f07;
+  --bg-inverse:    #0b0f07;
+  --bg-inverse-2:  #11180c;
 
-  --text:          #eef2e6;
-  --text-muted:    #a8b39a;
-  --text-subtle:   #8b9680;
-  --text-on-brand: var(--brand-100);
-  --text-on-dark:  #f2f5ec;
-  --text-on-dark-muted: rgba(226, 236, 208, 0.7);
+  --text:          #f0f3e7;
+  --text-muted:    #adb5a0;
+  --text-subtle:   #8d957f;
+  --text-on-brand: var(--sage-100);
+  --text-on-dark:  #f4f6ee;
+  --text-on-dark-muted: rgba(240, 243, 231, 0.7);
 
-  --border:        #29311f;
-  --border-strong: #3b4630;
-  --border-inverse: rgba(226, 236, 208, 0.14);
+  --border:        #2c3327;
+  --border-strong: #3d4636;
+  --border-inverse: rgba(240, 243, 231, 0.15);
 
-  --accent:        var(--brand-300);
-  --accent-hover:  var(--brand-200);
-  --accent-soft:   #20291a;
-  --focus-ring:    var(--brand-300);
+  --accent:        var(--sage-300);
+  --accent-hover:  var(--sage-200);
+  --accent-soft:   #232b1a;
+  --accent-warm:   var(--ochre-300);
+  --accent-warm-soft: #2e2612;
+  --focus-ring:    var(--sage-300);
 
-  --btn-primary-bg:   var(--brand-300);
-  --btn-primary-fg:   var(--brand-950);
-  --btn-primary-bg-hover: var(--brand-200);
+  --btn-primary-bg:   var(--sage-300);
+  --btn-primary-fg:   var(--forest-950);
+  --btn-primary-bg-hover: var(--sage-200);
   --btn-secondary-fg: var(--text);
   --btn-secondary-border: var(--border-strong);
 
@@ -230,6 +275,7 @@
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.55);
   --shadow-xl: 0 32px 80px rgba(0, 0, 0, 0.62);
+  --shadow-warm: 0 12px 32px rgba(0, 0, 0, 0.45);
 }
 
 /* Respect the OS preference when the user has not chosen explicitly. */
@@ -237,35 +283,37 @@
   :root:not([data-theme="light"]):not([data-theme="dark"]) {
     color-scheme: dark;
 
-    --bg:            #0d1109;
-    --bg-elevated:   #161b10;
-    --bg-sunken:     #10150c;
-    --bg-brand:      var(--brand-900);
-    --bg-brand-soft: #1a2113;
-    --overlay-scrim: rgba(3, 5, 2, 0.72);
+    --bg:            #131710;
+    --bg-elevated:   #1c2118;
+    --bg-sunken:     #171b13;
+    --bg-brand:      var(--forest-800);
+    --bg-brand-soft: #1e2417;
+    --overlay-scrim: rgba(6, 8, 4, 0.72);
 
-    --bg-inverse:    #05070a;
-    --bg-inverse-2:  #0b0f07;
+    --bg-inverse:    #0b0f07;
+    --bg-inverse-2:  #11180c;
 
-    --text:          #eef2e6;
-    --text-muted:    #a8b39a;
-    --text-subtle:   #8b9680;
-    --text-on-brand: var(--brand-100);
-    --text-on-dark:  #f2f5ec;
-    --text-on-dark-muted: rgba(226, 236, 208, 0.7);
+    --text:          #f0f3e7;
+    --text-muted:    #adb5a0;
+    --text-subtle:   #8d957f;
+    --text-on-brand: var(--sage-100);
+    --text-on-dark:  #f4f6ee;
+    --text-on-dark-muted: rgba(240, 243, 231, 0.7);
 
-    --border:        #29311f;
-    --border-strong: #3b4630;
-    --border-inverse: rgba(226, 236, 208, 0.14);
+    --border:        #2c3327;
+    --border-strong: #3d4636;
+    --border-inverse: rgba(240, 243, 231, 0.15);
 
-    --accent:        var(--brand-300);
-    --accent-hover:  var(--brand-200);
-    --accent-soft:   #20291a;
-    --focus-ring:    var(--brand-300);
+    --accent:        var(--sage-300);
+    --accent-hover:  var(--sage-200);
+    --accent-soft:   #232b1a;
+    --accent-warm:   var(--ochre-300);
+    --accent-warm-soft: #2e2612;
+    --focus-ring:    var(--sage-300);
 
-    --btn-primary-bg:   var(--brand-300);
-    --btn-primary-fg:   var(--brand-950);
-    --btn-primary-bg-hover: var(--brand-200);
+    --btn-primary-bg:   var(--sage-300);
+    --btn-primary-fg:   var(--forest-950);
+    --btn-primary-bg-hover: var(--sage-200);
     --btn-secondary-fg: var(--text);
     --btn-secondary-border: var(--border-strong);
 
@@ -279,5 +327,6 @@
     --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
     --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.55);
     --shadow-xl: 0 32px 80px rgba(0, 0, 0, 0.62);
+    --shadow-warm: 0 12px 32px rgba(0, 0, 0, 0.45);
   }
 }

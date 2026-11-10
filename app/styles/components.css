@@ -74,31 +74,31 @@
 }
 
 .btn-brand {
-  background: var(--brand-200);
-  color: var(--brand-950);
+  background: var(--sage-200);
+  color: var(--forest-950);
 }
 
 .btn-brand:hover:not(:disabled) {
-  background: var(--brand-300);
+  background: var(--sage-300);
 }
 
 :root[data-theme="dark"] .btn-brand {
-  background: var(--brand-300);
-  color: var(--brand-950);
+  background: var(--sage-300);
+  color: var(--forest-950);
 }
 
 :root[data-theme="dark"] .btn-brand:hover:not(:disabled) {
-  background: var(--brand-200);
+  background: var(--sage-200);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]):not([data-theme="dark"]) .btn-brand {
-    background: var(--brand-300);
-    color: var(--brand-950);
+    background: var(--sage-300);
+    color: var(--forest-950);
   }
 
   :root:not([data-theme="light"]):not([data-theme="dark"]) .btn-brand:hover:not(:disabled) {
-    background: var(--brand-200);
+    background: var(--sage-200);
   }
 }
 
@@ -245,7 +245,7 @@
 
 .badge-solid {
   background: var(--ink-950);
-  color: var(--brand-200);
+  color: var(--sage-200);
 }
 
 .badge-outline {
@@ -302,13 +302,13 @@
 .chip.is-active {
   background: var(--ink-950);
   border-color: var(--ink-950);
-  color: var(--brand-200);
+  color: var(--sage-200);
 }
 
 :root[data-theme="dark"] .chip.is-active {
-  background: var(--brand-300);
-  border-color: var(--brand-300);
-  color: var(--brand-950);
+  background: var(--sage-300);
+  border-color: var(--sage-300);
+  color: var(--forest-950);
 }
 
 /* ═══ FORMS ════════════════════════════════════════════════════ */
@@ -464,12 +464,12 @@
 }
 
 .nav-logo img {
-  height: 36px;
-  width: 36px;
+  height: 40px;
+  width: 40px;
   object-fit: contain;
-  border-radius: var(--radius-sm);
+  border-radius: 50%;
   background: var(--bg-elevated);
-  padding: 3px;
+  box-shadow: var(--shadow-xs);
 }
 
 .nav-brand {
@@ -510,12 +510,12 @@
 
 .nav-link.is-active {
   background: var(--ink-950);
-  color: var(--brand-200);
+  color: var(--sage-200);
 }
 
 :root[data-theme="dark"] .nav-link.is-active {
-  background: var(--brand-300);
-  color: var(--brand-950);
+  background: var(--sage-300);
+  color: var(--forest-950);
 }
 
 .nav-actions {
@@ -557,12 +557,12 @@
 
 .lang-switch a.is-active {
   background: var(--ink-950);
-  color: var(--brand-200);
+  color: var(--sage-200);
 }
 
 :root[data-theme="dark"] .lang-switch a.is-active {
-  background: var(--brand-300);
-  color: var(--brand-950);
+  background: var(--sage-300);
+  color: var(--forest-950);
 }
 
 /* Icon-only control. */
@@ -719,7 +719,7 @@
 
 .drawer-lang a.is-active {
   background: var(--ink-950);
-  color: var(--brand-200);
+  color: var(--sage-200);
   border-color: var(--ink-950);
 }
 
@@ -738,8 +738,8 @@
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(60rem 30rem at 12% -10%, color-mix(in srgb, var(--brand-600) 22%, transparent), transparent 70%),
-    radial-gradient(50rem 26rem at 92% 110%, color-mix(in srgb, var(--brand-700) 18%, transparent), transparent 70%);
+    radial-gradient(60rem 30rem at 12% -10%, color-mix(in srgb, var(--forest-500) 22%, transparent), transparent 70%),
+    radial-gradient(50rem 26rem at 92% 110%, color-mix(in srgb, var(--forest-600) 18%, transparent), transparent 70%);
   pointer-events: none;
 }
 
@@ -752,7 +752,7 @@
 }
 
 .footer-brand img {
-  height: 44px;
+  height: 52px;
   width: auto;
   margin-bottom: var(--space-4);
 }
@@ -762,7 +762,7 @@
   font-size: var(--fs-lg);
   font-weight: 700;
   letter-spacing: var(--tracking-wide);
-  color: var(--brand-200);
+  color: var(--sage-200);
   margin-bottom: var(--space-2);
 }
 
@@ -788,8 +788,8 @@
   height: var(--tap-min);
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-inverse);
-  background: color-mix(in srgb, var(--brand-200) 6%, transparent);
-  color: var(--brand-200);
+  background: color-mix(in srgb, var(--sage-200) 6%, transparent);
+  color: var(--sage-200);
   text-decoration: none;
   transition: background-color var(--dur-2) var(--ease-out),
               color var(--dur-2) var(--ease-out),
@@ -798,9 +798,9 @@
 }
 
 .social-btn:hover {
-  background: var(--brand-200);
+  background: var(--sage-200);
   color: var(--ink-950);
-  border-color: var(--brand-200);
+  border-color: var(--sage-200);
   transform: translateY(-2px);
 }
 
@@ -827,7 +827,7 @@
   font-weight: 700;
   letter-spacing: var(--tracking-widest);
   text-transform: uppercase;
-  color: var(--brand-300);
+  color: var(--sage-300);
   margin-bottom: var(--space-4);
 }
 
@@ -850,7 +850,7 @@
 
 .footer-col a:hover,
 .footer-col button:hover {
-  color: var(--brand-200);
+  color: var(--sage-200);
   transform: translateX(3px);
 }
 

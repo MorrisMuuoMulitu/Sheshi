@@ -35,6 +35,7 @@ export default function HomeView({
 
   const pillars = [
     {
+      accent: "learn",
       icon: "book",
       title: tx("t-ac1", "Learn"),
       desc: tx(
@@ -45,6 +46,7 @@ export default function HomeView({
       href: `${base}/learn`,
     },
     {
+      accent: "build",
       icon: "tools",
       title: tx("t-ac2", "Build"),
       desc: tx(
@@ -55,6 +57,7 @@ export default function HomeView({
       href: `${base}/build`,
     },
     {
+      accent: "act",
       icon: "hands",
       title: tx("t-ac3", "Act"),
       desc: tx(
@@ -117,11 +120,11 @@ export default function HomeView({
       <div className="hero-bg" id="hero-bg-el" aria-hidden="true"></div>
 
       <div className="hero-inner">
-        <div className={`hero-two-col${heroVideoUrl ? "" : " hero-single"}`}>
+        <div className="hero-two-col">
           {/* LEFT: brand + value proposition */}
           <div className="hero-left">
             <Reveal as="div" className="hero-logo-block">
-              <Image id="hero-logo-img" src="/logo.png" alt="" width={136} height={136} priority />
+              <Image id="hero-logo-img" src="/mark-tile.png" alt="" width={120} height={107} priority />
               <div>
                 <div className="hero-brand-name">ENVIRO-HENSION</div>
                 <div className="hero-tagline-txt" id="t-tagline">
@@ -171,8 +174,8 @@ export default function HomeView({
             </Reveal>
           </div>
 
-          {/* RIGHT: video — only when the CMS has a real video URL */}
-          {heroVideoUrl && (
+          {/* RIGHT: the brand mark (community + landscape) or the CMS video */}
+          {heroVideoUrl ? (
             <Reveal delay={2} className="hero-right">
               <div className="video-frame" id="hero-video-wrap">
                 <video id="hero-vid" preload="none" src={heroVideoUrl} />
@@ -189,6 +192,28 @@ export default function HomeView({
                 </div>
               </div>
             </Reveal>
+          ) : (
+            <Reveal delay={2} className="hero-right">
+              <div className="hero-mark">
+                <span className="hero-mark-ring" aria-hidden="true" />
+                <Image
+                  src="/mark-tile.png"
+                  alt=""
+                  width={520}
+                  height={464}
+                  priority
+                  sizes="(max-width: 900px) 70vw, 26rem"
+                />
+                <span className="hero-mark-chip is-top">
+                  <Icon name="users" size={15} />
+                  {isEn ? "Community" : "Jamii"}
+                </span>
+                <span className="hero-mark-chip is-bottom">
+                  <Icon name="leaf" size={15} />
+                  {isEn ? "Environment" : "Mazingira"}
+                </span>
+              </div>
+            </Reveal>
           )}
         </div>
 
@@ -197,7 +222,7 @@ export default function HomeView({
         <div className="action-cards">
           {pillars.map((p, i) => (
             <Reveal key={p.title} delay={i + 1}>
-              <Link className="action-card" href={p.href}>
+              <Link className="action-card" href={p.href} data-accent={p.accent}>
                 <span className="icon-tile">
                   <Icon name={p.icon} size={24} />
                 </span>

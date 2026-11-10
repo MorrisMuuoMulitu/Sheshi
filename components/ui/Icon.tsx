@@ -21,6 +21,7 @@ import {
   Waves,
   Wind,
   Sun,
+  Zap,
   FileText,
   Package,
   Newspaper,
@@ -79,6 +80,7 @@ export const ICONS = {
   coast: Waves,
   air: Wind,
   energy: Sun,
+  zap: Zap,
   file: FileText,
   package: Package,
   newspaper: Newspaper,
@@ -174,13 +176,55 @@ const EMOJI_MAP: Record<string, IconName> = {
   "📌": "target",
   "🧭": "compass",
   "🏢": "building",
+  "💨": "air",
+  "⚡": "zap",
+  "🐟": "water",
+  "🏕️": "compass",
 };
 
 /** Resolve any icon token (semantic key or legacy emoji) to an icon key. */
 export function resolveIconKey(token: string | undefined | null): IconName {
   if (!token) return "leaf";
   if (token in ICONS) return token as IconName;
-  return EMOJI_MAP[token] ?? "leaf";
+  if (EMOJI_MAP[token]) return EMOJI_MAP[token];
+  // Editors sometimes append a note to the glyph (e.g. "🏞️NEMA"). Fall back
+  // to the longest matching emoji prefix.
+  const prefix = Object.keys(EMOJI_MAP)
+    .filter((k) => token.startsWith(k))
+    .sort((a, b) => b.length - a.length)[0];
+  if (prefix) return EMOJI_MAP[prefix];
+  return "leaf";
+}
+
+/**
+ * Terrain class for a thumbnail, derived from the icon.
+ *
+ * The CMS `thumbClass` and `icon` fields are edited independently, so an
+ * editor can end up with a blue tile and a tree glyph. Deriving the terrain
+ * from the icon keeps the picture and the subject in agreement; the CMS
+ * class is still used when the icon is unknown.
+ */
+export function terrainFor(token: string | undefined | null): string {
+  switch (resolveIconKey(token)) {
+    case "water":
+    case "coast":
+      return "t-water";
+    case "air":
+      return "t-air";
+    case "waste":
+      return "t-waste";
+    case "energy":
+    case "zap":
+      return "t-energy";
+    case "tree":
+    case "sprout":
+    case "leaf":
+      return "t-green";
+    case "compass":
+      return "t-sage";
+    default:
+      return "t-sage";
+  }
 }
 
 /** Resolve any icon token (semantic key or legacy emoji) to a lucide icon. */

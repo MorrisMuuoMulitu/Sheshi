@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Andika, Fraunces } from "next/font/google";
+import { Andika, Plus_Jakarta_Sans } from "next/font/google";
 import { SITE_URL } from "@/lib/seo";
 import ThemeScript from "@/components/ui/ThemeScript";
 import "./globals.css";
@@ -7,22 +7,22 @@ import "./globals.css";
 /**
  * Type system (ui-ux-pro-max §6 `font-pairing`, §6 `text-styles-system`):
  *
- *  - Fraunces → display. A warm editorial serif with real optical sizing;
- *    it carries the "field journal / civic publication" voice of the brand
- *    and gives headings a distinct identity from body copy.
+ *  - Plus Jakarta Sans → display. A geometric humanist sans that pairs
+ *    with the brand mark's own geometric wordmark, and reads warm and
+ *    approachable rather than institutional — the register an
+ *    environmental community platform needs.
  *  - Andika → body. Designed for readers with dyslexia and low literacy;
- *    wide apertures and generous x-height keep long-form instructions
+ *    wide apertures and a generous x-height keep long-form instructions
  *    legible in English and Kiswahili, on low-end Android and on paper.
  *
  * Both are self-hosted by next/font — no render-blocking Google request,
  * no layout shift, and the font files are subset to latin + latin-ext.
  */
-const fraunces = Fraunces({
+const display = Plus_Jakarta_Sans({
   subsets: ["latin", "latin-ext"],
   display: "swap",
-  axes: ["SOFT", "WONK", "opsz"],
-  variable: "--font-fraunces",
-  fallback: ["Georgia", "serif"],
+  variable: "--font-display-face",
+  fallback: ["system-ui", "sans-serif"],
 });
 
 const andika = Andika({
@@ -61,7 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${andika.variable}`}
+      className={`${display.variable} ${andika.variable}`}
       suppressHydrationWarning
     >
       <head>
