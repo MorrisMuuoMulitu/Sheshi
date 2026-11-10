@@ -123,13 +123,20 @@ your local `npx sanity login` session — production never does.
 > the intro videos, topics, resources and publishing submissions.
 
 - Hosted Studio: <https://envirohension.sanity.studio/>
-- Live preview: **Studio → “Live preview”** (Sanity Presentation). Requires
-  `SANITY_PREVIEW_SECRET` + `SANITY_API_READ_TOKEN` on the site and
-  `SANITY_STUDIO_PREVIEW_URL` + `SANITY_STUDIO_PREVIEW_SECRET` on the Studio —
-  see [docs/EDITING.md](docs/EDITING.md) §6. The `SANITY_STUDIO_` prefix is
-  required: Sanity only inlines those into the Studio bundle.
-  Click-an-element-to-jump-to-its-field is **not** wired up (it needs stega
-  encoding); the pane shows live draft content and refreshes on save.
+- Live preview: **Studio → “Live preview”** (Sanity Presentation).
+
+  The site and the Studio are separate deployments, so the four values live in
+  two places — full walkthrough in [docs/EDITING.md](docs/EDITING.md) §6:
+
+  | Deployment | Variables |
+  |---|---|
+  | Site (Vercel) | `SANITY_API_READ_TOKEN`, `SANITY_PREVIEW_SECRET` |
+  | Studio (Sanity-hosted, `npm run studio:deploy`) | `SANITY_STUDIO_PREVIEW_URL`, `SANITY_STUDIO_PREVIEW_SECRET` |
+
+  The `SANITY_STUDIO_` prefix is required: Sanity only inlines those into the
+  Studio bundle. Click-an-element-to-jump-to-its-field is **not** wired up (it
+  needs stega encoding); the pane shows live draft content and refreshes on
+  save.
 - Local Studio: `npm run studio`
 - Seed (idempotent, upserts deterministic ids + placeholder PDFs):
   ```bash

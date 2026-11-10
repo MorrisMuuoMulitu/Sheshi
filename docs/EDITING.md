@@ -109,39 +109,71 @@ They are **not public** until you open a story and change **Status** to
 
 ## 6. For the developer: one-time setup
 
-Live preview needs two settings that must match on both sides.
+Live preview needs four values. **The site and the Studio are two different
+deployments**, and they are configured in two different places:
 
-**On the website (Vercel → Project → Settings → Environment Variables):**
-
-| Variable | Purpose |
+| Deployment | Where it lives |
 |---|---|
-| `SANITY_PREVIEW_SECRET` | Shared password for the preview handshake. Any long random string. |
-| `SANITY_API_READ_TOKEN` | Lets the site read unpublished drafts. Create with `npx sanity tokens add "Preview" --role viewer`. |
+| **The site** | Vercel project `envirohension` → <https://envirohension.vercel.app> |
+| **The Studio** | Sanity-hosted (app id `yc5wxc49hjvlhigq7vilwll3`) → deployed with `npm run studio:deploy` |
 
-**On the Studio (Vercel → the Studio project → Environment Variables,
-or `.env.local` locally):**
+### Step 1 — the site (Vercel)
+
+Vercel → project **envirohension** → **Settings → Environment Variables**.
 
 | Variable | Value |
 |---|---|
-| `SANITY_STUDIO_PREVIEW_URL` | The site origin, e.g. `https://envirohension.vercel.app` (no trailing slash). |
-| `SANITY_STUDIO_PREVIEW_SECRET` | **The same value** as `SANITY_PREVIEW_SECRET` above. |
+| `SANITY_API_READ_TOKEN` | A **viewer**-role token from the Sanity project. Create it with `npx sanity tokens create "Preview (drafts read)" --role viewer`. |
+| `SANITY_PREVIEW_SECRET` | A long random string you generate. Treat it as a password. |
+
+Set both for **Production** (and Preview if you deploy previews), then
+**redeploy** — Vercel only applies env changes to new builds.
+
+### Step 2 — the Studio (Sanity-hosted)
+
+A Sanity-hosted Studio is a static bundle: its variables are baked in **at
+deploy time**, not set on a dashboard. So:
+
+1. Put them in `.env.local` (or `.env.production`) in this repo:
+
+   ```bash
+   SANITY_STUDIO_PREVIEW_URL=https://envirohension.vercel.app
+   SANITY_STUDIO_PREVIEW_SECRET=<the same value as SANITY_PREVIEW_SECRET>
+   ```
+
+2. Redeploy the Studio:
+
+   ```bash
+   npm run studio:deploy
+   ```
 
 > The `SANITY_STUDIO_` prefix is required, not cosmetic: Sanity only inlines
 > variables with that prefix into the Studio bundle. A bare
-> `SANITY_PREVIEW_SECRET` is invisible to `presentationTool`, and the preview
-> then fails with a 401.
+> `SANITY_PREVIEW_SECRET` is invisible to `presentationTool`, and preview then
+> fails with a 401.
 
-Then redeploy both. Open the Studio → “Live preview”.
+### Step 3 — check it
 
-Locally those two variables are already in `.env.local`, so run
-`npm run dev` and `npm run studio` at the same time and it works.
+Open the Studio → **Live preview**. Edit a field; the pane should update.
+
+If it shows the *published* page instead of your edit, `SANITY_API_READ_TOKEN`
+is missing or is not a viewer token.
+
+### A trade-off you should know about
+
+Because the Studio is a public static bundle, `SANITY_STUDIO_PREVIEW_SECRET` is
+readable by anyone who inspects it. That means a determined person could enable
+draft mode on the site and read **unpublished drafts**. For this project that is
+a low risk (it exposes drafts, not credentials, and drafts are content you
+intend to publish). If that is not acceptable, the alternative is to gate
+`/api/draft-mode/enable` behind your own auth instead of a shared secret.
 
 ### What the preview does and does not do
 
 - **Works:** the pane shows the real page and refreshes as you edit, including
   unpublished changes (it reads drafts through `SANITY_API_READ_TOKEN`).
 - **Does not work yet:** clicking an element in the preview to jump to the
-  matching field. That needs the page’s text to be stega-encoded and an
+  matching field. That needs the page's text to be stega-encoded and an
   overlay script mounted; it is a separate piece of work.
 
 ### Content health check
