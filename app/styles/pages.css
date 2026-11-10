@@ -668,6 +668,13 @@
   line-height: var(--lh-relaxed);
   color: var(--text-on-dark-muted);
   max-width: 60ch;
+  /* CMS intros vary in length — clamp so one long entry cannot push the
+     whole guide below the fold. */
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .td-grid {
