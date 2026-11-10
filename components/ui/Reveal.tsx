@@ -54,17 +54,14 @@ export default function Reveal({
       return;
     }
     obs.observe(el);
-    // Safety net: if the observer misses an element that is already close to
-    // the viewport (fast scroll, layout shift, a browser quirk), reveal it
-    // rather than leave a blank gap. Elements far below stay hidden until the
-    // reader actually scrolls to them — that is the point of the effect.
+    // Safety net: the content must never be able to stay invisible. If the
+    // observer has not fired within 3s — background tab, print, a browser
+    // quirk, a fast scroll that skipped the element — reveal it anyway.
+    // Losing the animation is acceptable; losing the content is not.
     const fallback = window.setTimeout(() => {
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight * 1.5) {
-        el.classList.add("is-visible");
-        obs.unobserve(el);
-      }
-    }, 2500);
+      el.classList.add("is-visible");
+      obs.unobserve(el);
+    }, 3000);
     return () => {
       window.clearTimeout(fallback);
       obs.unobserve(el);
