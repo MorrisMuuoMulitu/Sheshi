@@ -214,10 +214,9 @@ function buildDocs(): Doc[] {
     ],
     copyright: "© 2025 Enviro-Hension. All rights reserved.",
     footerNote: "Built for Kenya's environmental leaders",
-    // Phase 5.3: stock Google sample removed — player hidden until real media.
-    heroVideoUrl: "",
-    // Phase 5b: Learn page intro video — hidden (disabled placeholder) until set.
-    learnIntroVideoUrl: "",
+    // Intro videos: the player hides itself when these are empty.
+    heroVideo: { url: "" },
+    learnIntroVideo: { url: "" },
     subscribeBlurb: bi("Monthly digest of tools, events, and stories. No spam.", ""),
   });
 

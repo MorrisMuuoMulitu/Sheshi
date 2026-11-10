@@ -96,7 +96,7 @@ export default function ContactView({
       <div className="container section">
         <div className="contact-grid">
           <div>
-            <p className="eyebrow" style={{ color: "var(--brand-300)" }} id="t-cey">
+            <p className="eyebrow" style={{ color: "var(--sage-300)" }} id="t-cey">
               {tx("t-cey", "Get In Touch")}
             </p>
             <h1 className="contact-title" id="t-ch">

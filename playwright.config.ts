@@ -1,4 +1,19 @@
 import { defineConfig, devices } from "@playwright/test";
+import { readFileSync } from "node:fs";
+
+/**
+ * Load .env.local into the test runner so assertions that depend on server
+ * configuration (the draft-mode preview secret) run rather than skip.
+ * Next loads the file for the app itself; the runner does not.
+ */
+try {
+  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
+    const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
+    if (m && !process.env[m[1]]) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
+  }
+} catch {
+  // No .env.local — rely on the ambient environment.
+}
 
 /**
  * Phase 7 smoke tests: nav, one CMS-rendered page, one mocked form submit.

@@ -42,6 +42,8 @@ export type LearnTopic = {
 export type LibraryResource = Resource & {
   /** Sanity document id — unique per document, used as the React key. */
   docId: string;
+  /** Last time an editor changed it — used for "latest" ordering. */
+  updatedAt?: string;
   rt: string;
   /** Sanity file URL powering the Download button (undefined → disabled). */
   fileUrl?: string;

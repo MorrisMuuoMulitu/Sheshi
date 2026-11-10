@@ -136,7 +136,7 @@ export default function ActView({
 
         <form className="event-box" onSubmit={submitEvent} noValidate>
           <div>
-            <p className="eyebrow" style={{ color: "var(--brand-300)" }}>
+            <p className="eyebrow" style={{ color: "var(--sage-300)" }}>
               {isEn ? "Community calendar" : "Kalenda ya jamii"}
             </p>
             <h2 id="t-evh">{tx("t-evh", "Submit Your Event")}</h2>

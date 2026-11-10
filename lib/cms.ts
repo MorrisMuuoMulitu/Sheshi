@@ -9,7 +9,8 @@
  * falls back to the seeded static data — the site must never blank out.
  */
 import { cacheLife, cacheTag } from "next/cache";
-import { sanityClient } from "./sanity";
+import { draftMode } from "next/headers";
+import { clientFor } from "./sanity";
 import {
   campaignsQuery,
   resourcesQuery,
@@ -71,54 +72,22 @@ function pickBiExact(items: BiItem[] | undefined | null, locale: Locale): string
   return exact?.value ?? "";
 }
 
-/**
- * Collapse documents that share the same `key`.
- *
- * The Studio lets an editor create a document that reuses an existing `key`
- * (the seed upserts by `_id`, so a hand-created copy keeps the same `key`).
- * Duplicate keys break React's reconciliation and make filters ambiguous.
- *
- * The winner is the seeded document (`_id === "<prefix>-<key>"`) when it
- * exists — that is the canonical, translated copy — otherwise the first
- * document in query order. Documents with no key are kept as-is.
- */
-function dedupeByKey<T extends { _id?: string | null; key?: string | null }>(
-  docs: T[],
-  idPrefix: string,
-): T[] {  const byKey = new Map<string, T>();
-  const noKey: T[] = [];
-
-  for (const doc of docs) {
-    if (!doc.key) {
-      noKey.push(doc);
-      continue;
-    }
-    const existing = byKey.get(doc.key);
-    if (!existing) {
-      byKey.set(doc.key, doc);
-      continue;
-    }
-    // Prefer the seeded canonical document over a hand-created duplicate.
-    const canonical = `_id` === `${idPrefix}-${doc.key}`;
-    const existingCanonical = existing._id === `${idPrefix}-${existing.key}`;
-    if (canonical && !existingCanonical) byKey.set(doc.key, doc);
-  }
-
-  return [...byKey.values(), ...noKey];
-}
-
 // ── Learn page ──────────────────────────────────────────────────────────────
 
 export async function getLearnTopics(locale: Locale): Promise<LearnTopic[]> {
+  // Reading draftMode() inside a 'use cache' scope makes Next bypass the
+  // cache for draft requests (see the Next 16 draft-mode guide), so the
+  // Presentation pane always sees the editor's latest save.
   "use cache";
   cacheTag("cms");
   cacheLife("minutes");
+  const { isEnabled: preview } = await draftMode();
+  const client = clientFor(preview);
   try {
-    const docs = await sanityClient.fetch(topicsQuery);
+    const docs = await client.fetch(topicsQuery);
     if (!docs || docs.length === 0) throw new Error("no topic documents");
-    const unique = dedupeByKey<typeof docs[number]>(docs, "topic");
-    console.log(`[cms] topics: ${unique.length} docs from Sanity (${locale})`);
-    return unique.map((d): LearnTopic => {
+    console.log(`[cms] topics: ${docs.length} docs from Sanity (${locale})`);
+    return docs.map((d): LearnTopic => {
       const card = topicCards.find((c) => c.key === d.key);
       return {
         docId: d._id,
@@ -173,21 +142,26 @@ function staticLearnTopics(locale: Locale): LearnTopic[] {
 // ── Build page ──────────────────────────────────────────────────────────────
 
 export async function getResources(locale: Locale): Promise<LibraryResource[]> {
+  // Reading draftMode() inside a 'use cache' scope makes Next bypass the
+  // cache for draft requests (see the Next 16 draft-mode guide), so the
+  // Presentation pane always sees the editor's latest save.
   "use cache";
   cacheTag("cms");
   cacheLife("minutes");
+  const { isEnabled: preview } = await draftMode();
+  const client = clientFor(preview);
   try {
-    const docs = await sanityClient.fetch(resourcesQuery);
+    const docs = await client.fetch(resourcesQuery);
     if (!docs || docs.length === 0) throw new Error("no resource documents");
-    const unique = dedupeByKey<typeof docs[number]>(docs, "resource");
-    console.log(`[cms] resources: ${unique.length} docs from Sanity (${locale})`);
-    return unique.map((d): LibraryResource => {
+    console.log(`[cms] resources: ${docs.length} docs from Sanity (${locale})`);
+    return docs.map((d): LibraryResource => {
       const cat = (d.category ?? "tp") as LibraryResource["cat"];
       return {
         cat,
         rt: RESOURCE_BADGE[cat],
         docId: d._id,
         id: d.key ?? "",
+        updatedAt: d._updatedAt ?? undefined,
         title: pickBi(d.title, locale),
         desc: pickBi(d.description, locale),
         langs: d.languages ?? [],
@@ -212,15 +186,19 @@ function staticResources(locale: Locale): LibraryResource[] {
 // ── Act page ────────────────────────────────────────────────────────────────
 
 export async function getCampaigns(locale: Locale): Promise<ActCampaign[]> {
+  // Reading draftMode() inside a 'use cache' scope makes Next bypass the
+  // cache for draft requests (see the Next 16 draft-mode guide), so the
+  // Presentation pane always sees the editor's latest save.
   "use cache";
   cacheTag("cms");
   cacheLife("minutes");
+  const { isEnabled: preview } = await draftMode();
+  const client = clientFor(preview);
   try {
-    const docs = await sanityClient.fetch(campaignsQuery);
+    const docs = await client.fetch(campaignsQuery);
     if (!docs || docs.length === 0) throw new Error("no campaign documents");
-    const unique = dedupeByKey<typeof docs[number]>(docs, "campaign");
-    console.log(`[cms] campaigns: ${unique.length} docs from Sanity (${locale})`);
-    return unique.map((d): ActCampaign => ({
+    console.log(`[cms] campaigns: ${docs.length} docs from Sanity (${locale})`);
+    return docs.map((d): ActCampaign => ({
       docId: d._id,
       icon: d.icon ?? "📣",
       i: d.order ?? 0,
@@ -255,17 +233,21 @@ function staticCampaigns(locale: Locale): ActCampaign[] {
 export type WorkContent = { episodes: WorkEpisode[]; works: WorkCard[] };
 
 export async function getWorkContent(locale: Locale): Promise<WorkContent> {
+  // Reading draftMode() inside a 'use cache' scope makes Next bypass the
+  // cache for draft requests (see the Next 16 draft-mode guide), so the
+  // Presentation pane always sees the editor's latest save.
   "use cache";
   cacheTag("cms");
   cacheLife("minutes");
+  const { isEnabled: preview } = await draftMode();
+  const client = clientFor(preview);
   try {
-    const docs = await sanityClient.fetch(workItemsQuery);
+    const docs = await client.fetch(workItemsQuery);
     if (!docs || docs.length === 0) throw new Error("no workItem documents");
-    const unique = dedupeByKey<typeof docs[number]>(docs, "workitem");
-    console.log(`[cms] workItems: ${unique.length} docs from Sanity (${locale})`);
+    console.log(`[cms] workItems: ${docs.length} docs from Sanity (${locale})`);
     const episodes: WorkEpisode[] = [];
     const cardItems: WorkCard[] = [];
-    for (const d of unique) {
+    for (const d of docs) {
       if (d.kind === "pod") {
         episodes.push({
           docId: d._id,
@@ -320,16 +302,20 @@ function staticWork(locale: Locale): WorkContent {
 // ── Community stories (published submissions, Work page) ────────────────────
 
 export async function getPublishedStories(locale: Locale): Promise<StoryCard[]> {
+  // Reading draftMode() inside a 'use cache' scope makes Next bypass the
+  // cache for draft requests (see the Next 16 draft-mode guide), so the
+  // Presentation pane always sees the editor's latest save.
   "use cache";
   cacheTag("cms");
   cacheLife("minutes");
+  const { isEnabled: preview } = await draftMode();
+  const client = clientFor(preview);
   try {
-    const docs = await sanityClient.fetch(storiesQuery);
+    const docs = await client.fetch(storiesQuery);
     if (!docs) throw new Error("stories query failed");
     // Zero stories is a normal state (nothing submitted/approved yet).
-    const unique = dedupeByKey<typeof docs[number]>(docs, "story");
-    console.log(`[cms] stories: ${unique.length} published docs (${locale})`);
-    return unique.map((d): StoryCard => ({
+    console.log(`[cms] stories: ${docs.length} published docs (${locale})`);
+    return docs.map((d): StoryCard => ({
       docId: d._id,
       kind: d.kind ?? "story",
       icon: STORY_ICON[d.kind ?? "story"] ?? "✍️",
@@ -364,11 +350,16 @@ const STATIC_SETTINGS: SiteSettings = {
 };
 
 export async function getSettings(locale: Locale): Promise<SiteSettings> {
+  // Reading draftMode() inside a 'use cache' scope makes Next bypass the
+  // cache for draft requests (see the Next 16 draft-mode guide), so the
+  // Presentation pane always sees the editor's latest save.
   "use cache";
   cacheTag("cms");
   cacheLife("minutes");
+  const { isEnabled: preview } = await draftMode();
+  const client = clientFor(preview);
   try {
-    const doc = await sanityClient.fetch(settingsQuery);
+    const doc = await client.fetch(settingsQuery);
     if (!doc) throw new Error("settings document missing");
     console.log(`[cms] settings: from Sanity (${locale})`);
     return {
@@ -384,8 +375,9 @@ export async function getSettings(locale: Locale): Promise<SiteSettings> {
       })),
       copyright: doc.copyright ?? STATIC_SETTINGS.copyright,
       footerNote: doc.footerNote ?? STATIC_SETTINGS.footerNote,
-      heroVideoUrl: doc.heroVideoUrl ?? "",
-      learnIntroVideoUrl: doc.learnIntroVideoUrl ?? "",
+      heroVideoUrl: doc.heroVideo?.file?.asset?.url ?? doc.heroVideo?.url ?? "",
+      learnIntroVideoUrl:
+        doc.learnIntroVideo?.file?.asset?.url ?? doc.learnIntroVideo?.url ?? "",
       subscribeBlurb:
         pickBiExact(doc.subscribeBlurb, locale) || tx(locale, "t-nlp", ""),
     };

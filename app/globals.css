@@ -43,10 +43,6 @@
   animation: eh-fade-up var(--dur-4) var(--ease-out) both;
 }
 
-#page-home {
-  min-height: 100dvh;
-}
-
 /* Legacy alias → modern component. */
 .dl-btn {
   display: inline-flex;
@@ -57,7 +53,7 @@
   padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-full);
   background: var(--ink-950);
-  color: var(--brand-200);
+  color: var(--sage-200);
   border: none;
   font-size: var(--fs-xs);
   font-weight: 700;

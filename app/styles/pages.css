@@ -521,6 +521,139 @@
   --card-accent-soft: var(--clay-100);
 }
 
+/* ═══ HOME — SECTION HEADS ═════════════════════════════════════ */
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-8);
+}
+
+.section-head h2 {
+  margin-top: var(--space-2);
+}
+
+.section-lede {
+  margin-top: var(--space-3);
+  font-size: var(--fs-md);
+  line-height: var(--lh-relaxed);
+  color: var(--text-muted);
+  max-width: 56ch;
+}
+
+/* "Has video" flag on a topic thumbnail. */
+.tc-video-flag {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px var(--space-2);
+  border-radius: var(--radius-full);
+  background: rgba(12, 20, 7, 0.62);
+  color: #fff;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  backdrop-filter: blur(6px);
+}
+
+/* ═══ HOME — RESOURCE LIST ═════════════════════════════════════ */
+.res-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.res-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  transition: border-color var(--dur-2) var(--ease-out),
+              box-shadow var(--dur-2) var(--ease-out),
+              transform var(--dur-2) var(--ease-out);
+}
+
+.res-row:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.res-row-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--accent-soft);
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.res-row-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.res-row-main h3 {
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  font-weight: 700;
+  line-height: var(--lh-snug);
+  letter-spacing: normal;
+  margin-bottom: 2px;
+}
+
+.res-row-main p {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.res-row-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+@media (max-width: 700px) {
+  .res-row {
+    flex-wrap: wrap;
+  }
+
+  .res-row-main {
+    flex: 1 1 100%;
+    order: 1;
+  }
+
+  .res-row-icon {
+    order: 0;
+  }
+
+  .res-row-actions {
+    order: 2;
+    width: 100%;
+    justify-content: space-between;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--border);
+  }
+}
+
 /* ═══ HOME — SHARE CARD ════════════════════════════════════════ */
 .share-card {
   display: flex;
@@ -566,6 +699,11 @@
   background: var(--bg-inverse);
   color: var(--text-on-dark);
   padding-block: var(--section-y);
+}
+
+.impact-band h2,
+.impact-band h3 {
+  color: var(--text-on-dark);
 }
 
 .impact-grid {

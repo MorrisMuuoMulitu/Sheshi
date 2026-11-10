@@ -109,7 +109,14 @@ your local `npx sanity login` session — production never does.
 
 ### Content & Studio
 
+> **Editors:** see **[docs/EDITING.md](docs/EDITING.md)** — live preview, adding
+> the intro videos, topics, resources and publishing submissions.
+
 - Hosted Studio: <https://envirohension.sanity.studio/>
+- Live preview: **Studio → “Live preview”** (Sanity Presentation). Requires
+  `SANITY_PREVIEW_SECRET` + `SANITY_API_READ_TOKEN` on the site and
+  `SANITY_STUDIO_PREVIEW_URL` + `SANITY_STUDIO_PREVIEW_SECRET` on the Studio —
+  see [docs/EDITING.md](docs/EDITING.md) §6.
 - Local Studio: `npm run studio`
 - Seed (idempotent, upserts deterministic ids + placeholder PDFs):
   ```bash
@@ -133,6 +140,7 @@ your local `npx sanity login` session — production never does.
 | `npm run studio:deploy` | Deploy the hosted Studio |
 | `npm run seed` | Seed/refresh content (idempotent) |
 | `npm run verify` | Check seeded bilingual content |
+| `npm run audit:cms` | Content health: duplicate keys, broken refs, missing files, oversized video, missing Kiswahili |
 | `npm run schema:extract` / `npm run typegen` | Schema JSON + TypeScript types |
 
 ## Content model
@@ -162,6 +170,18 @@ throttle (8 requests / 10 minutes / server instance), and never log the token:
 | `POST /api/event` | `event` (`status: new`) |
 | `POST /api/story` | uploads attachments → `story` (`status: new`) |
 | `POST /api/upload` | file or URL → `story` (`status: new`) |
+
+### Draft mode (Presentation)
+
+`GET /api/draft-mode/enable?secret=…&sanity-preview-pathname=/en/learn` switches
+the request into Next draft mode and redirects to the page being edited.
+`GET /api/draft-mode/disable?redirect=/en` leaves it.
+
+Reading `draftMode()` inside a `'use cache'` scope makes Next re-execute it on
+every draft request (see the Next 16 draft-mode guide), so the presentation pane
+always shows the editor's latest unpublished save. The enable route returns 401
+for a wrong secret and 500 when `SANITY_PREVIEW_SECRET` is unset — it never
+leaves an unauthenticated bypass in place.
 
 Publishing a story in the Studio (status → `published`) makes it appear on the
 Our Work page after revalidation.

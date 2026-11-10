@@ -22,7 +22,7 @@ export const topicsQuery = defineQuery(
 
 export const resourcesQuery = defineQuery(
   `*[_type == "resource"] | order(order asc){
-    _id, key, title, description, category, languages, order,
+    _id, key, title, description, category, languages, order, _updatedAt,
     file{ asset->{ url } }
   }`,
 );
@@ -55,7 +55,9 @@ export const settingsQuery = defineQuery(
   `*[_type == "settings"][0]{
     siteName, tagline, contactEmail, phone, city,
     socials[]{ platform, icon, url },
-    copyright, footerNote, heroVideoUrl, learnIntroVideoUrl,
+    copyright, footerNote,
+    heroVideo{ file{ asset->{ url } }, url },
+    learnIntroVideo{ file{ asset->{ url } }, url },
     subscribeBlurb[]{ language, value }
   }`,
 );
