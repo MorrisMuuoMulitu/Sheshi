@@ -34,6 +34,14 @@ export default function HomeView({
   const t = T[locale];
   const base = `/${locale}`;
 
+  // "Discover · Engage · Empower" must never wrap so that a line begins with
+  // the separator: bind each dot to the word before it (NBSP), leave a normal
+  // space after it where a break is allowed.
+  const tagline = (t["t-tagline"] ?? "Discover · Engage · Empower").replace(
+    /\s*·\s*/g,
+    "\u00A0· ",
+  );
+
   // Subtle parallax on the hero photograph, and a mobile action bar that
   // appears once the hero has scrolled away. Both are skipped entirely when
   // the reader prefers reduced motion.
@@ -163,15 +171,11 @@ export default function HomeView({
 
         <div className="hero-content">
           <div className="hero-copy">
-            <Reveal as="p" className="hero-eyebrow">
-              {tx("t-tagline", "Discover · Engage · Empower")}
-            </Reveal>
-
-            <Reveal delay={1}>
-              <h1 className="hero-title" id="hero-title">
-                {isEn
-                  ? "Capacity for the people who protect Kenya's environment."
-                  : "Uwezo kwa watu wanaolinda mazingira ya Kenya."}
+            {/* The landing page headline is the brand tagline, exactly as it
+                was before the UI rewrite. No invented copy. */}
+            <Reveal as="div">
+              <h1 className="hero-title is-tagline" id="hero-title">
+                {tagline}
               </h1>
             </Reveal>
 

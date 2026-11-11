@@ -79,6 +79,15 @@
   text-shadow: 0 2px 24px rgba(8, 14, 5, 0.35);
 }
 
+/* The landing headline is a three-word tagline, not a sentence: it needs a
+   smaller ceiling and a shorter measure than a long editorial headline. */
+.hero-title.is-tagline {
+  font-size: clamp(1.9rem, 1.05rem + 2.2vw, 2.75rem);
+  line-height: 1.08;
+  /* Wide enough to hold the three words on one line at desktop. */
+  max-width: 44rem;
+}
+
 .hero-lede {
   font-size: clamp(1rem, 0.94rem + 0.35vw, 1.2rem);
   line-height: var(--lh-relaxed);
