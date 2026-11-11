@@ -20,11 +20,13 @@ import Reveal from "@/components/ui/Reveal";
 export default function HomeView({
   locale,
   heroVideoUrl,
+  heroImageUrl,
   topics,
   resources,
 }: {
   locale: Locale;
   heroVideoUrl: string;
+  heroImageUrl?: string;
   topics: LearnTopic[];
   resources: LibraryResource[];
 }) {
@@ -112,7 +114,7 @@ export default function HomeView({
       {/* ═══ HERO — a real landscape carries the page ═══════════ */}
       <section className="hero" aria-labelledby="hero-title">
         <Image
-          src="/img/hero-field.jpg"
+          src={heroImageUrl || "/img/hero-field.jpg"}
           alt={
             isEn
               ? "Open grassland and woodland on the Lolldaiga conservancy in Laikipia, Kenya"
@@ -261,7 +263,17 @@ export default function HomeView({
                 <Reveal key={c.docId} delay={idx + 1}>
                   <Link className="topic-card" href={`${base}/learn?topic=${encodeURIComponent(c.key)}`}>
                     <div className={`tc-thumb ${terrainFor(c.icon)}`}>
-                      <Icon name={c.icon} size={44} strokeWidth={1.5} />
+                      {c.imageUrl ? (
+                        <Image
+                          src={c.imageUrl}
+                          alt=""
+                          fill
+                          sizes="(max-width: 700px) 100vw, 33vw"
+                          className="tc-photo"
+                        />
+                      ) : (
+                        <Icon name={c.icon} size={44} strokeWidth={1.5} />
+                      )}
                       {c.videoUrl && (
                         <span className="tc-video-flag">
                           <Play size={11} aria-hidden="true" />

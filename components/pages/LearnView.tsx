@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Download, Play } from "lucide-react";
 import { T, type Locale } from "@/lib/i18n";
@@ -55,11 +56,14 @@ export default function LearnView({
     window.scrollTo(0, 0);
   };
 
-  /** Play a topic/intro video element by id, when it exists. */
-  const playVideo = (id: string) => {
-    const video = document.getElementById(id) as HTMLVideoElement | null;
-    if (video) void video.play();
-  };
+  // Play as soon as the source has been attached, so the click still starts
+  // playback even though the `src` only lands on the next render.
+  useEffect(() => {
+    for (const id of ["td-video-el", "tvo-vid"]) {
+      const video = document.getElementById(id) as HTMLVideoElement | null;
+      if (video?.src) void video.play().catch(() => {});
+    }
+  }, [startedFor, introStarted]);
 
   const topic = active ? topics.find((tc) => tc.key === active) ?? null : null;
 
@@ -88,12 +92,16 @@ export default function LearnView({
                 <div className="video-frame">
                   {topic.videoUrl ? (
                     <>
+                      {/* No `src` until the user asks to play: a topic video
+                          can be hundreds of megabytes, and attaching the src
+                          makes the browser fetch it on page load. */}
                       <video
                         id="td-video-el"
-                        src={topic.videoUrl}
-                        controls
+                        src={startedFor === topic.key ? topic.videoUrl : undefined}
+                        controls={startedFor === topic.key}
                         playsInline
-                        preload="metadata"
+                        preload="none"
+                        poster="/img/band-tea.jpg"
                         style={{ width: "100%", height: "100%", objectFit: "cover" }}
                       />
                       {startedFor !== topic.key && (
@@ -101,10 +109,7 @@ export default function LearnView({
                           type="button"
                           className="video-overlay"
                           aria-label={tx("t-td-play", "Play topic video")}
-                          onClick={() => {
-                            playVideo("td-video-el");
-                            setStartedFor(topic.key);
-                          }}
+                          onClick={() => setStartedFor(topic.key)}
                         >
                           <div className="play-btn">
                             <Play size={24} aria-hidden="true" style={{ marginLeft: 2 }} />
@@ -196,10 +201,11 @@ export default function LearnView({
             <div className="video-frame">
               <video
                 id="tvo-vid"
-                src={introVideoUrl}
-                controls
+                src={introStarted ? introVideoUrl : undefined}
+                controls={introStarted}
                 playsInline
-                preload="metadata"
+                preload="none"
+                poster="/img/hills.jpg"
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
               {!introStarted && (
@@ -207,10 +213,7 @@ export default function LearnView({
                   type="button"
                   className="video-overlay"
                   aria-label={tx("t-tvo", "Play introduction video")}
-                  onClick={() => {
-                    playVideo("tvo-vid");
-                    setIntroStarted(true);
-                  }}
+                  onClick={() => setIntroStarted(true)}
                 >
                   <div className="play-btn">
                     <Play size={24} aria-hidden="true" style={{ marginLeft: 2 }} />
@@ -230,7 +233,17 @@ export default function LearnView({
               <Reveal key={c.docId} delay={(idx % 3) + 1}>
                 <button type="button" className="topic-card" onClick={() => openTopic(c.key)}>
                   <div className={`tc-thumb ${terrainFor(c.icon)}`}>
-                    <Icon name={c.icon} size={44} strokeWidth={1.5} />
+                    {c.imageUrl ? (
+                      <Image
+                        src={c.imageUrl}
+                        alt=""
+                        fill
+                        sizes="(max-width: 700px) 100vw, 33vw"
+                        className="tc-photo"
+                      />
+                    ) : (
+                      <Icon name={c.icon} size={44} strokeWidth={1.5} />
+                    )}
                   </div>
                   <div className="tc-body">
                     <span className="tc-title" id={`tc-t${c.i}`}>

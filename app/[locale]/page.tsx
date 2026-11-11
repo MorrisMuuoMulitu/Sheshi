@@ -41,6 +41,7 @@ export default async function HomePage({
     <HomeView
       locale={l}
       heroVideoUrl={settings.heroVideoUrl}
+      heroImageUrl={settings.heroImageUrl}
       topics={topics}
       resources={resources}
     />

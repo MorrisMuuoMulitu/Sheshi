@@ -15,6 +15,13 @@
 export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: schema.json
+export type SanityImageAssetReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+};
+
 export type SanityFileAssetReference = {
   _ref: string;
   _type: "reference";
@@ -30,6 +37,13 @@ export type Settings = {
   _rev: string;
   siteName?: string;
   tagline?: string;
+  heroImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
   heroVideo?: {
     file?: {
       asset?: SanityFileAssetReference;
@@ -66,6 +80,22 @@ export type InternationalizedArrayText = Array<
   } & InternationalizedArrayTextValue
 >;
 
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
+};
+
 export type Message = {
   _id: string;
   _type: "message";
@@ -79,13 +109,6 @@ export type Message = {
   body?: string;
   status?: "new" | "read" | "closed";
   createdAt?: string;
-};
-
-export type SanityImageAssetReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
 };
 
 export type Story = {
@@ -119,22 +142,6 @@ export type Story = {
   >;
   status?: "new" | "approved" | "published" | "rejected";
   submittedAt?: string;
-};
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
 };
 
 export type Event = {
@@ -226,6 +233,13 @@ export type Topic = {
   stepPill?: InternationalizedArrayString;
   level?: InternationalizedArrayString;
   icon?: string;
+  image?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
   thumbClass?: "th1" | "th2" | "th3" | "th4" | "th5" | "th6";
   steps?: Array<{
     heading?: InternationalizedArrayString;
@@ -379,14 +393,14 @@ export type Slug = {
 };
 
 export type AllSanitySchemaTypes =
+  | SanityImageAssetReference
   | SanityFileAssetReference
   | Settings
   | InternationalizedArrayText
-  | Message
-  | SanityImageAssetReference
-  | Story
   | SanityImageCrop
   | SanityImageHotspot
+  | Message
+  | Story
   | Event
   | WorkItem
   | InternationalizedArrayString
@@ -409,7 +423,7 @@ export type AllSanitySchemaTypes =
 
 // Source: lib/queries.ts
 // Variable: topicsQuery
-// Query: *[_type == "topic"] | order(order asc){    _id, key, title, intro, cardDescription, stepPill, level, icon, thumbClass,    steps[]{ heading, body },    resourceTitle, resourceDescription, order,    videoFile{ asset->{ url } }, videoUrl,    relatedResource->{ key, file{ asset->{ url } } }  }
+// Query: *[_type == "topic"] | order(order asc){    _id, key, title, intro, cardDescription, stepPill, level, icon, thumbClass,    image{ asset->{ url, metadata{ lqip } } },    steps[]{ heading, body },    resourceTitle, resourceDescription, order,    videoFile{ asset->{ url } }, videoUrl,    relatedResource->{ key, file{ asset->{ url } } }  }
 export type TopicsQueryResult = Array<{
   _id: string;
   key: string | null;
@@ -420,6 +434,14 @@ export type TopicsQueryResult = Array<{
   level: InternationalizedArrayString | null;
   icon: string | null;
   thumbClass: "th1" | "th2" | "th3" | "th4" | "th5" | "th6" | null;
+  image: {
+    asset: {
+      url: string | null;
+      metadata: {
+        lqip: string | null;
+      } | null;
+    } | null;
+  } | null;
   steps: Array<{
     heading: InternationalizedArrayString | null;
     body: InternationalizedArrayText | null;
@@ -522,7 +544,7 @@ export type StoriesQueryResult = Array<{
 
 // Source: lib/queries.ts
 // Variable: settingsQuery
-// Query: *[_type == "settings"][0]{    siteName, tagline, contactEmail, phone, city,    socials[]{ platform, icon, url },    copyright, footerNote,    heroVideo{ file{ asset->{ url } }, url },    learnIntroVideo{ file{ asset->{ url } }, url },    subscribeBlurb[]{ language, value }  }
+// Query: *[_type == "settings"][0]{    siteName, tagline, contactEmail, phone, city,    socials[]{ platform, icon, url },    copyright, footerNote,    heroImage{ asset->{ url } },    heroVideo{ file{ asset->{ url } }, url },    learnIntroVideo{ file{ asset->{ url } }, url },    subscribeBlurb[]{ language, value }  }
 export type SettingsQueryResult = {
   siteName: string | null;
   tagline: string | null;
@@ -536,6 +558,11 @@ export type SettingsQueryResult = {
   }> | null;
   copyright: string | null;
   footerNote: string | null;
+  heroImage: {
+    asset: {
+      url: string | null;
+    } | null;
+  } | null;
   heroVideo: {
     file: {
       asset: {
@@ -561,12 +588,12 @@ export type SettingsQueryResult = {
 // Query TypeMap
 declare global {
   interface SanityQueries {
-    '*[_type == "topic"] | order(order asc){\n    _id, key, title, intro, cardDescription, stepPill, level, icon, thumbClass,\n    steps[]{ heading, body },\n    resourceTitle, resourceDescription, order,\n    videoFile{ asset->{ url } }, videoUrl,\n    relatedResource->{ key, file{ asset->{ url } } }\n  }': TopicsQueryResult;
+    '*[_type == "topic"] | order(order asc){\n    _id, key, title, intro, cardDescription, stepPill, level, icon, thumbClass,\n    image{ asset->{ url, metadata{ lqip } } },\n    steps[]{ heading, body },\n    resourceTitle, resourceDescription, order,\n    videoFile{ asset->{ url } }, videoUrl,\n    relatedResource->{ key, file{ asset->{ url } } }\n  }': TopicsQueryResult;
     '*[_type == "resource"] | order(order asc){\n    _id, key, title, description, category, languages, order, _updatedAt,\n    file{ asset->{ url } }\n  }': ResourcesQueryResult;
     '*[_type == "campaign"] | order(order asc){\n    _id, key, icon, title, description, buttonLabel, tags, order,\n    guide{ asset->{ url } },\n    relatedTopic->{ key },\n    relatedResource->{ key }\n  }': CampaignsQueryResult;
     '*[_type == "workItem"] | order(order asc){\n    _id, key, kind, title, badge, episodeNumber, meta, date, language, icon, order,\n    mediaUrl\n  }': WorkItemsQueryResult;
     '*[_type == "story" && status == "published"] | order(submittedAt desc){\n    _id, kind, title, titleSw, description, authorName, sourceUrl, submittedAt\n  }': StoriesQueryResult;
-    '*[_type == "settings"][0]{\n    siteName, tagline, contactEmail, phone, city,\n    socials[]{ platform, icon, url },\n    copyright, footerNote,\n    heroVideo{ file{ asset->{ url } }, url },\n    learnIntroVideo{ file{ asset->{ url } }, url },\n    subscribeBlurb[]{ language, value }\n  }': SettingsQueryResult;
+    '*[_type == "settings"][0]{\n    siteName, tagline, contactEmail, phone, city,\n    socials[]{ platform, icon, url },\n    copyright, footerNote,\n    heroImage{ asset->{ url } },\n    heroVideo{ file{ asset->{ url } }, url },\n    learnIntroVideo{ file{ asset->{ url } }, url },\n    subscribeBlurb[]{ language, value }\n  }': SettingsQueryResult;
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

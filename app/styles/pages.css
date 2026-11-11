@@ -723,6 +723,16 @@
   color: var(--ink-950);
 }
 
+/* A CMS photograph replaces the terrain gradient on a topic card. */
+.tc-thumb .tc-photo {
+  object-fit: cover;
+  transition: transform var(--dur-4) var(--ease-out);
+}
+
+.topic-card:hover .tc-thumb .tc-photo {
+  transform: scale(1.04);
+}
+
 .tc-thumb svg {
   width: 44px;
   height: 44px;

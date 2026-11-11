@@ -13,6 +13,7 @@ import { defineQuery } from "groq";
 export const topicsQuery = defineQuery(
   `*[_type == "topic"] | order(order asc){
     _id, key, title, intro, cardDescription, stepPill, level, icon, thumbClass,
+    image{ asset->{ url, metadata{ lqip } } },
     steps[]{ heading, body },
     resourceTitle, resourceDescription, order,
     videoFile{ asset->{ url } }, videoUrl,
@@ -56,6 +57,7 @@ export const settingsQuery = defineQuery(
     siteName, tagline, contactEmail, phone, city,
     socials[]{ platform, icon, url },
     copyright, footerNote,
+    heroImage{ asset->{ url } },
     heroVideo{ file{ asset->{ url } }, url },
     learnIntroVideo{ file{ asset->{ url } }, url },
     subscribeBlurb[]{ language, value }

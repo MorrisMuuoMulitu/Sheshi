@@ -120,7 +120,9 @@ your local `npx sanity login` session — production never does.
 ### Content & Studio
 
 > **Editors:** see **[docs/EDITING.md](docs/EDITING.md)** — live preview, adding
-> the intro videos, topics, resources and publishing submissions.
+> the intro videos, topics, resources and publishing submissions — and
+> **[docs/VIDEO-AND-PHOTOS.md](docs/VIDEO-AND-PHOTOS.md)** for shrinking the
+> topic videos and swapping in your own photography.
 
 - Hosted Studio: <https://envirohension.sanity.studio/>
 - Live preview: **Studio → “Live preview”** (Sanity Presentation).

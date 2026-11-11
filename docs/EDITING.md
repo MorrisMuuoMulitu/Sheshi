@@ -176,6 +176,12 @@ intend to publish). If that is not acceptable, the alternative is to gate
   matching field. That needs the page's text to be stega-encoded and an
   overlay script mounted; it is a separate piece of work.
 
+### Videos and photographs
+
+See **[VIDEO-AND-PHOTOS.md](VIDEO-AND-PHOTOS.md)** for how to shrink the topic
+videos (they are currently ~1.5 GB in total) and how to swap the placeholder
+photography for Enviro-Hension's own, from the Studio.
+
 ### Content health check
 
 ```bash

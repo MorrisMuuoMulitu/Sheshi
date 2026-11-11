@@ -37,6 +37,16 @@ export const settings = defineType({
       description: "One or two sentences under the logo in the footer.",
     }),
 
+    defineField({
+      name: "heroImage",
+      title: "Home page hero photograph",
+      type: "image",
+      group: "brand",
+      options: { hotspot: true },
+      description:
+        "The large photograph behind the home page headline. Use a wide landscape shot (about 2400×1350). Leave empty and the site's default landscape is used.",
+    }),
+
     // ── Videos ──────────────────────────────────────────────────────────
     defineField({
       name: "heroVideo",

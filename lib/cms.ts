@@ -95,6 +95,7 @@ export async function getLearnTopics(locale: Locale): Promise<LearnTopic[]> {
         i: d.order ?? card?.i ?? 0,
         thumb: d.thumbClass ?? card?.thumb ?? "th1",
         icon: d.icon ?? card?.icon ?? "🌱",
+        imageUrl: d.image?.asset?.url ?? undefined,
         title: pickBi(d.title, locale),
         desc: pickBi(d.cardDescription, locale),
         pill: pickBi(d.stepPill, locale),
@@ -344,6 +345,7 @@ const STATIC_SETTINGS: SiteSettings = {
   socials: [],
   copyright: "© 2025 Enviro-Hension. All rights reserved.",
   footerNote: "Built for Kenya's environmental leaders",
+  heroImageUrl: "",
   heroVideoUrl: "",
   learnIntroVideoUrl: "",
   subscribeBlurb: "Monthly digest of tools, events, and stories. No spam.",
@@ -375,6 +377,7 @@ export async function getSettings(locale: Locale): Promise<SiteSettings> {
       })),
       copyright: doc.copyright ?? STATIC_SETTINGS.copyright,
       footerNote: doc.footerNote ?? STATIC_SETTINGS.footerNote,
+      heroImageUrl: doc.heroImage?.asset?.url ?? "",
       heroVideoUrl: doc.heroVideo?.file?.asset?.url ?? doc.heroVideo?.url ?? "",
       learnIntroVideoUrl:
         doc.learnIntroVideo?.file?.asset?.url ?? doc.learnIntroVideo?.url ?? "",

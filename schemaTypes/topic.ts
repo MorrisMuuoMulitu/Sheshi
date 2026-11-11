@@ -25,6 +25,14 @@ export const topic = defineType({
       description: "Emoji shown on the topic card, e.g. 🏞️",
     }),
     defineField({
+      name: "image",
+      title: "Card photo",
+      type: "image",
+      options: { hotspot: true },
+      description:
+        "Optional photograph for this module's card and header. Leave empty and the card uses its colour + icon instead. Landscape works best (about 1600×1000).",
+    }),
+    defineField({
       name: "thumbClass",
       title: "Card thumbnail class",
       type: "string",

@@ -21,6 +21,8 @@ export type LearnTopic = {
   i: number;
   thumb: string;
   icon: string;
+  /** Optional CMS photograph for the card / header (overrides the terrain). */
+  imageUrl?: string;
   title: string;
   /** Card description (CMS cardDescription / legacy tc-dN). */
   desc: string;
@@ -123,6 +125,8 @@ export type SiteSettings = {
   copyright: string;
   footerNote: string;
   heroVideoUrl: string;
+  /** Optional CMS photograph for the home hero (overrides the bundled one). */
+  heroImageUrl: string;
   /** Learn page “Introduction to Environmental Action” video (optional). */
   learnIntroVideoUrl: string;
   subscribeBlurb: string;
