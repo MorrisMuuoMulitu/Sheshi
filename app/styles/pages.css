@@ -14,7 +14,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  min-height: clamp(38rem, 34rem + 22vw, 54rem);
+  min-height: clamp(34rem, 28rem + 18vw, 46rem);
   padding-top: calc(var(--nav-h) + var(--space-16));
   overflow: hidden;
   color: var(--text-on-dark);
@@ -60,6 +60,7 @@
 }
 
 .hero-eyebrow {
+  font-family: var(--font-ui);
   font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: var(--tracking-widest);
@@ -177,6 +178,26 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
   gap: var(--space-5);
+  width: 100%;
+}
+
+/* Reveal wrappers are the grid items; stretch the card inside them so a
+   row always shares one height and every footer aligns. */
+.action-cards > *,
+.topic-grid > *,
+.camp-grid > *,
+.work-grid > *,
+.res-grid > * {
+  display: flex;
+  min-width: 0;
+}
+
+.action-cards > * > .action-card,
+.topic-grid > * > .topic-card,
+.camp-grid > * > .camp-card,
+.work-grid > * > .work-card,
+.res-grid > * > .res-card {
+  flex: 1 1 auto;
   width: 100%;
 }
 
@@ -528,6 +549,8 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
   gap: clamp(2rem, 1rem + 3vw, 3.5rem);
+  margin-top: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  align-items: start;
 }
 
 .impact-item {
@@ -680,6 +703,11 @@
   max-width: 58ch;
 }
 
+/* The header band's edge is the next section's edge — no dead spacer. */
+.page-head + .section {
+  padding-top: clamp(2rem, 1.4rem + 2vw, 3.25rem);
+}
+
 /* ═══ LEARN ═════════════════════════════════════════════════════ */
 .learn-intro {
   display: grid;
@@ -692,6 +720,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(290px, 100%), 1fr));
   gap: var(--space-5);
+  counter-reset: topic;
 }
 
 .topic-card {
@@ -703,6 +732,7 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
   color: inherit;
+  counter-increment: topic;
   transition: transform var(--dur-3) var(--ease-out),
               box-shadow var(--dur-3) var(--ease-out),
               border-color var(--dur-3) var(--ease-out);
@@ -716,17 +746,38 @@
 
 .tc-thumb {
   position: relative;
-  height: clamp(120px, 16vw, 160px);
+  aspect-ratio: 16 / 9;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--ink-950);
+  overflow: hidden;
+}
+
+/* Field-guide index. Numbers the module, the way a handbook would. */
+.tc-thumb::after {
+  content: counter(topic, decimal-leading-zero);
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-xs);
+  background: color-mix(in srgb, var(--ink-950) 26%, transparent);
+  color: var(--sage-100);
+  font-family: var(--font-ui);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-wide);
+  font-variant-numeric: tabular-nums;
+  backdrop-filter: blur(4px);
 }
 
 /* A CMS photograph replaces the terrain gradient on a topic card. */
 .tc-thumb .tc-photo {
   object-fit: cover;
   transition: transform var(--dur-4) var(--ease-out);
+  z-index: 0;
 }
 
 .topic-card:hover .tc-thumb .tc-photo {
@@ -739,23 +790,43 @@
   stroke-width: 1.5;
 }
 
-/* Topic thumbnails draw from the brand's landscape palette — the terrain
-   is derived from the topic's icon, so the picture always matches the
-   subject. */
-.tc-thumb.t-sage    { background: linear-gradient(140deg, var(--sage-200), var(--sage-400)); color: var(--forest-700); }
-.tc-thumb.t-water   { background: linear-gradient(140deg, var(--water-200), var(--water-400)); color: var(--water-700); }
-.tc-thumb.t-waste   { background: linear-gradient(140deg, var(--clay-200), var(--clay-400)); color: var(--clay-700); }
-.tc-thumb.t-energy  { background: linear-gradient(140deg, var(--ochre-200), var(--ochre-400)); color: var(--ochre-700); }
-.tc-thumb.t-green   { background: linear-gradient(140deg, var(--sage-300), var(--forest-500)); color: var(--forest-800); }
-.tc-thumb.t-air     { background: linear-gradient(140deg, var(--ochre-100), var(--ochre-300)); color: var(--ochre-700); }
+/* Topic terrain comes from semantic tokens (see tokens.css + DESIGN.md),
+   so light and dark each get their own tonal stops. */
+.tc-thumb.t-sage,
+.tc-thumb.th1 {
+  background: linear-gradient(140deg, var(--topic-field-a), var(--topic-field-b));
+  color: var(--topic-field-ink);
+}
 
-/* Fallbacks for the legacy CMS thumbClass values. */
-.tc-thumb.th1 { background: linear-gradient(140deg, var(--sage-200), var(--sage-400)); color: var(--forest-700); }
-.tc-thumb.th2 { background: linear-gradient(140deg, var(--water-200), var(--water-400)); color: var(--water-700); }
-.tc-thumb.th3 { background: linear-gradient(140deg, var(--clay-200), var(--clay-400)); color: var(--clay-700); }
-.tc-thumb.th4 { background: linear-gradient(140deg, var(--sage-300), var(--forest-500)); color: var(--forest-800); }
-.tc-thumb.th5 { background: linear-gradient(140deg, var(--ochre-200), var(--ochre-400)); color: var(--ochre-700); }
-.tc-thumb.th6 { background: linear-gradient(140deg, var(--water-100), var(--water-300)); color: var(--water-700); }
+.tc-thumb.t-water,
+.tc-thumb.th2 {
+  background: linear-gradient(140deg, var(--topic-water-a), var(--topic-water-b));
+  color: var(--topic-water-ink);
+}
+
+.tc-thumb.t-waste,
+.tc-thumb.th3 {
+  background: linear-gradient(140deg, var(--topic-waste-a), var(--topic-waste-b));
+  color: var(--topic-waste-ink);
+}
+
+.tc-thumb.t-energy,
+.tc-thumb.th5 {
+  background: linear-gradient(140deg, var(--topic-energy-a), var(--topic-energy-b));
+  color: var(--topic-energy-ink);
+}
+
+.tc-thumb.t-green,
+.tc-thumb.th4 {
+  background: linear-gradient(140deg, var(--topic-green-a), var(--topic-green-b));
+  color: var(--topic-green-ink);
+}
+
+.tc-thumb.t-air,
+.tc-thumb.th6 {
+  background: linear-gradient(140deg, var(--topic-air-a), var(--topic-air-b));
+  color: var(--topic-air-ink);
+}
 
 .tc-body {
   display: flex;
@@ -1061,7 +1132,7 @@
 /* ═══ ACT ══════════════════════════════════════════════════════ */
 .camp-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(310px, 100%), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(420px, 100%), 1fr));
   gap: var(--space-5);
   margin-bottom: clamp(3rem, 2rem + 4vw, 5rem);
 }
@@ -1117,7 +1188,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
-  margin-top: auto;
+  margin-top: var(--space-4);
 }
 
 .camp-card .btn {
@@ -1163,13 +1234,13 @@
 }
 
 .event-form .input {
-  background: color-mix(in srgb, var(--sage-100) 7%, transparent);
-  border-color: var(--border-inverse);
+  background: var(--field-on-dark-bg);
+  border-color: var(--field-on-dark-border);
   color: var(--text-on-dark);
 }
 
 .event-form .input::placeholder {
-  color: color-mix(in srgb, var(--sage-100) 35%, transparent);
+  color: var(--field-on-dark-placeholder);
 }
 
 .event-form .input:focus-visible {
@@ -1273,8 +1344,9 @@
 
 .work-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(420px, 100%), 1fr));
   gap: var(--space-5);
+  counter-reset: work;
 }
 
 .work-card {
@@ -1284,6 +1356,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   overflow: hidden;
+  counter-increment: work;
   transition: transform var(--dur-3) var(--ease-out),
               box-shadow var(--dur-3) var(--ease-out),
               border-color var(--dur-3) var(--ease-out);
@@ -1297,22 +1370,40 @@
 
 .wc-thumb {
   position: relative;
-  height: clamp(130px, 17vw, 170px);
+  aspect-ratio: 16 / 8;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
   color: var(--sage-100);
 }
 
-.wc-thumb svg {
-  width: 42px;
-  height: 42px;
-  stroke-width: 1.5;
+/* Cover plate index — the field-guide number, not decoration. */
+.wc-thumb::after {
+  content: counter(work, decimal-leading-zero);
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-4);
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 1.4rem + 2vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: var(--tracking-tight);
+  color: color-mix(in srgb, var(--sage-100) 20%, transparent);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
 }
 
-.wc-thumb.pod { background: linear-gradient(135deg, #1a1a2e, #2d1b4e); }
-.wc-thumb.doc { background: linear-gradient(135deg, #0d1b0d, #1b3a1b); }
-.wc-thumb.blg { background: linear-gradient(135deg, #1a1208, #3a2810); }
+.wc-thumb svg {
+  width: 54px;
+  height: 54px;
+  stroke-width: 1.25;
+}
+
+.wc-thumb.pod { background: linear-gradient(135deg, var(--forest-900), var(--water-700)); }
+.wc-thumb.doc { background: linear-gradient(135deg, var(--forest-800), var(--forest-500)); }
+.wc-thumb.blg { background: linear-gradient(135deg, var(--clay-700), var(--ochre-700)); }
 .wc-thumb.story { background: linear-gradient(135deg, var(--forest-700), var(--forest-500)); }
 
 .wc-badge {
@@ -1415,13 +1506,13 @@
 .nl-row .input {
   flex: 1;
   min-width: 180px;
-  background: color-mix(in srgb, var(--sage-100) 7%, transparent);
-  border-color: var(--border-inverse);
+  background: var(--field-on-dark-bg);
+  border-color: var(--field-on-dark-border);
   color: var(--text-on-dark);
 }
 
 .nl-row .input::placeholder {
-  color: color-mix(in srgb, var(--sage-100) 35%, transparent);
+  color: var(--field-on-dark-placeholder);
 }
 
 .nl-row .input:focus-visible {
@@ -1450,14 +1541,14 @@
 
 .cform .input,
 .cform .textarea {
-  background: color-mix(in srgb, var(--sage-100) 7%, transparent);
-  border-color: var(--border-inverse);
+  background: var(--field-on-dark-bg);
+  border-color: var(--field-on-dark-border);
   color: var(--text-on-dark);
 }
 
 .cform .input::placeholder,
 .cform .textarea::placeholder {
-  color: color-mix(in srgb, var(--sage-100) 35%, transparent);
+  color: var(--field-on-dark-placeholder);
 }
 
 .cform .input:focus-visible,
@@ -1632,7 +1723,17 @@
 }
 
 .mobile-bar .btn {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
+  padding-inline: var(--space-4);
+  font-size: var(--fs-xs);
+}
+
+@media (max-width: 380px) {
+  .mobile-bar .btn {
+    padding-inline: var(--space-3);
+    letter-spacing: -0.01em;
+  }
 }
 
 @media (max-width: 700px) {
@@ -1644,4 +1745,131 @@
   .site-footer {
     padding-bottom: calc(var(--space-8) + 76px + env(safe-area-inset-bottom, 0px));
   }
+}
+
+/* ═══ RESOURCE CARD — first-page preview ═══════════════════════ */
+.res-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.res-card > :not(.res-cover) {
+  margin-inline: var(--space-5);
+}
+
+.res-card > .badge {
+  margin-top: var(--space-5);
+}
+
+.res-card > .res-foot {
+  margin-inline: 0;
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--border);
+}
+
+.res-cover {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--bg-sunken);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.res-cover img {
+  object-fit: cover;
+  object-position: 50% 12%;
+  transition: transform var(--dur-4) var(--ease-out);
+}
+
+.res-cover:hover img {
+  transform: scale(1.04);
+}
+
+/* A soft scrim so the call-to-action stays readable over any cover. */
+.res-cover::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 55%;
+  background: linear-gradient(to top, rgba(8, 14, 5, 0.72), transparent);
+  pointer-events: none;
+}
+
+.res-cover-cta {
+  position: absolute;
+  left: var(--space-4);
+  bottom: var(--space-4);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, #fff 92%, transparent);
+  color: var(--forest-900);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  backdrop-filter: blur(6px);
+  transition: background-color var(--dur-2) var(--ease-out);
+}
+
+.res-cover:hover .res-cover-cta {
+  background: #fff;
+}
+
+/* Generated cover for resources without a PDF preview. */
+.res-cover-plate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  background:
+    linear-gradient(135deg, var(--forest-900), var(--forest-700));
+  color: var(--sage-200);
+  cursor: default;
+}
+
+.res-cover-plate span {
+  font-family: var(--font-ui);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--sage-200) 78%, transparent);
+}
+
+/* Home page list thumbnail. */
+.res-row-thumb {
+  position: relative;
+  width: 62px;
+  height: 44px;
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  background: var(--bg-sunken);
+}
+
+.res-row-thumb img {
+  object-fit: cover;
+  object-position: 50% 8%;
+}
+
+@media (max-width: 700px) {
+  .res-row-thumb {
+    width: 52px;
+    height: 38px;
+  }
+}
+
+/* A topic card with a real still is a 16:9 photograph, not a colour field. */
+.tc-thumb:has(.tc-photo) {
+  aspect-ratio: 16 / 9;
+  height: auto;
 }

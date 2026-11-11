@@ -57,6 +57,20 @@ p {
   text-wrap: pretty;
 }
 
+/* Plus Jakarta Sans ships an unusually narrow space (≈0.14em). Add word
+   spacing wherever the display/UI face is used so two-word labels never read
+   as one word ("Join Movement", "Get resources"). Headings need less. */
+:where(
+  .btn, .link-arrow, .nav-link, .nav-brand, .nav-cta,
+  .badge, .chip, .field-label, .eyebrow, .tc-title
+) {
+  word-spacing: 0.16em;
+}
+
+:where(h1, h2, h3, h4, h5, .hero-stat b, .display-1, .display-2, .display-3, .display-4) {
+  word-spacing: 0.06em;
+}
+
 a {
   color: inherit;
   text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
@@ -196,7 +210,7 @@ ul, ol {
   display: inline-flex;
   align-items: center;
   gap: var(--space-3);
-  font-family: var(--font-body);
+  font-family: var(--font-ui);
   font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: var(--tracking-widest);

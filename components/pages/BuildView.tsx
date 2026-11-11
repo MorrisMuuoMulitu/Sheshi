@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { Download, Eye, Upload } from "lucide-react";
 import { T, type Locale } from "@/lib/i18n";
@@ -113,6 +114,26 @@ export default function BuildView({
             {visible.map((r, idx) => (
               <Reveal key={r.docId} delay={(idx % 3) + 1}>
                 <article className="res-card" data-cat={r.cat}>
+                  {r.previewUrl ? (
+                    <button
+                      type="button"
+                      className="res-cover"
+                      onClick={() => openMedia({ url: r.fileUrl!, title: r.title })}
+                      aria-label={isEn ? `Preview ${r.title}` : `Tazama ${r.title}`}
+                    >
+                      <Image src={r.previewUrl} alt="" fill sizes="(max-width: 700px) 100vw, 33vw" />
+                      <span className="res-cover-cta">
+                        <Eye size={16} aria-hidden="true" />
+                        {isEn ? "Preview" : "Tazama"}
+                      </span>
+                    </button>
+                  ) : (
+                    /* No PDF preview yet: a generated cover plate keeps the
+                       grid row even instead of leaving an empty white gap. */
+                    <div className="res-cover res-cover-plate" aria-hidden="true">
+                      <Icon name={CAT_ICON[r.cat]} size={44} strokeWidth={1.25} />
+                    </div>
+                  )}
                   <span className="badge badge-brand">
                     <Icon name={CAT_ICON[r.cat]} size={13} />
                     {tx(`cat-${r.cat}`, r.rt.replace(/^\S+\s*/, ""))}
@@ -146,9 +167,9 @@ export default function BuildView({
                           href={downloadHref(r.fileUrl, r.title)}
                           target="_blank"
                           rel="noopener noreferrer"
-                          title={isEn ? "Download" : "Pakua"}
                         >
                           <Download size={14} aria-hidden="true" />
+                          {isEn ? "Download" : "Pakua"}
                         </a>
                       </div>
                     ) : (

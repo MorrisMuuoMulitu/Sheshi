@@ -130,6 +130,39 @@
   --btn-secondary-fg: var(--forest-800);
   --btn-secondary-border: var(--border-strong);
 
+  /* ── Topic terrain ──────────────────────────────────────────
+     A content system, not a decorative palette: each topic's icon
+     maps to a landscape. These are the only pairs where the clay
+     and water ramps may appear, and they never style a control. */
+  --topic-field-a:   var(--sage-200);
+  --topic-field-b:   var(--sage-400);
+  --topic-field-ink: var(--forest-700);
+
+  --topic-water-a:   var(--water-200);
+  --topic-water-b:   var(--water-400);
+  --topic-water-ink: var(--water-700);
+
+  --topic-waste-a:   var(--clay-200);
+  --topic-waste-b:   var(--clay-400);
+  --topic-waste-ink: var(--clay-700);
+
+  --topic-energy-a:  var(--ochre-200);
+  --topic-energy-b:  var(--ochre-400);
+  --topic-energy-ink: var(--ochre-700);
+
+  --topic-green-a:   var(--sage-300);
+  --topic-green-b:   var(--forest-500);
+  --topic-green-ink: var(--forest-800);
+
+  --topic-air-a:     var(--ochre-100);
+  --topic-air-b:     var(--ochre-300);
+  --topic-air-ink:   var(--ochre-700);
+
+  /* ── Fields on inverse surfaces ─────────────────────────────── */
+  --field-on-dark-bg:          color-mix(in srgb, var(--sage-100) 10%, transparent);
+  --field-on-dark-border:      rgba(240, 243, 231, 0.28);
+  --field-on-dark-placeholder: rgba(240, 243, 231, 0.62);
+
   /* Feedback */
   --danger:        var(--danger-600);
   --danger-bg:     var(--danger-100);
@@ -140,6 +173,8 @@
   --font-display: var(--font-display-face), "Plus Jakarta Sans", system-ui, sans-serif;
   --font-body:    var(--font-andika), "Andika", system-ui, -apple-system, sans-serif;
   --font-mono:    ui-monospace, "SFMono-Regular", "Menlo", monospace;
+  /* UI voice: buttons, nav, labels, badges. Body face is for reading only. */
+  --font-ui:      var(--font-display);
 
   --fs-xs:   0.75rem;    /* 12 — meta, eyebrows (never body copy) */
   --fs-sm:   0.875rem;   /* 14 — secondary UI */
@@ -265,6 +300,35 @@
   --btn-secondary-fg: var(--text);
   --btn-secondary-border: var(--border-strong);
 
+  /* Topic terrain — deep tonal stops so cards do not glow in the dark. */
+  --topic-field-a:   #25321a;
+  --topic-field-b:   #3c5027;
+  --topic-field-ink: var(--sage-200);
+
+  --topic-water-a:   #14302f;
+  --topic-water-b:   #1f4a4f;
+  --topic-water-ink: var(--water-300);
+
+  --topic-waste-a:   #3a2419;
+  --topic-waste-b:   #5b3a26;
+  --topic-waste-ink: var(--clay-300);
+
+  --topic-energy-a:  #3a3017;
+  --topic-energy-b:  #5a4a1f;
+  --topic-energy-ink: var(--ochre-300);
+
+  --topic-green-a:   #233317;
+  --topic-green-b:   #33501f;
+  --topic-green-ink: var(--sage-200);
+
+  --topic-air-a:     #37301b;
+  --topic-air-b:     #574923;
+  --topic-air-ink:   var(--ochre-200);
+
+  --field-on-dark-bg:          color-mix(in srgb, var(--sage-100) 8%, transparent);
+  --field-on-dark-border:      rgba(240, 243, 231, 0.24);
+  --field-on-dark-placeholder: rgba(240, 243, 231, 0.6);
+
   --danger:        #f08a7d;
   --danger-bg:     #3a1712;
   --success:       #71c294;
@@ -278,55 +342,3 @@
   --shadow-warm: 0 12px 32px rgba(0, 0, 0, 0.45);
 }
 
-/* Respect the OS preference when the user has not chosen explicitly. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]):not([data-theme="dark"]) {
-    color-scheme: dark;
-
-    --bg:            #131710;
-    --bg-elevated:   #1c2118;
-    --bg-sunken:     #171b13;
-    --bg-brand:      var(--forest-800);
-    --bg-brand-soft: #1e2417;
-    --overlay-scrim: rgba(6, 8, 4, 0.72);
-
-    --bg-inverse:    #0b0f07;
-    --bg-inverse-2:  #11180c;
-
-    --text:          #f0f3e7;
-    --text-muted:    #adb5a0;
-    --text-subtle:   #8d957f;
-    --text-on-brand: var(--sage-100);
-    --text-on-dark:  #f4f6ee;
-    --text-on-dark-muted: rgba(240, 243, 231, 0.7);
-
-    --border:        #2c3327;
-    --border-strong: #3d4636;
-    --border-inverse: rgba(240, 243, 231, 0.15);
-
-    --accent:        var(--sage-300);
-    --accent-hover:  var(--sage-200);
-    --accent-soft:   #232b1a;
-    --accent-warm:   var(--ochre-300);
-    --accent-warm-soft: #2e2612;
-    --focus-ring:    var(--sage-300);
-
-    --btn-primary-bg:   var(--sage-300);
-    --btn-primary-fg:   var(--forest-950);
-    --btn-primary-bg-hover: var(--sage-200);
-    --btn-secondary-fg: var(--text);
-    --btn-secondary-border: var(--border-strong);
-
-    --danger:        #f08a7d;
-    --danger-bg:     #3a1712;
-    --success:       #71c294;
-    --success-bg:    #10291b;
-
-    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.45);
-    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
-    --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.55);
-    --shadow-xl: 0 32px 80px rgba(0, 0, 0, 0.62);
-    --shadow-warm: 0 12px 32px rgba(0, 0, 0, 0.45);
-  }
-}

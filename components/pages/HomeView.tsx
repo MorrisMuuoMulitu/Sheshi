@@ -3,9 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Download, Play, Sparkles } from "lucide-react";
+import { ArrowRight, Download, Eye, Play, Sparkles } from "lucide-react";
 import { T, type Locale } from "@/lib/i18n";
-import { openShareModal } from "@/lib/ui";
+import { openMedia, openShareModal } from "@/lib/ui";
 import { downloadHref, type LearnTopic, type LibraryResource } from "@/lib/views";
 import { Icon, terrainFor } from "@/components/ui/Icon";
 import Reveal from "@/components/ui/Reveal";
@@ -405,9 +405,15 @@ export default function HomeView({
               {latest.map((r, idx) => (
                 <Reveal as="li" key={r.docId} delay={idx + 1}>
                   <div className="res-row">
-                    <span className="res-row-icon">
-                      <Icon name={r.cat === "kt" ? "package" : r.cat === "zn" ? "newspaper" : "file"} size={20} />
-                    </span>
+                    {r.previewUrl ? (
+                      <span className="res-row-thumb">
+                        <Image src={r.previewUrl} alt="" fill sizes="96px" />
+                      </span>
+                    ) : (
+                      <span className="res-row-icon">
+                        <Icon name={r.cat === "kt" ? "package" : r.cat === "zn" ? "newspaper" : "file"} size={20} />
+                      </span>
+                    )}
                     <div className="res-row-main">
                       <h3>{r.title}</h3>
                       <p>{r.desc}</p>
@@ -421,15 +427,25 @@ export default function HomeView({
                         ))}
                       </span>
                       {r.fileUrl ? (
-                        <a
-                          className="dl-btn"
-                          href={downloadHref(r.fileUrl, r.title)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Download size={14} aria-hidden="true" />
-                          {isEn ? "Download" : "Pakua"}
-                        </a>
+                        <>
+                          <button
+                            type="button"
+                            className="btn btn-primary btn-sm"
+                            onClick={() => openMedia({ url: r.fileUrl!, title: r.title })}
+                          >
+                            <Eye size={14} aria-hidden="true" />
+                            {isEn ? "View" : "Tazama"}
+                          </button>
+                          <a
+                            className="dl-btn"
+                            href={downloadHref(r.fileUrl, r.title)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Download size={14} aria-hidden="true" />
+                            {isEn ? "Download" : "Pakua"}
+                          </a>
+                        </>
                       ) : (
                         <button type="button" className="dl-btn" disabled>
                           <Download size={14} aria-hidden="true" />

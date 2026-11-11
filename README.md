@@ -24,6 +24,10 @@ submissions (stories, events, messages, newsletters) arrive as documents with
 
 ## Design system
 
+[`DESIGN.md`](DESIGN.md) is the design contract — the atmosphere, token roles,
+type rules, component anatomy, and do's/don'ts. Read it before changing UI. The
+summary below explains the implementation layers.
+
 The UI is built on a four-layer token system in `app/styles/`:
 
 | File | Layer | Contains |

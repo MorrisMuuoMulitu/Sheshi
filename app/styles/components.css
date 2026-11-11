@@ -12,11 +12,11 @@
   min-height: var(--tap-min);
   padding: var(--space-3) var(--space-6);
   border-radius: var(--radius-full);
-  font-family: var(--font-body);
+  font-family: var(--font-ui);
   font-size: var(--fs-sm);
-  font-weight: 700;
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: var(--tracking-normal);
+  text-transform: none;
   text-decoration: none;
   white-space: nowrap;
   border: 1px solid transparent;
@@ -91,17 +91,6 @@
   background: var(--sage-200);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .btn-brand {
-    background: var(--sage-300);
-    color: var(--forest-950);
-  }
-
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .btn-brand:hover:not(:disabled) {
-    background: var(--sage-200);
-  }
-}
-
 .btn-sm {
   min-height: 36px;
   padding: var(--space-2) var(--space-4);
@@ -123,10 +112,11 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  font-weight: 700;
+  font-family: var(--font-ui);
+  font-weight: 600;
   font-size: var(--fs-sm);
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
+  letter-spacing: var(--tracking-normal);
+  text-transform: none;
   text-decoration: none;
   color: var(--text);
   border-bottom: 1px solid var(--border-strong);
@@ -229,6 +219,7 @@
   gap: var(--space-1);
   padding: var(--space-1) var(--space-3);
   border-radius: var(--radius-full);
+  font-family: var(--font-ui);
   font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: var(--tracking-wide);
@@ -278,12 +269,13 @@
 }
 
 .chip {
-  min-height: 40px;
+  min-height: var(--tap-min);
   padding: var(--space-2) var(--space-5);
   border-radius: var(--radius-full);
   border: 1px solid var(--border-strong);
   background: var(--bg-elevated);
   color: var(--text-muted);
+  font-family: var(--font-ui);
   font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: var(--tracking-wide);
@@ -319,6 +311,7 @@
 }
 
 .field-label {
+  font-family: var(--font-ui);
   font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: var(--tracking-wide);
@@ -557,11 +550,12 @@
   align-items: center;
   min-height: 40px;
   padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-sm);
-  font-size: var(--fs-xs);
-  font-weight: 700;
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
+  border-radius: var(--radius-full);
+  font-family: var(--font-ui);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  letter-spacing: var(--tracking-normal);
+  text-transform: none;
   text-decoration: none;
   color: var(--text);
   transition: background-color var(--dur-2) var(--ease-out),
@@ -593,7 +587,7 @@
 .lang-switch {
   display: flex;
   align-items: center;
-  padding: 3px;
+  padding: 2px;
   border-radius: var(--radius-full);
   background: color-mix(in srgb, var(--ink-950) 9%, transparent);
 }
@@ -602,10 +596,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 40px;
-  min-height: 32px;
+  min-width: 44px;
+  min-height: 40px;
   padding: 0 var(--space-2);
   border-radius: var(--radius-full);
+  font-family: var(--font-ui);
   font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: var(--tracking-wide);

@@ -47,32 +47,36 @@
   animation: eh-fade-up var(--dur-4) var(--ease-out) backwards;
 }
 
-/* Legacy alias → modern component. */
+/* Legacy alias → modern secondary button. Download is never the primary
+   action on a card: View / Open is. */
 .dl-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  min-height: 40px;
+  min-height: 36px;
   padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-full);
-  background: var(--ink-950);
-  color: var(--sage-200);
-  border: none;
-  font-size: var(--fs-xs);
-  font-weight: 700;
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  font-family: var(--font-ui);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: var(--tracking-normal);
+  text-transform: none;
   text-decoration: none;
   cursor: pointer;
   transition: background-color var(--dur-2) var(--ease-out),
               color var(--dur-2) var(--ease-out),
+              border-color var(--dur-2) var(--ease-out),
               transform var(--dur-1) var(--ease-out);
 }
 
 .dl-btn:hover:not(:disabled) {
-  background: var(--accent);
-  color: var(--bg-elevated);
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
 }
 
 .dl-btn:disabled {

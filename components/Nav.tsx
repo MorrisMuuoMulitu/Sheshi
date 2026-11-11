@@ -34,9 +34,11 @@ export default function Nav({ locale }: { locale: Locale }) {
   const isActive = (path: string) =>
     path === "" ? pathname === base : pathname.startsWith(`${base}/${path}`);
 
-  // The home page opens on a dark photographic hero, so the nav starts
-  // transparent over it and becomes solid as soon as the page scrolls.
-  const overHero = pathname === base && !scrolled && !open;
+  // The home page opens on a dark photographic hero and the contact page on
+  // the inverse forest surface, so the nav starts transparent over both and
+  // becomes solid as soon as the page scrolls.
+  const overHero =
+    (pathname === base || pathname === `${base}/contact`) && !scrolled && !open;
 
   /** Same page, other language. */
   const otherLocale: Locale = locale === "en" ? "sw" : "en";
