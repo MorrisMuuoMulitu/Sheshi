@@ -136,9 +136,10 @@ your local `npx sanity login` session — production never does.
   | Studio (Sanity-hosted, `npm run studio:deploy`) | `SANITY_STUDIO_PREVIEW_URL`, `SANITY_STUDIO_PREVIEW_SECRET` |
 
   The `SANITY_STUDIO_` prefix is required: Sanity only inlines those into the
-  Studio bundle. Click-an-element-to-jump-to-its-field is **not** wired up (it
-  needs stega encoding); the pane shows live draft content and refreshes on
-  save.
+  Studio bundle. In the preview pane the page shows live draft content and
+  **clicking an element jumps to its field** — that is stega-encoded, and only
+  in draft mode (see `lib/sanity.ts`). `NEXT_PUBLIC_SANITY_STUDIO_URL`
+  overrides the Studio origin the overlay talks to.
 - Local Studio: `npm run studio`
 - Seed (idempotent, upserts deterministic ids + placeholder PDFs):
   ```bash

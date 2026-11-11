@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
+import { draftMode } from "next/headers";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import Modals from "@/components/Modals";
+import VisualEditing from "@/components/ui/VisualEditing";
 import { isLocale, type Locale } from "@/lib/i18n";
 import { getSettings } from "@/lib/cms";
 
@@ -29,6 +31,11 @@ export default async function LocaleLayout({
   const l = locale as Locale;
   const isEn = l === "en";
 
+  // Draft mode is set by /api/draft-mode/enable when the Studio's preview
+  // pane opens the site. It makes the CMS getters re-execute with the
+  // `drafts` perspective, and switches on the click-to-edit overlay.
+  const { isEnabled: preview } = await draftMode();
+
   // Settings singleton drives the footer (Phase 5.2).
   const settings = await getSettings(l);
 
@@ -41,6 +48,7 @@ export default async function LocaleLayout({
       <main id="main-content">{children}</main>
       <Footer locale={l} settings={settings} />
       <Modals locale={l} />
+      {preview && <VisualEditing />}
     </>
   );
 }
