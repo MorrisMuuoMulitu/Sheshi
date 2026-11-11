@@ -40,5 +40,8 @@
     "eslint-config-next": "16.4.5",
     "tsx": "^4.23.15",
     "typescript": "^5"
+  },
+  "overrides": {
+    "typescript": "$typescript"
   }
 }
