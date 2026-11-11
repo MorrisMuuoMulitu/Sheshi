@@ -4,10 +4,10 @@
    Import order is meaningful; see app/styles/*.css.
    ═══════════════════════════════════════════════════════════════ */
 
-@import "./styles/tokens.css";
-@import "./styles/base.css";
-@import "./styles/components.css";
-@import "./styles/pages.css";
+/* The layer files are imported from app/layout.tsx, not with `@import`:
+   Turbopack emits an `@import`ed chunk that the prerendered HTML can
+   reference but the browser never applies (the sheet is missing from
+   document.styleSheets), which silently drops most of the stylesheet. */
 
 /* ═══════════════════════════════════════════════════════════════
    LAYOUT CONSTANTS

@@ -299,13 +299,14 @@
 }
 
 .action-card[data-accent="build"] {
-  --card-accent: var(--ochre-600);
+  --card-accent: var(--accent-warm);
   --card-accent-soft: var(--ochre-100);
 }
 
+/* Act uses ink, not clay: clay/water ramps are reserved for topic media. */
 .action-card[data-accent="act"] {
-  --card-accent: var(--clay-600);
-  --card-accent-soft: var(--clay-100);
+  --card-accent: var(--forest-700);
+  --card-accent-soft: var(--sage-100);
 }
 
 /* ═══ HOME — SECTION HEADS ═════════════════════════════════════ */
@@ -902,12 +903,12 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  min-height: 40px;
+  min-height: 44px;
   margin-bottom: var(--space-5);
-  font-size: var(--fs-xs);
-  font-weight: 700;
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: 0;
   color: var(--sage-200);
   opacity: 0.85;
   transition: opacity var(--dur-2) var(--ease-out);
@@ -1073,8 +1074,34 @@
 
 .res-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(290px, 100%), 1fr));
   gap: var(--space-5);
+  grid-template-columns: 1fr;
+}
+
+/* Column counts are explicit so a ten-item library reads 4 / 4 / 2 and a
+   nine-item one never leaves a lone tile: an odd tail spans the full row. */
+@media (min-width: 640px) {
+  .res-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .res-grid > *:last-child:nth-child(2n + 1) {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .res-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .res-grid > *:last-child:nth-child(2n + 1) {
+    grid-column: auto;
+  }
+
+  .res-grid > *:last-child:nth-child(4n + 1) {
+    grid-column: 1 / -1;
+  }
 }
 
 .res-card {
@@ -1794,7 +1821,7 @@
   position: absolute;
   inset: auto 0 0 0;
   height: 55%;
-  background: linear-gradient(to top, rgba(8, 14, 5, 0.72), transparent);
+  background: linear-gradient(to top, color-mix(in srgb, var(--forest-950) 78%, transparent), transparent);
   pointer-events: none;
 }
 
@@ -1808,12 +1835,12 @@
   gap: var(--space-2);
   padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-full);
-  background: color-mix(in srgb, #fff 92%, transparent);
+  background: color-mix(in srgb, var(--bg-elevated) 92%, transparent);
   color: var(--forest-900);
-  font-size: var(--fs-xs);
-  font-weight: 700;
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: 0;
   backdrop-filter: blur(6px);
   transition: background-color var(--dur-2) var(--ease-out);
 }
@@ -1823,6 +1850,8 @@
 }
 
 /* Generated cover for resources without a PDF preview. */
+/* No preview generated yet: a quiet well keeps the row even. It reads as
+   "nothing here yet", not as a dark hero, so four of them in a row stay calm. */
 .res-cover-plate {
   display: flex;
   flex-direction: column;
@@ -1830,13 +1859,17 @@
   justify-content: center;
   gap: var(--space-3);
   background:
-    linear-gradient(135deg, var(--forest-900), var(--forest-700));
-  color: var(--sage-200);
+    repeating-linear-gradient(
+      135deg,
+      var(--bg-sunken) 0 10px,
+      color-mix(in srgb, var(--bg-sunken) 55%, var(--bg-elevated)) 10px 20px
+    );
+  color: var(--text-subtle);
   cursor: default;
 }
 
 .res-cover-plate span {
-  font-family: var(--font-ui);
+  font-family: var(--font-display);
   font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: var(--tracking-widest);

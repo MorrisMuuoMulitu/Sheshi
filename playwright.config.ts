@@ -42,7 +42,8 @@ export default defineConfig({
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
-    command: `npm run build && npm start -- -p ${PORT}`,
+    // Clear the data cache so prerendered pages capture current CMS content.
+    command: `rm -rf .next/cache && npm run build && npm start -- -p ${PORT}`,
     url: `${BASE_URL}/en`,
     timeout: 240_000,
     reuseExistingServer: !process.env.CI,

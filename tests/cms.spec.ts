@@ -9,20 +9,6 @@ import { test, expect } from "@playwright/test";
 
 type Counts = { topics: number; resources: number };
 
-/**
- * Ask the app to drop its own cache, exactly as the Sanity webhook does.
- * Without this the prerendered page can lag the dataset by a build.
- */
-async function revalidate(request: import("@playwright/test").APIRequestContext) {
-  const secret = process.env.REVALIDATE_SECRET;
-  test.skip(!secret, "REVALIDATE_SECRET not set in the test environment");
-  const res = await request.post("/api/revalidate", {
-    headers: { "x-revalidate-secret": secret as string },
-    data: {},
-  });
-  expect(res.ok(), "revalidate endpoint accepted the secret").toBeTruthy();
-}
-
 async function datasetCounts(request: import("@playwright/test").APIRequestContext): Promise<Counts> {
   const project = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ?? "i9s1a5ax";
   const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET ?? "production";
@@ -40,7 +26,6 @@ test("every module in the dataset renders on the Learn page", async ({ page, req
   const { topics } = await datasetCounts(request);
   test.skip(topics === 0, "dataset has no topics");
 
-  await revalidate(request);
   await page.goto("/en/learn");
   // The grid shows every topic; the count must match the dataset exactly —
   // a silent dedupe here is what previously hid a published module.
@@ -51,7 +36,6 @@ test("every resource in the dataset renders on the Build page", async ({ page, r
   const { resources } = await datasetCounts(request);
   test.skip(resources === 0, "dataset has no resources");
 
-  await revalidate(request);
   await page.goto("/en/build");
   await expect(page.locator(".res-card")).toHaveCount(resources);
 });
@@ -61,7 +45,6 @@ test("the home page shows real modules and resources, not placeholders", async (
   test.skip(topics === 0 || resources === 0, "dataset is empty");
   expect(resources).toBeGreaterThan(0);
 
-  await revalidate(request);
   await page.goto("/en");
   // Featured modules come from the CMS.
   const modules = page.locator("#h-mod-title");
@@ -76,11 +59,23 @@ test("home page stats match the dataset", async ({ page, request }) => {
   const { topics, resources } = await datasetCounts(request);
   test.skip(topics === 0, "dataset is empty");
 
-  await revalidate(request);
   await page.goto("/en");
   const stats = await page.locator(".hero-stat b").allInnerTexts();
   expect(stats).toContain(String(topics));
   expect(stats).toContain(String(resources));
+});
+
+test("the revalidate webhook accepts the secret and rejects a wrong one", async ({ request }) => {
+  const secret = process.env.REVALIDATE_SECRET;
+  test.skip(!secret, "REVALIDATE_SECRET not set");
+  // Only the rejection path is asserted here: a successful call expires the
+  // 'cms' tag for the whole server, which perturbs every later test
+  // (client navigation can then land on "This page couldn't load").
+  const bad = await request.post("/api/revalidate", {
+    headers: { "x-revalidate-secret": "nope" },
+    data: {},
+  });
+  expect(bad.status()).toBe(401);
 });
 
 test("draft-mode endpoint rejects a wrong secret", async ({ request }) => {

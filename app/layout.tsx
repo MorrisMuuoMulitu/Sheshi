@@ -2,6 +2,11 @@ import type { Metadata, Viewport } from "next";
 import { Andika, Plus_Jakarta_Sans } from "next/font/google";
 import { SITE_URL } from "@/lib/seo";
 import ThemeScript from "@/components/ui/ThemeScript";
+// Layer order matters: tokens → base → components → pages → globals.
+import "./styles/tokens.css";
+import "./styles/base.css";
+import "./styles/components.css";
+import "./styles/pages.css";
 import "./globals.css";
 
 /**
