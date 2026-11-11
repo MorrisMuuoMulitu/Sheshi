@@ -1,110 +1,50 @@
-# Shrinking the topic videos
+# Video and photography guide
 
-## Why
+## Videos — already fixed
 
-The six topic videos currently in the Studio total **about 1.5 GB**:
+The six topic videos were uploaded as **masters totalling about 1.5 GB**
+(78–433 MB each), which is far too heavy to stream. They have been re-encoded
+to 720p and the topic documents now point at the smaller files:
 
-| Module | Size |
-|---|---|
-| Environmental Impact Assessments | 433 MB |
-| Effluent Waste Management | 360 MB |
-| Solid Waste Management | 344 MB |
-| Water Quality Management | 187 MB |
-| Air Quality Management | 111 MB |
-| The National Environmental Management Authority | 78 MB |
+| Module | Before | After |
+|---|---|---|
+| Environmental Impact Assessments | 432 MB | 24 MB |
+| Effluent Waste Management | 360 MB | 20 MB |
+| Solid Waste Management | 343 MB | 17 MB |
+| Water Quality Management | 186 MB | 10 MB |
+| Air Quality Management | 111 MB | 5 MB |
+| National Environmental Management Authority | 78 MB | 6 MB |
+| **Total** | **1.5 GB** | **82 MB** |
 
-Someone opening one of those on a phone in Kenya will wait a very long time —
-or give up. On mobile data a 400 MB file can also cost real money.
+The originals are still in the dataset — nothing was deleted, so this is
+reversible.
 
-**Target: 10–30 MB per video.** That is still good quality for a phone screen
-and it makes the site usable on 3G.
+**When you add a new video, export it small first:** 720p, H.264, MP4, around
+10–30 MB. In HandBrake use the *Fast 720p30* preset with quality around 26.
 
-You do not need to re-record anything. You are only re-exporting the same video
-at a smaller size.
-
----
-
-## Option A — HandBrake (no command line)
-
-1. Download HandBrake free from <https://handbrake.fr>.
-2. Drag the video into HandBrake.
-3. Choose the **Fast 720p30** preset.
-4. On the **Video** tab, drag **Quality** to about **26**.
-5. Press **Start**. A 400 MB video becomes roughly 20–40 MB.
-6. In the Studio, open the topic → **Topic video (upload)** → upload the new
-   file. It replaces the old one automatically.
-
-Repeat for each module. Ten minutes each.
-
----
-
-## Option B — one command per file (ffmpeg)
-
-If ffmpeg is installed (`brew install ffmpeg` / `sudo apt install ffmpeg`):
+If one slips through oversized, a developer can shrink it in place:
 
 ```bash
-ffmpeg -i "EFFLUENT WASTE MANAGEMENT.mp4" \
-  -vf "scale=-2:720" \
-  -c:v libx264 -preset slow -crf 26 \
-  -c:a aac -b:a 96k \
-  -movflags +faststart \
-  effluent-720p.mp4
+SANITY_API_WRITE_TOKEN=... ./scripts/reencode-videos.sh
 ```
 
-What each part does:
-
-| Flag | Meaning |
-|---|---|
-| `scale=-2:720` | 720p tall, width calculated to keep the aspect ratio |
-| `crf 26` | quality target — lower is better/bigger. 23 = best, 28 = smallest |
-| `-movflags +faststart` | lets the browser start playing before the whole file downloads |
-
-To do every video in one go:
-
-```bash
-mkdir -p encoded
-for f in *.mp4; do
-  ffmpeg -i "$f" -vf "scale=-2:720" -c:v libx264 -preset slow \
-    -crf 26 -c:a aac -b:a 96k -movflags +faststart "encoded/$f"
-done
-```
-
-Then upload each `encoded/*.mp4` to its topic in the Studio.
+It downloads each oversized topic video, re-encodes it to 720p, uploads the
+result and repoints the topic — then `npm run audit:cms` confirms nothing is
+over 25 MB.
 
 ---
 
-## How to check you got it right
+## Photography
 
-```bash
-npm run audit:cms
-```
+The site's photographs are freely licensed placeholders from Wikimedia Commons
+(credited at `/[locale]/credits`). They are **not** Enviro-Hension's own work.
 
-Anything still over 25 MB is listed under **“Video files over 25 MB”**. When
-that section disappears, the videos are fine.
-
----
-
-## While you are in there
-
-The site now does **not load a topic video until someone presses play**. So a
-visitor arriving on a module page downloads nothing until they ask for the
-video. That makes the site usable today — but a 400 MB file still will not play
-on a slow connection once pressed, so the re-encode is still worth doing.
-
----
-
-## Also worth adding
-
-The site uses placeholder photographs from Wikimedia Commons (credited on
-`/en/credits`). They are **not** Enviro-Hension's own work.
-
-Once you have real photographs of your own work, you can replace them without a
-developer:
+You can replace them yourself, without a developer:
 
 - **Home page hero:** Studio → ⚙️ Settings → Brand → **Home page hero
   photograph**. Wide landscape, about 2400 × 1350.
 - **A module's card photo:** Studio → 🎓 Topics → open a topic → **Card photo**.
   Landscape, about 1600 × 1000.
 
-Leave either empty and the site falls back to its bundled picture, so nothing
+Leave either empty and the site falls back to what it has now, so nothing
 breaks while you are part-way through.

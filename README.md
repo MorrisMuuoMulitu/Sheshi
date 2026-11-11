@@ -175,6 +175,9 @@ your local `npx sanity login` session — production never does.
 | `npm run seed` | Seed/refresh content (idempotent) |
 | `npm run verify` | Check seeded bilingual content |
 | `npm run audit:cms` | Content health: duplicate keys, broken refs, missing files, oversized video, missing Kiswahili |
+| `npm run previews:pdf` | Regenerate resource first-page covers from the PDFs |
+| `npm run stills:topic` | Regenerate topic stills from the videos |
+| `./scripts/reencode-videos.sh` | Re-encode oversized topic videos to 720p and repoint them |
 | `npm run schema:extract` / `npm run typegen` | Schema JSON + TypeScript types |
 
 ## Content model
