@@ -38,6 +38,15 @@ export default function MediaViewer({ locale }: { locale: Locale }) {
     return () => window.removeEventListener("eh:open-media", onOpen);
   }, []);
 
+  // Never leave the spinner up: the PDF <iframe> does not fire `load` in
+  // browsers without a built-in PDF viewer, and a slow file should not look
+  // like a broken one.
+  useEffect(() => {
+    if (!item) return;
+    const t = window.setTimeout(() => setLoaded(true), 6000);
+    return () => window.clearTimeout(t);
+  }, [item]);
+
   const close = useCallback(() => {
     setItem(null);
     setLoaded(false);
