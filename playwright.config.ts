@@ -28,6 +28,11 @@ const BASE_URL = `http://localhost:${PORT}`;
 export default defineConfig({
   testDir: "./tests",
   fullyParallel: true,
+  // Serial: the CMS tests call POST /api/revalidate, which invalidates the
+  // route cache. Run in parallel with the navigation tests, that races them
+  // (a page can re-render mid-journey). The suite is small, so determinism
+  // is worth more than the wall-clock saving.
+  workers: 1,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI ? "github" : "list",

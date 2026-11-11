@@ -15,7 +15,9 @@
     "typegen": "sanity typegen generate",
     "verify": "tsx scripts/verify.ts",
     "test:e2e": "playwright test",
-    "audit:cms": "tsx scripts/audit-cms.ts"
+    "audit:cms": "tsx scripts/audit-cms.ts",
+    "previews:pdf": "tsx scripts/pdf-previews.ts",
+    "stills:topic": "tsx scripts/topic-stills.ts"
   },
   "dependencies": {
     "@sanity/client": "^8.14.1",

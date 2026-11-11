@@ -17,21 +17,18 @@ type Theme = "light" | "dark";
 
 function readTheme(): Theme {
   if (typeof document === "undefined") return "light";
+  // Light is the site's default. Dark only applies when the reader has
+  // chosen it — the OS preference is intentionally not consulted.
   const attr = document.documentElement.getAttribute("data-theme");
-  if (attr === "dark" || attr === "light") return attr;
-  return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  return attr === "dark" ? "dark" : "light";
 }
 
 const listeners = new Set<() => void>();
 
 function subscribe(cb: () => void) {
   listeners.add(cb);
-  // The OS preference can change while the page is open.
-  const mq = window.matchMedia?.("(prefers-color-scheme: dark)");
-  mq?.addEventListener?.("change", cb);
   return () => {
     listeners.delete(cb);
-    mq?.removeEventListener?.("change", cb);
   };
 }
 

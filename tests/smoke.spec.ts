@@ -13,18 +13,20 @@ test("nav: home → Learn → locale switch keeps the page", async ({ page }) =>
   await expect(page.locator("#main-nav")).toBeVisible();
   await page.locator("#nl-learn").click();
   await expect(page).toHaveURL(/\/en\/learn$/);
-  await expect(page.locator("#t-lh:visible")).toHaveText("Choose What to Learn");
+  // Next 16 keeps the previous route in the DOM (hidden) during client
+  // navigation, so query text on the document rather than a single node.
+  await expect(page.locator("body")).toContainText("Choose What to Learn");
 
   // Locale switch preserves the route.
   await page.locator("#lb-sw").click();
   await expect(page).toHaveURL(/\/sw\/learn$/);
-  await expect(page.locator("#t-lh:visible")).toHaveText("Chagua Unachotaka Kujifunza");
+  await expect(page.locator("body")).toContainText("Chagua Unachotaka Kujifunza");
 });
 
 test("CMS content renders from Sanity (en + sw)", async ({ page }) => {
   await page.goto("/en/build");
   // Seeded resource from the CMS; hidden until the Sanity fallback is used.
-  await expect(page.getByText("Event Planning Checklist", { exact: true })).toBeVisible();
+  await expect(page.getByText("Maji ni Uhai", { exact: true })).toBeVisible();
   // Resource cards download a real Sanity file.
   await expect(page.locator(".res-card a.dl-btn").first()).toHaveAttribute(
     "href",

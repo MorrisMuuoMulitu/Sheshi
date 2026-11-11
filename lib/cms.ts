@@ -11,6 +11,8 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { draftMode } from "next/headers";
 import { clientFor } from "./sanity";
+import { pdfPreviewUrl } from "./pdf-previews";
+import { topicStillUrl } from "./topic-stills";
 import {
   campaignsQuery,
   resourcesQuery,
@@ -95,7 +97,9 @@ export async function getLearnTopics(locale: Locale): Promise<LearnTopic[]> {
         i: d.order ?? card?.i ?? 0,
         thumb: d.thumbClass ?? card?.thumb ?? "th1",
         icon: d.icon ?? card?.icon ?? "🌱",
-        imageUrl: d.image?.asset?.url ?? undefined,
+        // A CMS photograph wins; otherwise a still pulled from the topic's
+        // own video, so every module has a real picture on its card.
+        imageUrl: d.image?.asset?.url ?? topicStillUrl(d._id),
         title: pickBi(d.title, locale),
         desc: pickBi(d.cardDescription, locale),
         pill: pickBi(d.stepPill, locale),
@@ -128,6 +132,7 @@ function staticLearnTopics(locale: Locale): LearnTopic[] {
       i,
       thumb: c.thumb,
       icon: c.icon,
+      imageUrl: topicStillUrl(`topic-${c.key}`),
       title: tx(locale, `tc-t${i}`, t.title),
       desc: tx(locale, `tc-d${i}`, c.desc),
       pill: tx(locale, `tc-p${i}`, c.pill),
@@ -161,6 +166,7 @@ export async function getResources(locale: Locale): Promise<LibraryResource[]> {
         cat,
         rt: RESOURCE_BADGE[cat],
         docId: d._id,
+        previewUrl: pdfPreviewUrl(d._id),
         id: d.key ?? "",
         updatedAt: d._updatedAt ?? undefined,
         title: pickBi(d.title, locale),

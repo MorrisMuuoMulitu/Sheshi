@@ -102,7 +102,7 @@ export default function LearnView({
                         controls={startedFor === topic.key}
                         playsInline
                         preload="none"
-                        poster="/img/band-tea.jpg"
+                        poster={topic.imageUrl}
                         style={{ width: "100%", height: "100%", objectFit: "cover" }}
                       />
                       {startedFor !== topic.key && (
@@ -216,7 +216,7 @@ export default function LearnView({
                 controls={introStarted}
                 playsInline
                 preload="none"
-                poster="/img/hills.jpg"
+                poster={topics[0]?.imageUrl}
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
               {!introStarted && (

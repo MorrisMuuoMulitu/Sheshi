@@ -17,7 +17,6 @@ export type Resource = {
 };
 
 export const resources: Resource[] = [
-  { cat: "tp", rt: "📄 Template", id: "r1", title: "Event Planning Checklist", desc: "Step-by-step organizer with roles, timelines, and logistics for community events.", langs: ["en", "sw"] },
   { cat: "kt", rt: "🧰 Toolkit", id: "r2", title: "River Cleanup Field Kit", desc: "Complete blueprint: equipment lists, safety protocol, volunteer briefings.", langs: ["en", "sw"] },
   { cat: "zn", rt: "📰 Zine", id: "r3", title: "Maji ni Uhai", desc: "Print-ready A5 community zine on water conservation — in Kiswahili.", langs: ["sw"] },
   { cat: "kt", rt: "🧰 Toolkit", id: "r4", title: "Advocacy & Media Guide", desc: "How to engage local media, write press releases, and run effective social campaigns.", langs: ["en", "sw"] },

@@ -39,12 +39,17 @@ test("theme toggle switches the document theme and persists it", async ({ page }
 
 test("no emoji are used as structural icons", async ({ page }) => {
   await page.goto("/en/learn");
-  // Topic thumbnails are SVG icons, not emoji glyphs.
+  // A topic thumbnail is either a real photograph (a video still) or an SVG
+  // icon — never an emoji glyph.
   const thumbs = page.locator(".tc-thumb");
   const count = await thumbs.count();
   expect(count).toBeGreaterThan(0);
   for (let i = 0; i < count; i++) {
-    await expect(thumbs.nth(i).locator("svg")).toHaveCount(1);
+    const t = thumbs.nth(i);
+    const media = (await t.locator("svg").count()) + (await t.locator("img").count());
+    expect(media, `thumbnail ${i} has an icon or a photograph`).toBeGreaterThanOrEqual(1);
+    const text = (await t.innerText()).trim();
+    expect(text).not.toMatch(/\p{Extended_Pictographic}/u);
   }
 });
 
