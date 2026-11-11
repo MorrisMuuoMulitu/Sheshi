@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Download, Pause, Play, Plus } from "lucide-react";
+import { Eye, Pause, Play, Plus } from "lucide-react";
 import { T, type Locale } from "@/lib/i18n";
-import { openUploadModal } from "@/lib/ui";
+import { openMedia, openUploadModal } from "@/lib/ui";
 import type { StoryCard, WorkCard, WorkEpisode } from "@/lib/views";
 import { Icon } from "@/components/ui/Icon";
 import Reveal from "@/components/ui/Reveal";
@@ -229,16 +229,15 @@ export default function WorkView({
                         <span className="badge">{s.date}</span>
                       </div>
                       {s.href && (
-                        <a
-                          className="dl-btn"
-                          href={s.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <button
+                          type="button"
+                          className="btn btn-secondary btn-sm"
+                          onClick={() => openMedia({ url: s.href!, title: s.title })}
                           style={{ alignSelf: "flex-start", marginTop: 4 }}
                         >
-                          <Download size={14} aria-hidden="true" />
+                          <Eye size={14} aria-hidden="true" />
                           {isEn ? "Open" : "Fungua"}
-                        </a>
+                        </button>
                       )}
                     </div>
                   </article>

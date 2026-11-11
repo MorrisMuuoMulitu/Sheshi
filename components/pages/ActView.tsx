@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { CheckCircle2, Download, Loader2 } from "lucide-react";
+import { CheckCircle2, Download, Eye, Loader2 } from "lucide-react";
 import { T, type Locale } from "@/lib/i18n";
 import { downloadHref, type ActCampaign } from "@/lib/views";
+import { openMedia } from "@/lib/ui";
 import { Icon } from "@/components/ui/Icon";
 import Reveal from "@/components/ui/Reveal";
 import PageHead from "@/components/ui/PageHead";
@@ -97,16 +98,26 @@ export default function ActView({
                 </div>
                 {/* Get the Guide: file → download; topic → Learn; resource → library */}
                 {c.guideUrl ? (
-                  <a
-                    className="btn btn-primary"
-                    id={`ca${c.i}b`}
-                    href={downloadHref(c.guideUrl, c.title)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Download size={15} aria-hidden="true" />
-                    {c.btn.replace(/^\S+\s*/, "")}
-                  </a>
+                  <div className="cluster">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      id={`ca${c.i}b`}
+                      onClick={() => openMedia({ url: c.guideUrl!, title: c.title })}
+                    >
+                      <Eye size={15} aria-hidden="true" />
+                      {c.btn.replace(/^\S+\s*/, "")}
+                    </button>
+                    <a
+                      className="btn btn-secondary"
+                      href={downloadHref(c.guideUrl, c.title)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={isEn ? "Download the guide" : "Pakua mwongozo"}
+                    >
+                      <Download size={15} aria-hidden="true" />
+                    </a>
+                  </div>
                 ) : c.topicKey ? (
                   <Link
                     className="btn btn-primary"

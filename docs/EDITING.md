@@ -97,6 +97,17 @@ The four most recently edited resources also appear on the home page under
 
 ---
 
+## 4b. Viewing files without downloading
+
+Resource cards now have **View** (opens the PDF inside the site) next to a
+small download button. The same applies to a module's resource kit and a
+campaign guide. The viewer also shows the file type, and offers Download and
+"New tab" in its header.
+
+On a phone the viewer fills the screen; the close button is top-right.
+
+---
+
 ## 5. Submissions
 
 **Studio → Submissions**

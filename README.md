@@ -70,6 +70,13 @@ Topic thumbnails derive their terrain from the topic's icon, so the picture
 always matches the subject even when an editor changes the glyph and the
 thumbnail class independently.
 
+**In-app viewer** — `components/ui/MediaViewer.tsx` opens PDFs, video, audio and
+images inside the site instead of downloading them; download and "new tab"
+remain as secondary actions. Any surface can open it with
+`openMedia({ url, title })` from `lib/ui.ts`, which fires an `eh:open-media`
+event. File types the browser cannot render (docx, pptx) fall back to a clear
+"open in a new tab / download" panel.
+
 **Photography** — `public/img/*` holds the site's photographs. They are
 freely licensed images from Wikimedia Commons (CC0 / CC BY / CC BY-SA), graded
 in-process to one palette so mixed sources read as a single set. Each is

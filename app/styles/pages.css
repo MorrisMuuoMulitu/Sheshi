@@ -1586,3 +1586,62 @@
     height: 140px;
   }
 }
+
+/* Resource card actions: view first, download second. */
+.res-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ═══ HERO — parallax layer ═══════════════════════════════════ */
+.hero-photo-wrap {
+  position: absolute;
+  inset: -8% 0 -8% 0;
+  z-index: -3;
+  will-change: transform;
+  transform: translate3d(0, 0, 0) scale(1.04);
+}
+
+.hero-photo {
+  object-fit: cover;
+  object-position: 50% 42%;
+}
+
+/* ═══ MOBILE ACTION BAR ════════════════════════════════════════ */
+.mobile-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-nav);
+  display: none;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--gutter) calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+  background: color-mix(in srgb, var(--bg-elevated) 92%, transparent);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -8px 30px rgba(16, 19, 9, 0.12);
+  transform: translateY(110%);
+  transition: transform var(--dur-3) var(--ease-out);
+}
+
+.mobile-bar.is-shown {
+  transform: translateY(0);
+}
+
+.mobile-bar .btn {
+  flex: 1;
+}
+
+@media (max-width: 700px) {
+  .mobile-bar {
+    display: flex;
+  }
+
+  /* Keep the footer's last row clear of the bar. */
+  .site-footer {
+    padding-bottom: calc(var(--space-8) + 76px + env(safe-area-inset-bottom, 0px));
+  }
+}

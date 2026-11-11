@@ -28,7 +28,9 @@ const display = Plus_Jakarta_Sans({
 const andika = Andika({
   subsets: ["latin", "latin-ext"],
   weight: ["400", "700"],
-  style: ["normal", "italic"],
+  // Italic is not used anywhere in the interface — dropping it removes two
+  // font files from every first visit.
+  style: ["normal"],
   display: "swap",
   variable: "--font-andika",
   fallback: ["system-ui", "sans-serif"],

@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Download, Play } from "lucide-react";
+import { ArrowLeft, ArrowRight, Download, Eye, Play } from "lucide-react";
 import { T, type Locale } from "@/lib/i18n";
 import { downloadHref, type LearnTopic } from "@/lib/views";
+import { openMedia } from "@/lib/ui";
 import { Icon, terrainFor } from "@/components/ui/Icon";
 import Reveal from "@/components/ui/Reveal";
 import PageHead from "@/components/ui/PageHead";
@@ -134,15 +135,25 @@ export default function LearnView({
                   <h3 id="td-res-t">{topic.res}</h3>
                   <p id="td-res-d">{topic.resD}</p>
                   {topic.kitFileUrl ? (
-                    <a
-                      className="btn btn-primary"
-                      href={downloadHref(topic.kitFileUrl, topic.res)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Download size={16} aria-hidden="true" />
-                      {isEn ? "Download Kit" : "Pakua Kifurushi"}
-                    </a>
+                    <div className="cluster">
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={() => openMedia({ url: topic.kitFileUrl!, title: topic.res })}
+                      >
+                        <Eye size={16} aria-hidden="true" />
+                        {isEn ? "Open the kit" : "Fungua kifurushi"}
+                      </button>
+                      <a
+                        className="btn btn-secondary"
+                        href={downloadHref(topic.kitFileUrl, topic.res)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Download size={16} aria-hidden="true" />
+                        {isEn ? "Download" : "Pakua"}
+                      </a>
+                    </div>
                   ) : (
                     <Link className="btn btn-primary" href={`/${locale}/build`}>
                       <Download size={16} aria-hidden="true" />

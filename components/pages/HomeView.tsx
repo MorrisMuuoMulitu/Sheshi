@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Download, Play, Sparkles } from "lucide-react";
 import { T, type Locale } from "@/lib/i18n";
 import { openShareModal } from "@/lib/ui";
@@ -32,6 +33,37 @@ export default function HomeView({
 }) {
   const t = T[locale];
   const base = `/${locale}`;
+
+  // Subtle parallax on the hero photograph, and a mobile action bar that
+  // appears once the hero has scrolled away. Both are skipped entirely when
+  // the reader prefers reduced motion.
+  const photoRef = useRef<HTMLDivElement>(null);
+  const [showBar, setShowBar] = useState(false);
+
+  useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let raf = 0;
+
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const y = window.scrollY;
+        setShowBar(y > window.innerHeight * 0.75);
+        if (!reduced && photoRef.current && y < window.innerHeight * 1.2) {
+          photoRef.current.style.transform =
+            `translate3d(0, ${(y * 0.16).toFixed(1)}px, 0) scale(1.04)`;
+        }
+      });
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
   const tx = (k: string, fallback: string) => t[k] ?? fallback;
   const isEn = locale === "en";
 
@@ -113,18 +145,20 @@ export default function HomeView({
     <div className="page page-home" id="page-home">
       {/* ═══ HERO — a real landscape carries the page ═══════════ */}
       <section className="hero" aria-labelledby="hero-title">
-        <Image
-          src={heroImageUrl || "/img/hero-field.jpg"}
-          alt={
-            isEn
-              ? "Open grassland and woodland on the Lolldaiga conservancy in Laikipia, Kenya"
-              : "Nyasi na misitu ya wazi katika hifadhi ya Lolldaiga, Laikipia, Kenya"
-          }
-          fill
-          priority
-          sizes="100vw"
-          className="hero-photo"
-        />
+        <div className="hero-photo-wrap" ref={photoRef}>
+          <Image
+            src={heroImageUrl || "/img/hero-field.jpg"}
+            alt={
+              isEn
+                ? "Open grassland and woodland on the Lolldaiga conservancy in Laikipia, Kenya"
+                : "Nyasi na misitu ya wazi katika hifadhi ya Lolldaiga, Laikipia, Kenya"
+            }
+            fill
+            priority
+            sizes="100vw"
+            className="hero-photo"
+          />
+        </div>
         <div className="hero-scrim" aria-hidden="true" />
 
         <div className="hero-content">
@@ -448,6 +482,16 @@ export default function HomeView({
             </div>
           </Reveal>
         </div>
+      </div>
+
+      {/* Mobile: one primary action always within thumb reach. */}
+      <div className={`mobile-bar${showBar ? " is-shown" : ""}`}>
+        <Link className="btn btn-primary" href={`${base}/learn`}>
+          {isEn ? "Start learning" : "Anza kujifunza"}
+        </Link>
+        <Link className="btn btn-secondary" href={`${base}/build`}>
+          {isEn ? "Get tools" : "Pata zana"}
+        </Link>
       </div>
     </div>
   );

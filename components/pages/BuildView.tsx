@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Download, Upload } from "lucide-react";
+import { Download, Eye, Upload } from "lucide-react";
 import { T, type Locale } from "@/lib/i18n";
-import { openUploadModal } from "@/lib/ui";
+import { openMedia, openUploadModal } from "@/lib/ui";
 import { downloadHref, type LibraryResource } from "@/lib/views";
 import { Icon } from "@/components/ui/Icon";
 import Reveal from "@/components/ui/Reveal";
@@ -132,15 +132,25 @@ export default function BuildView({
                       ))}
                     </div>
                     {r.fileUrl ? (
-                      <a
-                        className="dl-btn"
-                        href={downloadHref(r.fileUrl, r.title)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Download size={14} aria-hidden="true" />
-                        {isEn ? "Download" : "Pakua"}
-                      </a>
+                      <div className="res-actions">
+                        <button
+                          type="button"
+                          className="btn btn-primary btn-sm"
+                          onClick={() => openMedia({ url: r.fileUrl!, title: r.title })}
+                        >
+                          <Eye size={14} aria-hidden="true" />
+                          {isEn ? "View" : "Tazama"}
+                        </button>
+                        <a
+                          className="dl-btn"
+                          href={downloadHref(r.fileUrl, r.title)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={isEn ? "Download" : "Pakua"}
+                        >
+                          <Download size={14} aria-hidden="true" />
+                        </a>
+                      </div>
                     ) : (
                       <button
                         type="button"

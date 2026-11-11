@@ -4,6 +4,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import Modals from "@/components/Modals";
 import VisualEditing from "@/components/ui/VisualEditing";
+import MediaViewer from "@/components/ui/MediaViewer";
 import { isLocale, type Locale } from "@/lib/i18n";
 import { getSettings } from "@/lib/cms";
 
@@ -48,6 +49,7 @@ export default async function LocaleLayout({
       <main id="main-content">{children}</main>
       <Footer locale={l} settings={settings} />
       <Modals locale={l} />
+      <MediaViewer locale={l} />
       {preview && <VisualEditing />}
     </>
   );

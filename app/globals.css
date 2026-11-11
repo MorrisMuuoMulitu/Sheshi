@@ -40,7 +40,11 @@
    ═══════════════════════════════════════════════════════════════ */
 .page {
   display: block;
-  animation: eh-fade-up var(--dur-4) var(--ease-out) both;
+  /* `backwards` (not `both`): a finished `both` animation leaves a
+     transform on the element, which would make it a containing block for
+     `position: fixed` descendants — the mobile action bar would then anchor
+     to the page instead of the viewport. */
+  animation: eh-fade-up var(--dur-4) var(--ease-out) backwards;
 }
 
 /* Legacy alias → modern component. */
